@@ -1,0 +1,78 @@
+{{> page-hero}}
+
+      <!--
+        - #TAM MENYU
+      -->
+
+      <section class="section menu menu-full" aria-label="menyu">
+        <div class="container">
+
+          <p class="section-subtitle text-center label-2">{{menu.subtitle}}</p>
+          <h2 class="headline-1 section-title text-center">{{menu.title}}</h2>
+
+          <nav class="menu-nav" aria-label="menyu bölmələri">
+            {{blocks.menuNav}}
+          </nav>
+
+          {{blocks.menuCategories}}
+
+          <p class="menu-text text-center">{{menu.note}}</p>
+
+          <p class="menu-text text-center">{{hours.kitchenNote}}</p>
+
+          <a href="rezervasiya.html" class="btn btn-primary">
+            <span class="text text-1">Masa ayır</span>
+            <span class="text text-2" aria-hidden="true">Masa ayır</span>
+          </a>
+
+          <img src="./assets/images/shape-5.png" width="921" height="1036" loading="lazy" alt=""
+            class="shape shape-2 move-anim">
+          <img src="./assets/images/shape-6.png" width="343" height="345" loading="lazy" alt=""
+            class="shape shape-3 move-anim">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #ŞEFİN SEÇİMİ
+      -->
+
+      <section class="special-dish text-center" aria-labelledby="dish-label-menu">
+
+        <div class="special-dish-banner">
+          <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
+            alt="{{specialDish.title}}" class="img-cover">
+        </div>
+
+        <div class="special-dish-content bg-black-10">
+          <div class="container">
+
+            <img src="./assets/images/badge-1.png" width="28" height="41" loading="lazy" alt="" class="abs-img">
+
+            <p class="section-subtitle label-2">{{specialDish.subtitle}}</p>
+
+            <h2 class="headline-1 section-title" id="dish-label-menu">{{specialDish.title}}</h2>
+
+            <p class="section-text">{{specialDish.text}}</p>
+
+            <div class="wrapper">
+              <del class="del body-3">{{specialDish.oldPrice}}</del>
+              <span class="span body-1">{{specialDish.newPrice}}</span>
+            </div>
+
+            <a href="rezervasiya.html" class="btn btn-primary">
+              <span class="text text-1">Masa ayır</span>
+              <span class="text text-2" aria-hidden="true">Masa ayır</span>
+            </a>
+
+          </div>
+        </div>
+
+        <img src="./assets/images/shape-4.png" width="179" height="359" loading="lazy" alt="" class="shape shape-1">
+        <img src="./assets/images/shape-9.png" width="351" height="462" loading="lazy" alt="" class="shape shape-2">
+
+      </section>
+
+
+{{> reservation}}

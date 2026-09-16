@@ -1,0 +1,89 @@
+{{> page-hero}}
+
+      <!--
+        - #ƏLAQƏ KARTLARI
+      -->
+
+      <section class="section contact" aria-label="əlaqə">
+        <div class="container">
+
+          <p class="section-subtitle text-center label-2">{{pages.elaqe.subtitle}}</p>
+          <h2 class="headline-1 section-title text-center">{{pages.elaqe.title}}</h2>
+          <p class="section-text text-center">{{pages.elaqe.lead}}</p>
+
+          <ul class="contact-list">
+
+            <li class="contact-item">
+              <div class="contact-card">
+                <div class="card-icon" aria-hidden="true">
+                  <ion-icon name="location-outline"></ion-icon>
+                </div>
+                <h3 class="title-2 card-title">Ünvan</h3>
+                <address class="label-1 card-text">{{contact.addressFull}}</address>
+                <a href="{{contact.mapLink}}" target="_blank" rel="noopener"
+                  class="btn-text hover-underline label-2">Xəritədə aç</a>
+              </div>
+            </li>
+
+            <li class="contact-item">
+              <div class="contact-card">
+                <div class="card-icon" aria-hidden="true">
+                  <ion-icon name="call-outline"></ion-icon>
+                </div>
+                <h3 class="title-2 card-title">Telefon</h3>
+                <p class="label-1 card-text">
+                  Rezervasiya: {{contact.phone}}<br>
+                  Mobil: {{contact.mobile}}
+                </p>
+                <a href="tel:{{contact.phoneHref}}" class="btn-text hover-underline label-2">Zəng et</a>
+              </div>
+            </li>
+
+            <li class="contact-item">
+              <div class="contact-card">
+                <div class="card-icon" aria-hidden="true">
+                  <ion-icon name="mail-outline"></ion-icon>
+                </div>
+                <h3 class="title-2 card-title">E-mail</h3>
+                <p class="label-1 card-text">
+                  {{contact.email}}<br>
+                  Tədbir və banket sorğuları üçün
+                </p>
+                <a href="mailto:{{contact.email}}" class="btn-text hover-underline label-2">Məktub yaz</a>
+              </div>
+            </li>
+
+            <li class="contact-item">
+              <div class="contact-card">
+                <div class="card-icon" aria-hidden="true">
+                  <ion-icon name="time-outline"></ion-icon>
+                </div>
+                <h3 class="title-2 card-title">İş saatları</h3>
+                <p class="label-1 card-text">
+                  {{hours.lunchValue}}<br>
+                  {{hours.dinnerValue}}
+                </p>
+                <a href="rezervasiya.html" class="btn-text hover-underline label-2">Masa ayır</a>
+              </div>
+            </li>
+
+          </ul>
+
+          <img src="./assets/images/shape-7.png" width="208" height="178" loading="lazy" alt="" class="shape shape-1">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #XƏRİTƏ
+      -->
+
+      <section class="map-section" aria-label="xəritə">
+        <iframe src="{{contact.mapEmbed}}" width="100%" height="450" style="border:0;"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="{{site.name}} xəritədə"></iframe>
+      </section>
+
+
+{{> reservation}}

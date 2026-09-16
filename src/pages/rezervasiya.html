@@ -1,0 +1,65 @@
+{{> page-hero}}
+
+      <!--
+        - #NECƏ İŞLƏYİR
+      -->
+
+      <section class="section steps" aria-label="rezervasiya mərhələləri">
+        <div class="container">
+
+          <p class="section-subtitle text-center label-2">{{pages.rezervasiya.subtitle}}</p>
+          <h2 class="headline-1 section-title text-center">Necə işləyir?</h2>
+          <p class="section-text text-center">{{pages.rezervasiya.lead}}</p>
+
+          <ul class="step-list">
+            {{blocks.stepCards}}
+          </ul>
+
+        </div>
+      </section>
+
+
+{{> reservation}}
+
+
+      <!--
+        - #QAYDALAR
+      -->
+
+      <section class="section rules bg-black-10" aria-label="rezervasiya qaydaları">
+        <div class="container">
+
+          <div class="rules-wrapper">
+
+            <div class="rules-content">
+              <p class="section-subtitle label-2">Bilməli olduqlarınız</p>
+              <h2 class="headline-1 section-title">Rezervasiya qaydaları</h2>
+
+              <ul class="rules-list">
+                {{blocks.ruleItems}}
+              </ul>
+
+              <div class="contact-label">Qrup sifarişləri üçün</div>
+              <a href="tel:{{contact.phoneHref}}" class="body-1 contact-number hover-underline">{{contact.phone}}</a>
+            </div>
+
+            <figure class="rules-banner">
+              <img src="./assets/images/event-1.jpg" width="570" height="620" loading="lazy"
+                alt="{{site.name}} salonu" class="img-cover">
+            </figure>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      <!--
+        - #XƏRİTƏ
+      -->
+
+      <section class="map-section" aria-label="xəritə">
+        <iframe src="{{contact.mapEmbed}}" width="100%" height="450" style="border:0;"
+          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="{{site.name}} xəritədə"></iframe>
+      </section>

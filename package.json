@@ -1,0 +1,17 @@
+{
+  "name": "mangal-steak-house",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Mangal Steak House — restoran saytı və daxili rezervasiya sistemi (Vilka inteqrasiyası ilə)",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "node server/index.mjs",
+    "dev": "node scripts/build.mjs && node server/index.mjs",
+    "test": "node scripts/test.mjs"
+  },
+  "engines": {
+    "node": ">=18.17"
+  },
+  "license": "UNLICENSED"
+}

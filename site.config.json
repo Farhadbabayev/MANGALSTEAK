@@ -1,0 +1,105 @@
+{
+  "_comment": "Saytdakı BÜTÜN mətnlər və məlumatlar buradan idarə olunur. Dəyişiklikdən sonra: npm run build",
+  "site": {
+    "name": "Mangal Steak House",
+    "shortName": "Mangal",
+    "logoTop": "Mangal",
+    "logoBottom": "Steak House",
+    "domain": "mangalsteakhouse.az",
+    "url": "https://mangalsteakhouse.az",
+    "tagline": "Odun közündə bişən əsl ləzzət",
+    "description": "Mangal Steak House — Bakının mərkəzində odun közü üzərində bişirilən premium steyklər, quzu və dana kabablar. Onlayn masa rezervasiyası.",
+    "locale": "az_AZ",
+    "lang": "az"
+  },
+  "contact": {
+    "addressShort": "Nizami küç. 00, Bakı",
+    "addressFull": "Nizami küçəsi 00, Səbail rayonu,<br> Bakı AZ1005, Azərbaycan",
+    "addressOneLine": "Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan",
+    "phone": "+994 12 000 00 00",
+    "phoneHref": "+994120000000",
+    "mobile": "+994 50 000 00 00",
+    "mobileHref": "+994500000000",
+    "whatsapp": "994500000000",
+    "email": "rezervasiya@mangalsteakhouse.az",
+    "mapEmbed": "https://www.google.com/maps?q=Baku%20Nizami%20street&output=embed",
+    "mapLink": "https://maps.google.com/?q=Mangal+Steak+House+Baku"
+  },
+  "hours": {
+    "topbar": "Hər gün: 11:00 – 24:00",
+    "short": "Hər gün 11:00 – 24:00",
+    "lunchTitle": "Nahar saatları",
+    "lunchValue": "Bazar ertəsi – Bazar<br> 11:00 – 16:00",
+    "dinnerTitle": "Şam yeməyi",
+    "dinnerValue": "Bazar ertəsi – Bazar<br> 17:00 – 24:00",
+    "kitchenNote": "Mətbəx sifarişləri gecə saat <span class=\"span\">23:30</span>-a qədər qəbul edir"
+  },
+  "social": {
+    "instagram": "https://instagram.com/mangalsteakhouse",
+    "facebook": "https://facebook.com/mangalsteakhouse",
+    "tiktok": "https://tiktok.com/@mangalsteakhouse",
+    "youtube": "https://youtube.com/@mangalsteakhouse"
+  },
+  "reservation": {
+    "minGuests": 1,
+    "maxGuests": 20,
+    "openHour": 11,
+    "closeHour": 23,
+    "slotMinutes": 30,
+    "maxDaysAhead": 90,
+    "timezoneOffset": "+04:00",
+    "areas": [
+      {
+        "value": "salon",
+        "label": "Əsas salon"
+      },
+      {
+        "value": "terrace",
+        "label": "Yay terrası"
+      },
+      {
+        "value": "mangal-zone",
+        "label": "Mangal zonası (açıq mətbəx)"
+      },
+      {
+        "value": "vip",
+        "label": "VIP otaq"
+      },
+      {
+        "value": "any",
+        "label": "Fərqi yoxdur"
+      }
+    ],
+    "occasions": [
+      {
+        "value": "",
+        "label": "Səbəb (istəyə bağlı)"
+      },
+      {
+        "value": "ad-gunu",
+        "label": "Ad günü"
+      },
+      {
+        "value": "is-gorusu",
+        "label": "İş görüşü"
+      },
+      {
+        "value": "yubiley",
+        "label": "Yubiley"
+      },
+      {
+        "value": "ailevi",
+        "label": "Ailəvi şam yeməyi"
+      },
+      {
+        "value": "diger",
+        "label": "Digər"
+      }
+    ]
+  },
+  "footer": {
+    "newsletterTitle": "Xəbər və kampaniyalar",
+    "newsletterText": "Abunə olun, ilk sifarişinizə <span class=\"span\">10% endirim</span> qazanın.",
+    "copyrightYear": "2026"
+  }
+}

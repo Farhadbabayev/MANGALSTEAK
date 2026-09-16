@@ -1,0 +1,37 @@
+  <div class="topbar">
+    <div class="container">
+
+      <address class="topbar-item">
+        <div class="icon">
+          <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+        </div>
+        <span class="span">{{contact.addressOneLine}}</span>
+      </address>
+
+      <div class="separator"></div>
+
+      <div class="topbar-item item-2">
+        <div class="icon">
+          <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
+        </div>
+        <span class="span">{{hours.topbar}}</span>
+      </div>
+
+      <a href="tel:{{contact.phoneHref}}" class="topbar-item link">
+        <div class="icon">
+          <ion-icon name="call-outline" aria-hidden="true"></ion-icon>
+        </div>
+        <span class="span">{{contact.phone}}</span>
+      </a>
+
+      <div class="separator"></div>
+
+      <a href="mailto:{{contact.email}}" class="topbar-item link">
+        <div class="icon">
+          <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
+        </div>
+        <span class="span">{{contact.email}}</span>
+      </a>
+
+    </div>
+  </div>

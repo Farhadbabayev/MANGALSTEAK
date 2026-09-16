@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Rezervasiyalar — Mangal Steak House</title>
+  <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --gold: hsl(38, 61%, 73%);
+      --bg: hsl(210, 4%, 9%);
+      --panel: hsl(210, 4%, 12%);
+      --panel-2: hsl(210, 4%, 15%);
+      --line: hsla(0, 0%, 100%, 0.1);
+      --text: hsl(0, 0%, 96%);
+      --muted: hsl(0, 0%, 62%);
+      --ok: hsl(146, 52%, 52%);
+      --warn: hsl(38, 90%, 60%);
+      --bad: hsl(4, 72%, 62%);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.5;
+      padding: 24px 16px 60px;
+    }
+
+    .wrap { max-width: 1240px; margin-inline: auto; }
+
+    header.top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-block-end: 20px;
+      border-block-end: 1px solid var(--line);
+      margin-block-end: 24px;
+    }
+
+    .brand {
+      font-family: 'Forum', serif;
+      font-size: 28px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .brand small {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 14px;
+      margin-block-end: 24px;
+    }
+
+    .card {
+      background-color: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 16px 18px;
+    }
+
+    .card .value { font-size: 28px; font-family: 'Forum', serif; color: var(--gold); }
+    .card .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 12px;
+      margin-block-end: 20px;
+    }
+
+    .field { display: grid; gap: 5px; }
+    .field label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--muted); }
+
+    input, select, button {
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background-color: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 9px 12px;
+      outline: none;
+    }
+
+    input:focus, select:focus { border-color: var(--gold); }
+
+    button {
+      cursor: pointer;
+      transition: 180ms ease;
+      white-space: nowrap;
+    }
+
+    button:hover { border-color: var(--gold); color: var(--gold); }
+
+    button.primary { background-color: var(--gold); color: #111; border-color: var(--gold); font-weight: 700; }
+    button.primary:hover { opacity: 0.88; color: #111; }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background-color: var(--panel);
+    }
+
+    table { width: 100%; border-collapse: collapse; min-width: 980px; }
+
+    th, td { padding: 12px 14px; text-align: start; border-block-end: 1px solid var(--line); vertical-align: top; }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--muted);
+      font-weight: 400;
+      background-color: var(--panel-2);
+      position: sticky;
+      top: 0;
+    }
+
+    tr:last-child td { border-block-end: none; }
+    tr.is-cancelled { opacity: 0.45; }
+
+    .code { font-family: ui-monospace, monospace; color: var(--gold); font-size: 13px; }
+    .muted { color: var(--muted); font-size: 13px; }
+    .nowrap { white-space: nowrap; }
+
+    .pill {
+      display: inline-block;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid currentColor;
+    }
+
+    .pill.ok { color: var(--ok); }
+    .pill.warn { color: var(--warn); }
+    .pill.bad { color: var(--bad); }
+    .pill.muted { color: var(--muted); }
+
+    .row-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+    .row-actions button { padding: 6px 10px; font-size: 12px; }
+
+    .empty { padding: 50px 20px; text-align: center; color: var(--muted); }
+
+    .note { max-width: 260px; font-size: 13px; color: var(--muted); }
+
+    .banner {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-block-end: 18px;
+      font-size: 14px;
+      border: 1px solid;
+    }
+
+    .banner.warn { color: var(--warn); border-color: var(--warn); background-color: hsla(38, 90%, 60%, 0.08); }
+    .banner.bad { color: var(--bad); border-color: var(--bad); background-color: hsla(4, 72%, 62%, 0.08); }
+
+    a { color: var(--gold); }
+
+    @media (max-width: 640px) {
+      body { padding-inline: 10px; }
+      .brand { font-size: 22px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+
+    <header class="top">
+      <div class="brand">
+        Mangal
+        <small>Rezervasiya paneli</small>
+      </div>
+
+      <div class="toolbar" style="margin: 0;">
+        <button id="refresh">Yenilə</button>
+        <a href="/api/admin/export.csv"><button type="button">CSV yüklə</button></a>
+      </div>
+    </header>
+
+    <div id="banner"></div>
+
+    <div class="cards" id="stats"></div>
+
+    <div class="toolbar">
+      <div class="field">
+        <label for="from">Tarixdən</label>
+        <input type="date" id="from">
+      </div>
+
+      <div class="field">
+        <label for="to">Tarixə</label>
+        <input type="date" id="to">
+      </div>
+
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status">
+          <option value="">Hamısı</option>
+          <option value="new">Yeni</option>
+          <option value="confirmed">Təsdiqlənib</option>
+          <option value="cancelled">Ləğv edilib</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="search">Axtarış</label>
+        <input type="search" id="search" placeholder="Ad, telefon və ya kod">
+      </div>
+
+      <button class="primary" id="apply">Filtrlə</button>
+      <button id="reset">Sıfırla</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kod</th>
+            <th>Tarix / Saat</th>
+            <th>Qonaq</th>
+            <th>Nəfər</th>
+            <th>Zona</th>
+            <th>Qeyd</th>
+            <th>Status</th>
+            <th>Vilka</th>
+            <th>Əməliyyat</th>
+          </tr>
+        </thead>
+        <tbody id="rows">
+          <tr><td colspan="9" class="empty">Yüklənir…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    'use strict';
+
+    var AREA = {
+      salon: 'Əsas salon',
+      terrace: 'Yay terrası',
+      'mangal-zone': 'Mangal zonası',
+      vip: 'VIP otaq',
+      any: 'Fərqi yoxdur'
+    };
+
+    var STATUS = {
+      new: ['Yeni', 'warn'],
+      confirmed: ['Təsdiqlənib', 'ok'],
+      cancelled: ['Ləğv edilib', 'bad']
+    };
+
+    var DELIVERY = {
+      sent: ['Göndərildi', 'ok'],
+      pending: ['Gözləyir', 'warn'],
+      failed: ['Uğursuz', 'bad'],
+      skipped: ['Sönülü', 'muted']
+    };
+
+    var all = [];
+
+    function esc(value) {
+      return String(value == null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function pill(map, key) {
+      var entry = map[key] || [key || '—', 'muted'];
+      return '<span class="pill ' + entry[1] + '">' + esc(entry[0]) + '</span>';
+    }
+
+    function fmtDate(iso) {
+      if (!iso) return '—';
+      var p = iso.split('-');
+      return p[2] + '.' + p[1] + '.' + p[0];
+    }
+
+    function render(list) {
+      var tbody = document.getElementById('rows');
+
+      if (!list.length) {
+        tbody.innerHTML = '<tr><td colspan="9" class="empty">Rezervasiya tapılmadı.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = list.map(function (r) {
+        var delivery = r.delivery || {};
+        var failed = delivery.status === 'failed' || delivery.status === 'pending';
+
+        return '<tr class="' + (r.status === 'cancelled' ? 'is-cancelled' : '') + '">' +
+          '<td class="code nowrap">' + esc(r.code) + '</td>' +
+          '<td class="nowrap"><strong>' + fmtDate(r.date) + '</strong><br><span class="muted">' + esc(r.time) + '</span></td>' +
+          '<td>' + esc(r.name) + '<br><a class="muted" href="tel:' + esc(r.phone) + '">' + esc(r.phone) + '</a></td>' +
+          '<td class="nowrap">' + esc(r.guests) + '</td>' +
+          '<td class="muted nowrap">' + esc(AREA[r.area] || r.area || '—') + '</td>' +
+          '<td class="note">' + (esc(r.note) || '<span class="muted">—</span>') +
+            (r.occasion ? '<br><span class="muted">' + esc(r.occasion) + '</span>' : '') + '</td>' +
+          '<td>' + pill(STATUS, r.status) + '</td>' +
+          '<td>' + pill(DELIVERY, delivery.status) +
+            (delivery.reference ? '<br><span class="muted">#' + esc(delivery.reference) + '</span>' : '') +
+            (delivery.lastError ? '<br><span class="muted" title="' + esc(delivery.lastError) + '">' +
+              esc(String(delivery.lastError).slice(0, 40)) + '…</span>' : '') + '</td>' +
+          '<td><div class="row-actions">' +
+            (r.status !== 'confirmed' ? '<button data-act="confirmed" data-id="' + esc(r.id) + '">Təsdiqlə</button>' : '') +
+            (r.status !== 'cancelled' ? '<button data-act="cancelled" data-id="' + esc(r.id) + '">Ləğv et</button>' : '') +
+            (failed ? '<button data-act="retry" data-id="' + esc(r.id) + '">Vilka-ya göndər</button>' : '') +
+          '</div></td>' +
+        '</tr>';
+      }).join('');
+    }
+
+    function renderStats(list, meta) {
+      var today = new Date().toISOString().slice(0, 10);
+      var pending = list.filter(function (r) {
+        var s = (r.delivery || {}).status;
+        return s === 'pending' || s === 'failed';
+      }).length;
+
+      var guestsToday = list
+        .filter(function (r) { return r.date === today && r.status !== 'cancelled'; })
+        .reduce(function (sum, r) { return sum + Number(r.guests || 0); }, 0);
+
+      var cards = [
+        [list.filter(function (r) { return r.date === today; }).length, 'Bu gün'],
+        [guestsToday, 'Bu gün qonaq'],
+        [list.filter(function (r) { return r.date >= today && r.status === 'new'; }).length, 'Təsdiq gözləyir'],
+        [pending, 'Vilka-ya düşməyib'],
+        [list.length, 'Ümumi']
+      ];
+
+      document.getElementById('stats').innerHTML = cards.map(function (c) {
+        return '<div class="card"><div class="value">' + c[0] + '</div><div class="label">' + c[1] + '</div></div>';
+      }).join('');
+
+      var banner = '';
+      if (meta && meta.vilka && meta.vilka.mode === 'off') {
+        banner = '<div class="banner warn">Vilka inteqrasiyası sönülüdür (VILKA_MODE=off). ' +
+          'Rezervasiyalar yalnız bu paneldə saxlanılır.</div>';
+      } else if (meta && meta.vilka && !meta.vilka.configured) {
+        banner = '<div class="banner bad">Vilka ünvanı (VILKA_API_URL) təyin olunmayıb — göndərmə işləmir.</div>';
+      } else if (pending > 0) {
+        banner = '<div class="banner warn">' + pending + ' rezervasiya Vilka-ya çatdırılmayıb. ' +
+          'Sistem avtomatik təkrar cəhd edir; sətirdəki düymə ilə də göndərə bilərsiniz.</div>';
+      }
+      document.getElementById('banner').innerHTML = banner;
+    }
+
+    function applyFilters() {
+      var search = document.getElementById('search').value.trim().toLowerCase();
+      var status = document.getElementById('status').value;
+      var from = document.getElementById('from').value;
+      var to = document.getElementById('to').value;
+
+      var list = all.filter(function (r) {
+        if (status && r.status !== status) return false;
+        if (from && r.date < from) return false;
+        if (to && r.date > to) return false;
+        if (search) {
+          var hay = (r.name + ' ' + r.phone + ' ' + r.code).toLowerCase();
+          if (hay.indexOf(search) === -1) return false;
+        }
+        return true;
+      });
+
+      render(list);
+    }
+
+    async function load() {
+      try {
+        var response = await fetch('/api/admin/reservations', { headers: { Accept: 'application/json' } });
+        if (!response.ok) throw new Error('HTTP ' + response.status);
+
+        var data = await response.json();
+        all = data.reservations || [];
+        renderStats(all, data);
+        applyFilters();
+      } catch (err) {
+        document.getElementById('rows').innerHTML =
+          '<tr><td colspan="9" class="empty">Məlumat yüklənmədi: ' + esc(err.message) + '</td></tr>';
+      }
+    }
+
+    document.getElementById('rows').addEventListener('click', async function (event) {
+      var button = event.target.closest('button[data-act]');
+      if (!button) return;
+
+      var id = button.getAttribute('data-id');
+      var act = button.getAttribute('data-act');
+
+      button.disabled = true;
+      button.textContent = '…';
+
+      try {
+        if (act === 'retry') {
+          await fetch('/api/admin/retry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id })
+          });
+        } else {
+          await fetch('/api/admin/status', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: id, status: act })
+          });
+        }
+      } finally {
+        await load();
+      }
+    });
+
+    document.getElementById('refresh').addEventListener('click', load);
+    document.getElementById('apply').addEventListener('click', applyFilters);
+    document.getElementById('search').addEventListener('input', applyFilters);
+
+    document.getElementById('reset').addEventListener('click', function () {
+      document.getElementById('from').value = '';
+      document.getElementById('to').value = '';
+      document.getElementById('status').value = '';
+      document.getElementById('search').value = '';
+      applyFilters();
+    });
+
+    load();
+    setInterval(load, 60000);
+  </script>
+</body>
+
+</html>

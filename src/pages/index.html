@@ -1,0 +1,257 @@
+      <!--
+        - #HERO
+      -->
+
+      <section class="hero text-center" aria-label="ana səhifə" id="home">
+
+        <ul class="hero-slider" data-hero-slider>
+          {{blocks.heroSlides}}
+        </ul>
+
+        <button class="slider-btn prev" aria-label="əvvəlki slayd" data-prev-btn>
+          <ion-icon name="chevron-back"></ion-icon>
+        </button>
+
+        <button class="slider-btn next" aria-label="növbəti slayd" data-next-btn>
+          <ion-icon name="chevron-forward"></ion-icon>
+        </button>
+
+        <a href="rezervasiya.html" class="hero-btn has-after">
+          <img src="./assets/images/hero-icon.png" width="48" height="48" alt="rezervasiya ikonu">
+          <span class="label-2 text-center span">Masa ayır</span>
+        </a>
+
+      </section>
+
+
+      <!--
+        - #XİDMƏTLƏR
+      -->
+
+      <section class="section service bg-black-10 text-center" aria-label="xidmətlər">
+        <div class="container">
+
+          <p class="section-subtitle label-2">{{services.subtitle}}</p>
+
+          <h2 class="headline-1 section-title">{{services.title}}</h2>
+
+          <p class="section-text">
+            {{services.text}}
+          </p>
+
+          <ul class="grid-list">
+            {{blocks.serviceCards}}
+          </ul>
+
+          <img src="./assets/images/shape-1.png" width="246" height="412" loading="lazy" alt=""
+            class="shape shape-1 move-anim">
+          <img src="./assets/images/shape-2.png" width="343" height="345" loading="lazy" alt=""
+            class="shape shape-2 move-anim">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #HAQQIMIZDA
+      -->
+
+      <section class="section about text-center" aria-labelledby="about-label" id="about">
+        <div class="container">
+
+          <div class="about-content">
+
+            <p class="label-2 section-subtitle" id="about-label">{{about.subtitle}}</p>
+
+            <h2 class="headline-1 section-title">{{about.title}}</h2>
+
+            <p class="section-text">
+              {{about.text}}
+            </p>
+
+            <div class="contact-label">{{about.callLabel}}</div>
+
+            <a href="tel:{{contact.phoneHref}}" class="body-1 contact-number hover-underline">{{contact.phone}}</a>
+
+            <a href="{{about.buttonLink}}" class="btn btn-primary">
+              <span class="text text-1">{{about.buttonText}}</span>
+              <span class="text text-2" aria-hidden="true">{{about.buttonText}}</span>
+            </a>
+
+          </div>
+
+          <figure class="about-banner">
+
+            <img src="./assets/images/about-banner.jpg" width="570" height="570" loading="lazy"
+              alt="{{site.name}} mətbəxi" class="w-100" data-parallax-item data-parallax-speed="1">
+
+            <div class="abs-img abs-img-1 has-before" data-parallax-item data-parallax-speed="1.75">
+              <img src="./assets/images/about-abs-image.jpg" width="285" height="285" loading="lazy" alt=""
+                class="w-100">
+            </div>
+
+            <div class="abs-img abs-img-2 has-before">
+              <img src="./assets/images/badge-2.png" width="133" height="134" loading="lazy" alt="">
+            </div>
+
+          </figure>
+
+          <img src="./assets/images/shape-3.png" width="197" height="194" loading="lazy" alt="" class="shape">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #ŞEFİN SEÇİMİ
+      -->
+
+      <section class="special-dish text-center" aria-labelledby="dish-label">
+
+        <div class="special-dish-banner">
+          <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
+            alt="{{specialDish.title}}" class="img-cover">
+        </div>
+
+        <div class="special-dish-content bg-black-10">
+          <div class="container">
+
+            <img src="./assets/images/badge-1.png" width="28" height="41" loading="lazy" alt="" class="abs-img">
+
+            <p class="section-subtitle label-2">{{specialDish.subtitle}}</p>
+
+            <h2 class="headline-1 section-title" id="dish-label">{{specialDish.title}}</h2>
+
+            <p class="section-text">
+              {{specialDish.text}}
+            </p>
+
+            <div class="wrapper">
+              <del class="del body-3">{{specialDish.oldPrice}}</del>
+              <span class="span body-1">{{specialDish.newPrice}}</span>
+            </div>
+
+            <a href="{{specialDish.buttonLink}}" class="btn btn-primary">
+              <span class="text text-1">{{specialDish.buttonText}}</span>
+              <span class="text text-2" aria-hidden="true">{{specialDish.buttonText}}</span>
+            </a>
+
+          </div>
+        </div>
+
+        <img src="./assets/images/shape-4.png" width="179" height="359" loading="lazy" alt="" class="shape shape-1">
+        <img src="./assets/images/shape-9.png" width="351" height="462" loading="lazy" alt="" class="shape shape-2">
+
+      </section>
+
+
+      <!--
+        - #MENYU
+      -->
+
+      <section class="section menu" aria-label="menyu" id="menu">
+        <div class="container">
+
+          <p class="section-subtitle text-center label-2">{{menuPreview.subtitle}}</p>
+
+          <h2 class="headline-1 section-title text-center">{{menuPreview.title}}</h2>
+
+          <ul class="grid-list">
+            {{blocks.menuPreviewCards}}
+          </ul>
+
+          <p class="menu-text text-center">
+            {{hours.kitchenNote}}
+          </p>
+
+          <a href="{{menuPreview.buttonLink}}" class="btn btn-primary">
+            <span class="text text-1">{{menuPreview.buttonText}}</span>
+            <span class="text text-2" aria-hidden="true">{{menuPreview.buttonText}}</span>
+          </a>
+
+          <img src="./assets/images/shape-5.png" width="921" height="1036" loading="lazy" alt=""
+            class="shape shape-2 move-anim">
+          <img src="./assets/images/shape-6.png" width="343" height="345" loading="lazy" alt=""
+            class="shape shape-3 move-anim">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #RƏY
+      -->
+
+      <section class="section testi text-center has-bg-image"
+        style="background-image: url('./assets/images/testimonial-bg.jpg')" aria-label="müştəri rəyi">
+        <div class="container">
+
+          <div class="quote">”</div>
+
+          <p class="headline-2 testi-text">
+            {{testimonial.text}}
+          </p>
+
+          <div class="wrapper">
+            <div class="separator"></div>
+            <div class="separator"></div>
+            <div class="separator"></div>
+          </div>
+
+          <div class="profile">
+            <img src="./assets/images/{{testimonial.avatar}}" width="100" height="100" loading="lazy"
+              alt="{{testimonial.author}}" class="img">
+            <p class="label-2 profile-name">{{testimonial.author}}</p>
+          </div>
+
+        </div>
+      </section>
+
+
+{{> reservation}}
+
+
+      <!--
+        - #ÜSTÜNLÜKLƏR
+      -->
+
+      <section class="section features text-center" aria-label="üstünlüklər">
+        <div class="container">
+
+          <p class="section-subtitle label-2">{{features.subtitle}}</p>
+
+          <h2 class="headline-1 section-title">{{features.title}}</h2>
+
+          <ul class="grid-list">
+            {{blocks.featureCards}}
+          </ul>
+
+          <img src="./assets/images/shape-7.png" width="208" height="178" loading="lazy" alt="" class="shape shape-1">
+          <img src="./assets/images/shape-8.png" width="120" height="115" loading="lazy" alt="" class="shape shape-2">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #TƏDBİRLƏR
+      -->
+
+      <section class="section event bg-black-10" aria-label="tədbirlər">
+        <div class="container">
+
+          <p class="section-subtitle label-2 text-center">{{events.subtitle}}</p>
+
+          <h2 class="section-title headline-1 text-center">{{events.title}}</h2>
+
+          <ul class="grid-list">
+            {{blocks.eventCards}}
+          </ul>
+
+          <a href="{{events.buttonLink}}" class="btn btn-primary">
+            <span class="text text-1">{{events.buttonText}}</span>
+            <span class="text text-2" aria-hidden="true">{{events.buttonText}}</span>
+          </a>
+
+        </div>
+      </section>

@@ -1,0 +1,160 @@
+      <!--
+        - #REZERVASİYA (daxili sistem)
+      -->
+
+      <section class="reservation" id="rezervasiya" aria-labelledby="rezervasiya-basliq">
+        <div class="container">
+
+          <div class="form reservation-form bg-black-10">
+
+            <form class="form-left" data-reservation-form novalidate>
+
+              <h2 class="headline-1 text-center" id="rezervasiya-basliq">Onlayn Rezervasiya</h2>
+
+              <p class="form-text text-center">
+                Sorğunuz birbaşa restoranın rezervasiya sisteminə düşür.
+                Sual üçün <a href="tel:{{contact.phoneHref}}" class="link">{{contact.phone}}</a>
+              </p>
+
+              <div class="input-wrapper">
+                <input type="text" name="name" placeholder="Ad, Soyad" autocomplete="name" required
+                  maxlength="80" class="input-field" data-field="name">
+
+                <input type="tel" name="phone" placeholder="Telefon (+994 __ ___ __ __)" autocomplete="tel"
+                  required maxlength="25" class="input-field" data-field="phone">
+              </div>
+
+              <div class="input-wrapper">
+
+                <div class="icon-wrapper">
+                  <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+                  <select name="guests" class="input-field" data-field="guests" aria-label="Nəfər sayı">
+                    {{blocks.guestOptions}}
+                  </select>
+                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                </div>
+
+                <div class="icon-wrapper">
+                  <ion-icon name="calendar-clear-outline" aria-hidden="true"></ion-icon>
+                  <input type="date" name="date" class="input-field" data-field="date" required
+                    aria-label="Tarix">
+                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                </div>
+
+                <div class="icon-wrapper">
+                  <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
+                  <select name="time" class="input-field" data-field="time" required aria-label="Saat">
+                    {{blocks.timeOptions}}
+                  </select>
+                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                </div>
+
+              </div>
+
+              <div class="input-wrapper">
+
+                <div class="icon-wrapper">
+                  <ion-icon name="restaurant-outline" aria-hidden="true"></ion-icon>
+                  <select name="area" class="input-field" data-field="area" aria-label="Zona">
+                    {{blocks.areaOptions}}
+                  </select>
+                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                </div>
+
+                <div class="icon-wrapper">
+                  <ion-icon name="sparkles-outline" aria-hidden="true"></ion-icon>
+                  <select name="occasion" class="input-field" data-field="occasion" aria-label="Səbəb">
+                    {{blocks.occasionOptions}}
+                  </select>
+                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
+                </div>
+
+              </div>
+
+              <textarea name="note" placeholder="Qeyd (uşaq kreslosu, doğum günü tortu, pəncərə kənarı və s.)"
+                autocomplete="off" maxlength="500" class="input-field" data-field="note"></textarea>
+
+              <p class="form-hint">
+                <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
+                Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
+              </p>
+
+              <div class="form-status" data-form-status role="status" aria-live="polite"></div>
+
+              <p class="hp-field" aria-hidden="true">
+                <label>Bu xananı boş buraxın
+                  <input type="text" name="website" tabindex="-1" autocomplete="off">
+                </label>
+              </p>
+
+              <button type="submit" class="btn btn-secondary" data-submit-btn>
+                <span class="text text-1">Masanı ayır</span>
+                <span class="text text-2" aria-hidden="true">Masanı ayır</span>
+              </button>
+
+            </form>
+
+            <div class="form-left form-success" data-form-success hidden>
+              <div class="success-icon" aria-hidden="true">
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </div>
+
+              <h2 class="headline-1 text-center">Rezervasiya qəbul olundu</h2>
+
+              <p class="form-text text-center">
+                Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü.
+                Heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
+              </p>
+
+              <div class="success-code">
+                <span class="contact-label">Rezervasiya kodunuz</span>
+                <strong class="body-1" data-success-code>—</strong>
+              </div>
+
+              <ul class="success-list" data-success-summary></ul>
+
+              <p class="form-text text-center">
+                Dəyişiklik və ya ləğv üçün:
+                <a href="tel:{{contact.phoneHref}}" class="link">{{contact.phone}}</a>
+              </p>
+
+              <button type="button" class="btn btn-secondary" data-new-reservation>
+                <span class="text text-1">Yeni rezervasiya</span>
+                <span class="text text-2" aria-hidden="true">Yeni rezervasiya</span>
+              </button>
+            </div>
+
+            <div class="form-right text-center" style="background-image: url('./assets/images/form-pattern.png')">
+
+              <h2 class="headline-1 text-center">Əlaqə</h2>
+
+              <p class="contact-label">Rezervasiya üçün</p>
+
+              <a href="tel:{{contact.phoneHref}}" class="body-1 contact-number hover-underline">{{contact.phone}}</a>
+
+              <div class="separator"></div>
+
+              <p class="contact-label">Ünvan</p>
+
+              <address class="body-4">
+                {{contact.addressFull}}
+              </address>
+
+              <p class="contact-label">{{hours.lunchTitle}}</p>
+
+              <p class="body-4">
+                {{hours.lunchValue}}
+              </p>
+
+              <p class="contact-label">{{hours.dinnerTitle}}</p>
+
+              <p class="body-4">
+                {{hours.dinnerValue}}
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section>

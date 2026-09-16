@@ -1,0 +1,107 @@
+{{> page-hero}}
+
+      <!--
+        - #HEKAYƏ
+      -->
+
+      <section class="section about text-center" aria-labelledby="about-label">
+        <div class="container">
+
+          <div class="about-content">
+
+            <p class="label-2 section-subtitle" id="about-label">{{pages.haqqimizda.subtitle}}</p>
+
+            <h2 class="headline-1 section-title">{{about.title}}</h2>
+
+            <p class="section-text">{{pages.haqqimizda.lead}}</p>
+
+            <p class="section-text">{{about.text}}</p>
+
+            <div class="contact-label">{{about.callLabel}}</div>
+
+            <a href="tel:{{contact.phoneHref}}" class="body-1 contact-number hover-underline">{{contact.phone}}</a>
+
+            <a href="rezervasiya.html" class="btn btn-primary">
+              <span class="text text-1">Masa ayır</span>
+              <span class="text text-2" aria-hidden="true">Masa ayır</span>
+            </a>
+
+          </div>
+
+          <figure class="about-banner">
+
+            <img src="./assets/images/about-banner.jpg" width="570" height="570" loading="lazy"
+              alt="{{site.name}} mətbəxi" class="w-100" data-parallax-item data-parallax-speed="1">
+
+            <div class="abs-img abs-img-1 has-before" data-parallax-item data-parallax-speed="1.75">
+              <img src="./assets/images/about-abs-image.jpg" width="285" height="285" loading="lazy" alt=""
+                class="w-100">
+            </div>
+
+            <div class="abs-img abs-img-2 has-before">
+              <img src="./assets/images/badge-2.png" width="133" height="134" loading="lazy" alt="">
+            </div>
+
+          </figure>
+
+          <img src="./assets/images/shape-3.png" width="197" height="194" loading="lazy" alt="" class="shape">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #RƏQƏMLƏR
+      -->
+
+      <section class="section stats bg-black-10" aria-label="rəqəmlərlə biz">
+        <div class="container">
+          <ul class="stats-list">
+            {{blocks.statCards}}
+          </ul>
+        </div>
+      </section>
+
+
+      <!--
+        - #DƏYƏRLƏR
+      -->
+
+      <section class="section story" aria-label="dəyərlərimiz">
+        <div class="container">
+
+          <p class="section-subtitle text-center label-2">Necə işləyirik</p>
+          <h2 class="headline-1 section-title text-center">Mətbəximizin üç qaydası</h2>
+
+          <ul class="story-list">
+            {{blocks.storyBlocks}}
+          </ul>
+
+          <img src="./assets/images/shape-1.png" width="246" height="412" loading="lazy" alt=""
+            class="shape shape-1 move-anim">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #ÜSTÜNLÜKLƏR
+      -->
+
+      <section class="section features text-center bg-black-10" aria-label="üstünlüklər">
+        <div class="container">
+
+          <p class="section-subtitle label-2">{{features.subtitle}}</p>
+          <h2 class="headline-1 section-title">{{features.title}}</h2>
+
+          <ul class="grid-list">
+            {{blocks.featureCards}}
+          </ul>
+
+          <img src="./assets/images/shape-8.png" width="120" height="115" loading="lazy" alt="" class="shape shape-2">
+
+        </div>
+      </section>
+
+
+{{> reservation}}

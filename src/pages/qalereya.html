@@ -1,0 +1,52 @@
+{{> page-hero}}
+
+      <!--
+        - #QALEREYA
+      -->
+
+      <section class="section gallery" aria-label="qalereya">
+        <div class="container">
+
+          <p class="section-subtitle text-center label-2">{{gallery.subtitle}}</p>
+          <h2 class="headline-1 section-title text-center">{{gallery.title}}</h2>
+          <p class="section-text text-center">{{gallery.text}}</p>
+
+          <ul class="gallery-grid">
+            {{blocks.galleryItems}}
+          </ul>
+
+          <img src="./assets/images/shape-7.png" width="208" height="178" loading="lazy" alt="" class="shape shape-1">
+
+        </div>
+      </section>
+
+
+      <!--
+        - #RƏY
+      -->
+
+      <section class="section testi text-center has-bg-image"
+        style="background-image: url('./assets/images/testimonial-bg.jpg')" aria-label="müştəri rəyi">
+        <div class="container">
+
+          <div class="quote">”</div>
+
+          <p class="headline-2 testi-text">{{testimonial.text}}</p>
+
+          <div class="wrapper">
+            <div class="separator"></div>
+            <div class="separator"></div>
+            <div class="separator"></div>
+          </div>
+
+          <div class="profile">
+            <img src="./assets/images/{{testimonial.avatar}}" width="100" height="100" loading="lazy"
+              alt="{{testimonial.author}}" class="img">
+            <p class="label-2 profile-name">{{testimonial.author}}</p>
+          </div>
+
+        </div>
+      </section>
+
+
+{{> reservation}}
