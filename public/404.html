@@ -3,11 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Səhifə tapılmadı — Mangal Steak House</title>
-  <meta name="title" content="Səhifə tapılmadı — Mangal Steak House">
   <meta name="description" content="Axtardığınız səhifə tapılmadı.">
   <link rel="canonical" href="https://mangalsteakhouse.az/404.html">
 
@@ -19,17 +17,20 @@
   <meta property="og:url" content="https://mangalsteakhouse.az/404.html">
   <meta property="og:image" content="https://mangalsteakhouse.az/assets/images/hero-slider-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#0e0f0f">
+  <meta name="theme-color" content="#121212">
 
   <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./favicon.svg">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="./assets/fonts/cormorant-garamond-300-normal-latin-ext.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="./assets/fonts/inter-300-normal-latin-ext.woff2">
 
-  <link rel="stylesheet" href="./assets/css/style.css">
-  <link rel="stylesheet" href="./assets/css/mangal.css">
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="stylesheet" href="./assets/css/fonts.css">
+  <link rel="stylesheet" href="./assets/css/site.css">
 
 
   <script type="application/ld+json">
@@ -41,7 +42,7 @@
     "url": "https://mangalsteakhouse.az",
     "telephone": "+994 12 000 00 00",
     "email": "rezervasiya@mangalsteakhouse.az",
-    "priceRange": "₼₼",
+    "priceRange": "20-95 AZN",
     "servesCuisine": ["Steak House", "Azərbaycan mətbəxi", "Mangal"],
     "address": {
       "@type": "PostalAddress",
@@ -56,58 +57,25 @@
 
 <body id="top">
 
-  <div class="preload" data-preaload>
-    <div class="circle"></div>
-    <p class="text">Mangal</p>
-  </div>
-
 
   <div class="topbar">
-    <div class="container">
-
-      <address class="topbar-item">
-        <div class="icon">
-          <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
-        </div>
-        <span class="span">Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan</span>
-      </address>
-
-      <div class="separator"></div>
-
-      <div class="topbar-item item-2">
-        <div class="icon">
-          <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
-        </div>
-        <span class="span">Hər gün: 11:00 – 24:00</span>
-      </div>
-
-      <a href="tel:+994120000000" class="topbar-item link">
-        <div class="icon">
-          <ion-icon name="call-outline" aria-hidden="true"></ion-icon>
-        </div>
-        <span class="span">+994 12 000 00 00</span>
-      </a>
-
-      <div class="separator"></div>
-
-      <a href="mailto:rezervasiya@mangalsteakhouse.az" class="topbar-item link">
-        <div class="icon">
-          <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
-        </div>
-        <span class="span">rezervasiya@mangalsteakhouse.az</span>
-      </a>
-
+    <div class="wrap">
+      <address>Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan</address>
+      <span class="sep" aria-hidden="true">·</span>
+      <span>Hər gün: 11:00 – 24:00</span>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="tel:+994120000000">+994 12 000 00 00</a>
     </div>
   </div>
 
   <header class="header" data-header>
-    <div class="container">
+    <div class="wrap">
 
       <a href="index.html" class="logo" aria-label="Mangal Steak House — ana səhifə">
   <span class="logo-mark" aria-hidden="true">
     <svg viewBox="0 0 28 34" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14 1.5c1.2 4.3-1.1 6.4-3.2 8.6-2.4 2.5-4.6 4.9-4.6 9.1 0 4.7 3.5 8.3 7.8 8.3s7.8-3.6 7.8-8.3c0-2.6-1-4.4-2.2-6 .2 1.9-.5 3.4-1.9 4.1.6-3.7-.7-7.2-3.7-10.4.4 2.6-.5 4.3-2.3 6.2-1.4 1.5-2.2 2.8-2.2 4.6 0 1.4.5 2.6 1.4 3.5-2.5-.9-3.6-3-3.1-5.6.6-3.1 3-4.8 4.6-7.3 1.3-2 1.9-4.2 1.6-6.8z" fill="currentColor"/>
-      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
     </svg>
   </span>
   <span class="logo-text">
@@ -117,167 +85,75 @@
 </a>
 
 
-      <nav class="navbar" data-navbar>
-
-        <button class="close-btn" aria-label="menyunu bağla" data-nav-toggler>
-          <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
-        </button>
-
-        <a href="index.html" class="logo" aria-label="Mangal Steak House — ana səhifə">
-  <span class="logo-mark" aria-hidden="true">
-    <svg viewBox="0 0 28 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M14 1.5c1.2 4.3-1.1 6.4-3.2 8.6-2.4 2.5-4.6 4.9-4.6 9.1 0 4.7 3.5 8.3 7.8 8.3s7.8-3.6 7.8-8.3c0-2.6-1-4.4-2.2-6 .2 1.9-.5 3.4-1.9 4.1.6-3.7-.7-7.2-3.7-10.4.4 2.6-.5 4.3-2.3 6.2-1.4 1.5-2.2 2.8-2.2 4.6 0 1.4.5 2.6 1.4 3.5-2.5-.9-3.6-3-3.1-5.6.6-3.1 3-4.8 4.6-7.3 1.3-2 1.9-4.2 1.6-6.8z" fill="currentColor"/>
-      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-  </span>
-  <span class="logo-text">
-    <span class="logo-title">Mangal</span>
-    <span class="logo-sub">Steak House</span>
-  </span>
-</a>
-
-
+      <nav class="navbar" data-navbar aria-label="Əsas menyu">
         <ul class="navbar-list">
-
-          <li class="navbar-item">
-            <a href="index.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Ana Səhifə</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="menyu.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Menyu</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="haqqimizda.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Haqqımızda</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="qalereya.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Qalereya</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="tedbirler.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Tədbirlər</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="rezervasiya.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Rezervasiya</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="elaqe.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Əlaqə</span>
-            </a>
-          </li>
-
+          <li><a href="index.html" class="navbar-link ">Ana Səhifə</a></li>
+          <li><a href="menyu.html" class="navbar-link ">Menyu</a></li>
+          <li><a href="haqqimizda.html" class="navbar-link ">Haqqımızda</a></li>
+          <li><a href="qalereya.html" class="navbar-link ">Qalereya</a></li>
+          <li><a href="tedbirler.html" class="navbar-link ">Tədbirlər</a></li>
+          <li><a href="elaqe.html" class="navbar-link ">Əlaqə</a></li>
+          <li><a href="rezervasiya.html" class="header-cta">Masa ayır</a></li>
         </ul>
 
-        <div class="text-center">
-          <p class="headline-1 navbar-title">Bizə gəlin</p>
-
-          <address class="body-4">
-            Nizami küçəsi 00, Səbail rayonu,<br> Bakı AZ1005, Azərbaycan
-          </address>
-
-          <p class="body-4 navbar-text">Hər gün 11:00 – 24:00</p>
-
-          <a href="mailto:rezervasiya@mangalsteakhouse.az" class="body-4 sidebar-link">rezervasiya@mangalsteakhouse.az</a>
-
-          <div class="separator"></div>
-
-          <p class="contact-label">Rezervasiya üçün</p>
-
-          <a href="tel:+994120000000" class="body-1 contact-number hover-underline">
-            +994 12 000 00 00
-          </a>
+        <div class="navbar-foot">
+          <a href="tel:+994120000000">+994 12 000 00 00</a>
+          <span>Hər gün 11:00 – 24:00</span>
         </div>
-
       </nav>
 
-      <a href="rezervasiya.html" class="btn btn-secondary">
-        <span class="text text-1">Masa ayır</span>
-        <span class="text text-2" aria-hidden="true">Masa ayır</span>
-      </a>
+      <a href="rezervasiya.html" class="header-cta">Masa ayır</a>
 
-      <button class="nav-open-btn" aria-label="menyunu aç" data-nav-toggler>
-        <span class="line line-1"></span>
-        <span class="line line-2"></span>
-        <span class="line line-3"></span>
+      <button class="nav-toggle" data-nav-toggler aria-label="Menyunu aç" aria-expanded="false">
+        <span></span><span></span><span></span>
       </button>
-
-      <div class="overlay" data-nav-toggler data-overlay></div>
 
     </div>
   </header>
 
 
   <main>
-    <article>
 
-      <section class="page-hero has-bg-image text-center"
-        style="background-image: url('./assets/images/hero-slider-1.jpg')" aria-label="səhifə tapılmadı">
-        <div class="container">
-          <p class="label-2 section-subtitle">Xəta 404</p>
-          <h1 class="headline-1 page-hero-title">Səhifə tapılmadı</h1>
-          <img src="./assets/images/separator.svg" width="208" height="8" alt="" class="separator-img">
+      <section class="page-hero" aria-label="Səhifə tapılmadı">
+        <div class="page-hero-bg">
+          <img src="./assets/images/hero-slider-1.jpg" width="1880" height="900" alt="">
+        </div>
+
+        <div class="wrap">
+          <p class="label">Xəta 404</p>
+          <h1 class="display-2">Səhifə tapılmadı</h1>
+          <div class="rule-v"></div>
         </div>
       </section>
 
-      <section class="section text-center" aria-label="naviqasiya">
-        <div class="container">
-          <p class="section-text">
-            Axtardığınız səhifə köçürülüb və ya silinib. Menyuya baxa və ya masanızı ayıra bilərsiniz.
+      <section class="section text-center" aria-label="Naviqasiya">
+        <div class="narrow">
+          <p class="lede" style="margin-inline:auto">
+            Axtardığınız səhifə köçürülüb və ya silinib.
+            Menyuya baxa və ya masanızı ayıra bilərsiniz.
           </p>
 
-          <div class="not-found-actions">
-            <a href="index.html" class="btn btn-primary">
-              <span class="text text-1">Ana səhifə</span>
-              <span class="text text-2" aria-hidden="true">Ana səhifə</span>
-            </a>
-
-            <a href="rezervasiya.html" class="btn btn-secondary">
-              <span class="text text-1">Masa ayır</span>
-              <span class="text text-2" aria-hidden="true">Masa ayır</span>
-            </a>
+          <div class="form-actions">
+            <a href="index.html" class="btn">Ana səhifə</a>
+            <a href="rezervasiya.html" class="btn btn-solid" style="margin-left:12px">Masa ayır</a>
           </div>
         </div>
       </section>
 
 
-    </article>
   </main>
 
-  <footer class="footer section has-bg-image text-center"
-    style="background-image: url('./assets/images/footer-bg.jpg')">
-    <div class="container">
+  <footer class="footer">
+    <div class="wrap">
 
-      <div class="footer-top grid-list">
+      <div class="footer-grid">
 
-        <div class="footer-brand has-before has-after">
-
+        <div>
           <a href="index.html" class="logo" aria-label="Mangal Steak House — ana səhifə">
   <span class="logo-mark" aria-hidden="true">
     <svg viewBox="0 0 28 34" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14 1.5c1.2 4.3-1.1 6.4-3.2 8.6-2.4 2.5-4.6 4.9-4.6 9.1 0 4.7 3.5 8.3 7.8 8.3s7.8-3.6 7.8-8.3c0-2.6-1-4.4-2.2-6 .2 1.9-.5 3.4-1.9 4.1.6-3.7-.7-7.2-3.7-10.4.4 2.6-.5 4.3-2.3 6.2-1.4 1.5-2.2 2.8-2.2 4.6 0 1.4.5 2.6 1.4 3.5-2.5-.9-3.6-3-3.1-5.6.6-3.1 3-4.8 4.6-7.3 1.3-2 1.9-4.2 1.6-6.8z" fill="currentColor"/>
-      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
     </svg>
   </span>
   <span class="logo-text">
@@ -286,91 +162,73 @@
   </span>
 </a>
 
+          <p>Odun közündə bişən əsl ləzzət</p>
+          <address>Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan</address>
+        </div>
 
-          <address class="body-4">
-            Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan
-          </address>
+        <div>
+          <h4>Səhifələr</h4>
+          <ul>
+            <li><a href="index.html">Ana Səhifə</a></li>
+            <li><a href="menyu.html">Menyu</a></li>
+            <li><a href="haqqimizda.html">Haqqımızda</a></li>
+            <li><a href="qalereya.html">Qalereya</a></li>
+            <li><a href="tedbirler.html">Tədbirlər</a></li>
+            <li><a href="rezervasiya.html">Rezervasiya</a></li>
+          </ul>
+        </div>
 
-          <a href="mailto:rezervasiya@mangalsteakhouse.az" class="body-4 contact-link">rezervasiya@mangalsteakhouse.az</a>
+        <div>
+          <h4>Əlaqə</h4>
+          <p><a href="tel:+994120000000">+994 12 000 00 00</a></p>
+          <p><a href="mailto:rezervasiya@mangalsteakhouse.az">rezervasiya@mangalsteakhouse.az</a></p>
+          <p>Hər gün 11:00 – 24:00</p>
+          <p><a href="https://maps.google.com/?q=Mangal+Steak+House+Baku" target="_blank" rel="noopener">Xəritədə bax</a></p>
+          <ul style="margin-top:14px">
+            <li><a href="https://instagram.com/mangalsteakhouse" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://facebook.com/mangalsteakhouse" target="_blank" rel="noopener">Facebook</a></li>
+            <li><a href="https://tiktok.com/@mangalsteakhouse" target="_blank" rel="noopener">TikTok</a></li>
+          </ul>
+        </div>
 
-          <a href="tel:+994120000000" class="body-4 contact-link">Rezervasiya: +994 12 000 00 00</a>
+        <div>
+          <h4>Xəbər və kampaniyalar</h4>
+          <p>Abunə olun, ilk sifarişinizə <span class="span">10% endirim</span> qazanın.</p>
 
-          <p class="body-4">
-            Hər gün 11:00 – 24:00
-          </p>
-
-          <div class="wrapper">
-            <div class="separator"></div>
-            <div class="separator"></div>
-            <div class="separator"></div>
-          </div>
-
-          <p class="title-1">Xəbər və kampaniyalar</p>
-
-          <p class="label-1">
-            Abunə olun, ilk sifarişinizə <span class="span">10% endirim</span> qazanın.
-          </p>
-
-          <form class="input-wrapper" data-newsletter-form>
-            <div class="icon-wrapper">
-              <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
-              <input type="email" name="email_address" placeholder="E-mail ünvanınız" autocomplete="email"
-                required class="input-field">
-            </div>
-
-            <button type="submit" class="btn btn-secondary">
-              <span class="text text-1">Abunə ol</span>
-              <span class="text text-2" aria-hidden="true">Abunə ol</span>
-            </button>
+          <form class="newsletter" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="E-mail ünvanınız" autocomplete="email" required
+              aria-label="E-mail ünvanınız">
+            <button type="submit">Abunə ol</button>
           </form>
 
           <p class="newsletter-status" data-newsletter-status role="status" aria-live="polite"></p>
-
         </div>
-
-        <ul class="footer-list">
-          <li><a href="index.html" class="label-2 footer-link hover-underline">Ana Səhifə</a></li>
-          <li><a href="menyu.html" class="label-2 footer-link hover-underline">Menyu</a></li>
-          <li><a href="haqqimizda.html" class="label-2 footer-link hover-underline">Haqqımızda</a></li>
-          <li><a href="qalereya.html" class="label-2 footer-link hover-underline">Qalereya</a></li>
-          <li><a href="tedbirler.html" class="label-2 footer-link hover-underline">Tədbirlər</a></li>
-          <li><a href="rezervasiya.html" class="label-2 footer-link hover-underline">Rezervasiya</a></li>
-        </ul>
-
-        <ul class="footer-list">
-          <li><a href="https://instagram.com/mangalsteakhouse" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">Instagram</a></li>
-          <li><a href="https://facebook.com/mangalsteakhouse" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">Facebook</a></li>
-          <li><a href="https://tiktok.com/@mangalsteakhouse" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">TikTok</a></li>
-          <li><a href="https://youtube.com/@mangalsteakhouse" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">YouTube</a></li>
-          <li><a href="https://maps.google.com/?q=Mangal+Steak+House+Baku" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">Xəritədə bax</a></li>
-          <li><a href="elaqe.html" class="label-2 footer-link hover-underline">Əlaqə</a></li>
-        </ul>
 
       </div>
 
       <div class="footer-bottom">
-        <p class="copyright">
-          &copy; 2026 Mangal Steak House. Bütün hüquqlar qorunur.
-        </p>
+        <span>&copy; 2026 Mangal Steak House. Bütün hüquqlar qorunur.</span>
+        <span>mangalsteakhouse.az</span>
       </div>
 
     </div>
   </footer>
 
-  <a href="#top" class="back-top-btn" aria-label="yuxarı qayıt" data-back-top-btn>
-    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+  <a href="https://wa.me/994500000000" class="float-btn float-whatsapp" target="_blank" rel="noopener"
+    aria-label="WhatsApp ilə yazın">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.25 8.24a8.24 8.24 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.26-8.24zm-2.6 4.1c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02s.87 2.34.99 2.5c.12.16 1.7 2.72 4.2 3.7 2.08.82 2.5.66 2.95.62.45-.04 1.45-.59 1.66-1.17.2-.57.2-1.06.14-1.17-.06-.1-.22-.16-.46-.28-.24-.12-1.45-.72-1.67-.8-.22-.08-.39-.12-.55.12-.16.24-.63.8-.77.96-.14.16-.28.18-.52.06-.24-.12-1.03-.38-1.96-1.21-.72-.65-1.21-1.45-1.35-1.69-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.33-.75-1.82-.19-.46-.39-.4-.54-.4l-.46-.01z"/>
+    </svg>
   </a>
 
-  <a href="https://wa.me/994500000000" class="whatsapp-btn" target="_blank" rel="noopener"
-    aria-label="WhatsApp ilə yazın">
-    <ion-icon name="logo-whatsapp" aria-hidden="true"></ion-icon>
+  <a href="#top" class="float-btn float-top" data-back-top-btn aria-label="Yuxarı qayıt">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
   </a>
 
   <script src="./assets/js/script.js"></script>
   <script src="./assets/js/reservation.js"></script>
-
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
 </body>
 

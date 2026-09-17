@@ -25,24 +25,7 @@
   "services": {
     "subtitle": "Kral süfrəsinin ləzzəti",
     "title": "Sizə təklif edirik",
-    "text": "Açıq mangal zonası, premium steyk seçimi və hər zövqə uyğun Azərbaycan mətbəxi — hamısı bir ünvanda.",
-    "cards": [
-      {
-        "image": "service-1.jpg",
-        "title": "Steyklər",
-        "link": "menyu.html#steyk"
-      },
-      {
-        "image": "service-2.jpg",
-        "title": "Mangal & Kabab",
-        "link": "menyu.html#mangal"
-      },
-      {
-        "image": "service-3.jpg",
-        "title": "İçkilər",
-        "link": "menyu.html#ickiler"
-      }
-    ]
+    "text": "Açıq mangal zonası, premium steyk seçimi və hər zövqə uyğun Azərbaycan mətbəxi — hamısı bir ünvanda."
   },
   "about": {
     "subtitle": "Bizim hekayə",
@@ -69,30 +52,25 @@
   },
   "testimonial": {
     "text": "Bakıda yediyim ən yaxşı ribeye. Tüstünün qoxusu hələ də yadımdadır — mütləq qayıdacağıq.",
-    "author": "Elvin Məmmədov",
-    "avatar": "testi-avatar.jpg"
+    "author": "Elvin Məmmədov"
   },
   "features": {
     "subtitle": "Niyə biz?",
     "title": "Güclü tərəflərimiz",
     "cards": [
       {
-        "icon": "features-icon-1.png",
         "title": "Təzə & Halal ət",
         "text": "Yerli təsərrüfatlardan gündəlik təchizat, tam halal kəsim."
       },
       {
-        "icon": "features-icon-2.png",
         "title": "Açıq mangal",
         "text": "Yeməyinizin necə bişdiyini öz gözünüzlə görün."
       },
       {
-        "icon": "features-icon-3.png",
         "title": "Peşəkar şeflər",
         "text": "15 ildən artıq təcrübəli steyk və mangal ustaları."
       },
       {
-        "icon": "features-icon-4.png",
         "title": "Tədbir & banket",
         "text": "Ad günü, toy və korporativ tədbirlər üçün ayrıca zal."
       }
@@ -138,42 +116,36 @@
         "subtitle": "Quru dinləndirilmiş premium kəsimlər",
         "items": [
           {
-            "image": "menu-1.png",
             "name": "Ribeye (300 qr)",
             "price": "38 ₼",
             "badge": "Bestseller",
             "text": "28 gün dry-aged, dəniz duzu və çəkilmiş qara istiot ilə."
           },
           {
-            "image": "menu-2.png",
             "name": "Tomahawk (1000 qr)",
             "price": "95 ₼",
             "badge": "2 nəfərlik",
             "text": "Sümüklü ribeye, közdə tərəvəz və çimçiri sousu ilə."
           },
           {
-            "image": "menu-3.png",
             "name": "T-Bone (450 qr)",
             "price": "45 ₼",
             "badge": "",
             "text": "Bir tərəfdə fileminyon, digər tərəfdə striploin."
           },
           {
-            "image": "menu-4.png",
             "name": "Fileminyon (220 qr)",
             "price": "42 ₼",
             "badge": "",
             "text": "Ən zərif kəsim, göbələk sousu və kartof püresi ilə."
           },
           {
-            "image": "menu-5.png",
             "name": "Striploin (300 qr)",
             "price": "36 ₼",
             "badge": "",
             "text": "Zəngin dad, kənarında qızıl rəngli yağ qatı."
           },
           {
-            "image": "menu-6.png",
             "name": "Picanha (350 qr)",
             "price": "34 ₼",
             "badge": "Yeni",
@@ -187,42 +159,36 @@
         "subtitle": "Palıd və tut kömürü üzərində",
         "items": [
           {
-            "image": "menu-2.png",
             "name": "Quzu tikə kabab",
             "price": "16 ₼",
             "badge": "Bestseller",
             "text": "Körpə quzu ətindən, soğan və sumaq ilə."
           },
           {
-            "image": "menu-3.png",
             "name": "Lülə kabab",
             "price": "11 ₼",
             "badge": "",
             "text": "Əl ilə döyülmüş ət, təndir çörəyi ilə."
           },
           {
-            "image": "menu-1.png",
             "name": "Dana tikə kabab",
             "price": "14 ₼",
             "badge": "",
             "text": "Marinadlanmış dana filesi, közdə pomidor ilə."
           },
           {
-            "image": "menu-4.png",
             "name": "Toyuq kabab",
             "price": "9 ₼",
             "badge": "",
             "text": "Zəfəranlı marinad, sarımsaq sousu ilə."
           },
           {
-            "image": "menu-5.png",
             "name": "Quzu qabırğa",
             "price": "19 ₼",
             "badge": "",
             "text": "Yavaş bişmiş qabırğa, rozmarin və bal qlazuru."
           },
           {
-            "image": "menu-6.png",
             "name": "Tərəvəz mangalı",
             "price": "8 ₼",
             "badge": "Vegan",
@@ -236,28 +202,24 @@
         "subtitle": "Süfrənin açılışı",
         "items": [
           {
-            "image": "menu-3.png",
             "name": "Dana karpaççio",
             "price": "18 ₼",
             "badge": "",
             "text": "Nazik kəsilmiş ət, parmezan, rukola və kapers."
           },
           {
-            "image": "menu-1.png",
             "name": "Pendir tabağı",
             "price": "22 ₼",
             "badge": "Paylaşımlıq",
             "text": "5 növ yerli pendir, qoz və bal ilə."
           },
           {
-            "image": "menu-6.png",
             "name": "Közdə badımcan",
             "price": "10 ₼",
             "badge": "",
             "text": "Mangalda bişmiş badımcan, sarımsaq və qatıq."
           },
           {
-            "image": "menu-4.png",
             "name": "Qızardılmış kartof",
             "price": "7 ₼",
             "badge": "",
@@ -271,28 +233,24 @@
         "subtitle": "Təzə və yüngül",
         "items": [
           {
-            "image": "menu-5.png",
             "name": "Sezar (toyuqla)",
             "price": "13 ₼",
             "badge": "",
             "text": "Romen kahısı, parmezan, ev kruton və sezar sousu."
           },
           {
-            "image": "menu-2.png",
             "name": "Çoban salatı",
             "price": "8 ₼",
             "badge": "",
             "text": "Pomidor, xiyar, soğan, göy-göyərti və zeytun yağı."
           },
           {
-            "image": "menu-3.png",
             "name": "Rukola & parmezan",
             "price": "12 ₼",
             "badge": "",
             "text": "Rukola, çeri pomidor, balzamik qlazur."
           },
           {
-            "image": "menu-1.png",
             "name": "Mangal salatı",
             "price": "11 ₼",
             "badge": "Ev xüsusi",
@@ -306,28 +264,24 @@
         "subtitle": "Steykin yanına",
         "items": [
           {
-            "image": "menu-4.png",
             "name": "Fırında kartof",
             "price": "6 ₼",
             "badge": "",
             "text": "Kərə yağı və göy soğan ilə."
           },
           {
-            "image": "menu-6.png",
             "name": "Közdə tərəvəz",
             "price": "8 ₼",
             "badge": "",
             "text": "Mövsümi tərəvəzlər, zeytun yağı."
           },
           {
-            "image": "menu-5.png",
             "name": "Kartof püresi",
             "price": "6 ₼",
             "badge": "",
             "text": "Kremli, trüf yağı damcısı ilə."
           },
           {
-            "image": "menu-2.png",
             "name": "Qovrulmuş göbələk",
             "price": "7 ₼",
             "badge": "",
@@ -341,28 +295,24 @@
         "subtitle": "Şirin nöqtə",
         "items": [
           {
-            "image": "menu-1.png",
             "name": "Şokoladlı fondan",
             "price": "10 ₼",
             "badge": "Bestseller",
             "text": "İsti şokolad mərkəzi, vanil dondurması ilə."
           },
           {
-            "image": "menu-3.png",
             "name": "Bakı paxlavası",
             "price": "7 ₼",
             "badge": "",
             "text": "Ev üsulu, qoz və zəfəran şərbəti ilə."
           },
           {
-            "image": "menu-5.png",
             "name": "Medovik",
             "price": "8 ₼",
             "badge": "",
             "text": "Bal tortu, incə krem qatları."
           },
           {
-            "image": "menu-6.png",
             "name": "Pavlova",
             "price": "9 ₼",
             "badge": "",
@@ -376,28 +326,24 @@
         "subtitle": "Sərinlədici və isti",
         "items": [
           {
-            "image": "menu-2.png",
             "name": "Ev limonadı",
             "price": "6 ₼",
             "badge": "",
             "text": "Limon-nanə, feyxoa və ya çiyələk."
           },
           {
-            "image": "menu-4.png",
             "name": "Təbii şirə",
             "price": "5 ₼",
             "badge": "",
             "text": "Portağal, nar və ya alma — təzə sıxılmış."
           },
           {
-            "image": "menu-6.png",
             "name": "Azərbaycan çay dəsti",
             "price": "8 ₼",
             "badge": "Paylaşımlıq",
             "text": "Armudu stəkanda, mürəbbə və limonla."
           },
           {
-            "image": "menu-1.png",
             "name": "Qırmızı şərab (bokal)",
             "price": "9 ₼",
             "badge": "18+",

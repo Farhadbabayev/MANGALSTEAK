@@ -3,11 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Menyu — Mangal Steak House</title>
-  <meta name="title" content="Menyu — Mangal Steak House">
   <meta name="description" content="Steyklər, mangal və kabablar, başlanğıclar, salatlar, şirniyyat və içkilər. Qiymətlər və təsvirlər.">
   <link rel="canonical" href="https://mangalsteakhouse.az/menyu.html">
 
@@ -19,17 +17,20 @@
   <meta property="og:url" content="https://mangalsteakhouse.az/menyu.html">
   <meta property="og:image" content="https://mangalsteakhouse.az/assets/images/hero-slider-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#0e0f0f">
+  <meta name="theme-color" content="#121212">
 
   <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./favicon.svg">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="./assets/fonts/cormorant-garamond-300-normal-latin-ext.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="./assets/fonts/inter-300-normal-latin-ext.woff2">
 
-  <link rel="stylesheet" href="./assets/css/style.css">
-  <link rel="stylesheet" href="./assets/css/mangal.css">
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="stylesheet" href="./assets/css/fonts.css">
+  <link rel="stylesheet" href="./assets/css/site.css">
 
 
   <script type="application/ld+json">
@@ -41,7 +42,7 @@
     "url": "https://mangalsteakhouse.az",
     "telephone": "+994 12 000 00 00",
     "email": "rezervasiya@mangalsteakhouse.az",
-    "priceRange": "₼₼",
+    "priceRange": "20-95 AZN",
     "servesCuisine": ["Steak House", "Azərbaycan mətbəxi", "Mangal"],
     "address": {
       "@type": "PostalAddress",
@@ -56,58 +57,25 @@
 
 <body id="top">
 
-  <div class="preload" data-preaload>
-    <div class="circle"></div>
-    <p class="text">Mangal</p>
-  </div>
-
 
   <div class="topbar">
-    <div class="container">
-
-      <address class="topbar-item">
-        <div class="icon">
-          <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
-        </div>
-        <span class="span">Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan</span>
-      </address>
-
-      <div class="separator"></div>
-
-      <div class="topbar-item item-2">
-        <div class="icon">
-          <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
-        </div>
-        <span class="span">Hər gün: 11:00 – 24:00</span>
-      </div>
-
-      <a href="tel:+994120000000" class="topbar-item link">
-        <div class="icon">
-          <ion-icon name="call-outline" aria-hidden="true"></ion-icon>
-        </div>
-        <span class="span">+994 12 000 00 00</span>
-      </a>
-
-      <div class="separator"></div>
-
-      <a href="mailto:rezervasiya@mangalsteakhouse.az" class="topbar-item link">
-        <div class="icon">
-          <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
-        </div>
-        <span class="span">rezervasiya@mangalsteakhouse.az</span>
-      </a>
-
+    <div class="wrap">
+      <address>Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan</address>
+      <span class="sep" aria-hidden="true">·</span>
+      <span>Hər gün: 11:00 – 24:00</span>
+      <span class="sep" aria-hidden="true">·</span>
+      <a href="tel:+994120000000">+994 12 000 00 00</a>
     </div>
   </div>
 
   <header class="header" data-header>
-    <div class="container">
+    <div class="wrap">
 
       <a href="index.html" class="logo" aria-label="Mangal Steak House — ana səhifə">
   <span class="logo-mark" aria-hidden="true">
     <svg viewBox="0 0 28 34" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14 1.5c1.2 4.3-1.1 6.4-3.2 8.6-2.4 2.5-4.6 4.9-4.6 9.1 0 4.7 3.5 8.3 7.8 8.3s7.8-3.6 7.8-8.3c0-2.6-1-4.4-2.2-6 .2 1.9-.5 3.4-1.9 4.1.6-3.7-.7-7.2-3.7-10.4.4 2.6-.5 4.3-2.3 6.2-1.4 1.5-2.2 2.8-2.2 4.6 0 1.4.5 2.6 1.4 3.5-2.5-.9-3.6-3-3.1-5.6.6-3.1 3-4.8 4.6-7.3 1.3-2 1.9-4.2 1.6-6.8z" fill="currentColor"/>
-      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
     </svg>
   </span>
   <span class="logo-text">
@@ -117,141 +85,50 @@
 </a>
 
 
-      <nav class="navbar" data-navbar>
-
-        <button class="close-btn" aria-label="menyunu bağla" data-nav-toggler>
-          <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
-        </button>
-
-        <a href="index.html" class="logo" aria-label="Mangal Steak House — ana səhifə">
-  <span class="logo-mark" aria-hidden="true">
-    <svg viewBox="0 0 28 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M14 1.5c1.2 4.3-1.1 6.4-3.2 8.6-2.4 2.5-4.6 4.9-4.6 9.1 0 4.7 3.5 8.3 7.8 8.3s7.8-3.6 7.8-8.3c0-2.6-1-4.4-2.2-6 .2 1.9-.5 3.4-1.9 4.1.6-3.7-.7-7.2-3.7-10.4.4 2.6-.5 4.3-2.3 6.2-1.4 1.5-2.2 2.8-2.2 4.6 0 1.4.5 2.6 1.4 3.5-2.5-.9-3.6-3-3.1-5.6.6-3.1 3-4.8 4.6-7.3 1.3-2 1.9-4.2 1.6-6.8z" fill="currentColor"/>
-      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
-    </svg>
-  </span>
-  <span class="logo-text">
-    <span class="logo-title">Mangal</span>
-    <span class="logo-sub">Steak House</span>
-  </span>
-</a>
-
-
+      <nav class="navbar" data-navbar aria-label="Əsas menyu">
         <ul class="navbar-list">
-
-          <li class="navbar-item">
-            <a href="index.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Ana Səhifə</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="menyu.html" class="navbar-link hover-underline active">
-              <div class="separator"></div>
-              <span class="span">Menyu</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="haqqimizda.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Haqqımızda</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="qalereya.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Qalereya</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="tedbirler.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Tədbirlər</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="rezervasiya.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Rezervasiya</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="elaqe.html" class="navbar-link hover-underline ">
-              <div class="separator"></div>
-              <span class="span">Əlaqə</span>
-            </a>
-          </li>
-
+          <li><a href="index.html" class="navbar-link ">Ana Səhifə</a></li>
+          <li><a href="menyu.html" class="navbar-link active">Menyu</a></li>
+          <li><a href="haqqimizda.html" class="navbar-link ">Haqqımızda</a></li>
+          <li><a href="qalereya.html" class="navbar-link ">Qalereya</a></li>
+          <li><a href="tedbirler.html" class="navbar-link ">Tədbirlər</a></li>
+          <li><a href="elaqe.html" class="navbar-link ">Əlaqə</a></li>
+          <li><a href="rezervasiya.html" class="header-cta">Masa ayır</a></li>
         </ul>
 
-        <div class="text-center">
-          <p class="headline-1 navbar-title">Bizə gəlin</p>
-
-          <address class="body-4">
-            Nizami küçəsi 00, Səbail rayonu,<br> Bakı AZ1005, Azərbaycan
-          </address>
-
-          <p class="body-4 navbar-text">Hər gün 11:00 – 24:00</p>
-
-          <a href="mailto:rezervasiya@mangalsteakhouse.az" class="body-4 sidebar-link">rezervasiya@mangalsteakhouse.az</a>
-
-          <div class="separator"></div>
-
-          <p class="contact-label">Rezervasiya üçün</p>
-
-          <a href="tel:+994120000000" class="body-1 contact-number hover-underline">
-            +994 12 000 00 00
-          </a>
+        <div class="navbar-foot">
+          <a href="tel:+994120000000">+994 12 000 00 00</a>
+          <span>Hər gün 11:00 – 24:00</span>
         </div>
-
       </nav>
 
-      <a href="rezervasiya.html" class="btn btn-secondary">
-        <span class="text text-1">Masa ayır</span>
-        <span class="text text-2" aria-hidden="true">Masa ayır</span>
-      </a>
+      <a href="rezervasiya.html" class="header-cta">Masa ayır</a>
 
-      <button class="nav-open-btn" aria-label="menyunu aç" data-nav-toggler>
-        <span class="line line-1"></span>
-        <span class="line line-2"></span>
-        <span class="line line-3"></span>
+      <button class="nav-toggle" data-nav-toggler aria-label="Menyunu aç" aria-expanded="false">
+        <span></span><span></span><span></span>
       </button>
-
-      <div class="overlay" data-nav-toggler data-overlay></div>
 
     </div>
   </header>
 
 
   <main>
-    <article>
 
-      <!--
-        - #SƏHİFƏ BAŞLIĞI
-      -->
+      <section class="page-hero" aria-label="Menyu">
+        <div class="page-hero-bg">
+          <img src="./assets/images/hero-slider-2.jpg" width="1880" height="900" alt="">
+        </div>
 
-      <section class="page-hero has-bg-image text-center"
-        style="background-image: url('./assets/images/hero-slider-2.jpg')" aria-label="Menyu">
-        <div class="container">
+        <div class="wrap">
+          <p class="label">Kömürün üzərindən süfrənizə</p>
+          <h1 class="display-2">Menyu</h1>
+          <div class="rule-v"></div>
 
-          <p class="label-2 section-subtitle">Kömürün üzərindən süfrənizə</p>
-
-          <h1 class="headline-1 page-hero-title">Menyu</h1>
-
-          <img src="./assets/images/separator.svg" width="208" height="8" alt="" class="separator-img">
-
-          <nav class="breadcrumb" aria-label="naviqasiya">
-            <a href="index.html" class="label-2">Ana Səhifə</a>
-            <span class="sep" aria-hidden="true">•</span>
-            <span class="label-2 current">Menyu</span>
+          <nav class="breadcrumb" aria-label="Naviqasiya">
+            <a href="index.html">Ana Səhifə</a>
+            <span class="sep" aria-hidden="true">·</span>
+            <span class="current">Menyu</span>
           </nav>
-
         </div>
       </section>
 
@@ -260,931 +137,336 @@
         - #TAM MENYU
       -->
 
-      <section class="section menu menu-full" aria-label="menyu">
-        <div class="container">
+      <section class="section" aria-label="Menyu">
+        <div class="wrap">
 
-          <p class="section-subtitle text-center label-2">Hər kəsim üçün ayrı ustalıq</p>
-          <h2 class="headline-1 section-title text-center">Menyumuz</h2>
-
-          <nav class="menu-nav" aria-label="menyu bölmələri">
+          <nav class="menu-nav" aria-label="Menyu bölmələri">
             
-            <a href="#steyk" class="menu-nav-link label-2 hover-underline">Steyklər</a>
-            <a href="#mangal" class="menu-nav-link label-2 hover-underline">Mangal &amp; Kabab</a>
-            <a href="#baslangic" class="menu-nav-link label-2 hover-underline">Başlanğıclar</a>
-            <a href="#salat" class="menu-nav-link label-2 hover-underline">Salatlar</a>
-            <a href="#qarnir" class="menu-nav-link label-2 hover-underline">Qarnirlər</a>
-            <a href="#sirniyyat" class="menu-nav-link label-2 hover-underline">Şirniyyat</a>
-            <a href="#ickiler" class="menu-nav-link label-2 hover-underline">İçkilər</a>
+            <a href="#steyk">Steyklər</a>
+            <a href="#mangal">Mangal &amp; Kabab</a>
+            <a href="#baslangic">Başlanğıclar</a>
+            <a href="#salat">Salatlar</a>
+            <a href="#qarnir">Qarnirlər</a>
+            <a href="#sirniyyat">Şirniyyat</a>
+            <a href="#ickiler">İçkilər</a>
           </nav>
 
           
-          <div class="menu-category" id="steyk">
+          <div class="menu-category reveal" id="steyk">
 
             <div class="menu-category-head">
-              <h3 class="headline-2 menu-category-title">Steyklər</h3>
-              <p class="label-2 menu-category-subtitle">Quru dinləndirilmiş premium kəsimlər</p>
+              <h2>Steyklər</h2>
+              <p class="label">Quru dinləndirilmiş premium kəsimlər</p>
             </div>
 
-            <ul class="grid-list">
+            <div class="menu-grid">
 
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-1.png" width="100" height="100" loading="lazy" alt="Ribeye (300 qr)"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Ribeye (300 qr)</span>
-                      </h3>
-                      <span class="badge label-1">Bestseller</span>
-
-                      <span class="span title-2">38 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      28 gün dry-aged, dəniz duzu və çəkilmiş qara istiot ilə.
-                    </p>
-                  </div>
-
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Ribeye (300 qr)<span class="tag">Bestseller</span></h3>
+                  <span class="cost">38 ₼</span>
                 </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-2.png" width="100" height="100" loading="lazy" alt="Tomahawk (1000 qr)"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Tomahawk (1000 qr)</span>
-                      </h3>
-                      <span class="badge label-1">2 nəfərlik</span>
-
-                      <span class="span title-2">95 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Sümüklü ribeye, közdə tərəvəz və çimçiri sousu ilə.
-                    </p>
-                  </div>
-
+                <p>28 gün dry-aged, dəniz duzu və çəkilmiş qara istiot ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Tomahawk (1000 qr)<span class="tag">2 nəfərlik</span></h3>
+                  <span class="cost">95 ₼</span>
                 </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-3.png" width="100" height="100" loading="lazy" alt="T-Bone (450 qr)"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">T-Bone (450 qr)</span>
-                      </h3>
-
-                      <span class="span title-2">45 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Bir tərəfdə fileminyon, digər tərəfdə striploin.
-                    </p>
-                  </div>
-
+                <p>Sümüklü ribeye, közdə tərəvəz və çimçiri sousu ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>T-Bone (450 qr)</h3>
+                  <span class="cost">45 ₼</span>
                 </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-4.png" width="100" height="100" loading="lazy" alt="Fileminyon (220 qr)"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Fileminyon (220 qr)</span>
-                      </h3>
-
-                      <span class="span title-2">42 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Ən zərif kəsim, göbələk sousu və kartof püresi ilə.
-                    </p>
-                  </div>
-
+                <p>Bir tərəfdə fileminyon, digər tərəfdə striploin.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Fileminyon (220 qr)</h3>
+                  <span class="cost">42 ₼</span>
                 </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-5.png" width="100" height="100" loading="lazy" alt="Striploin (300 qr)"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Striploin (300 qr)</span>
-                      </h3>
-
-                      <span class="span title-2">36 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Zəngin dad, kənarında qızıl rəngli yağ qatı.
-                    </p>
-                  </div>
-
+                <p>Ən zərif kəsim, göbələk sousu və kartof püresi ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Striploin (300 qr)</h3>
+                  <span class="cost">36 ₼</span>
                 </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-6.png" width="100" height="100" loading="lazy" alt="Picanha (350 qr)"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Picanha (350 qr)</span>
-                      </h3>
-                      <span class="badge label-1">Yeni</span>
-
-                      <span class="span title-2">34 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Braziliya üsulu, iri duz dənəcikləri ilə közdə.
-                    </p>
-                  </div>
-
+                <p>Zəngin dad, kənarında qızıl rəngli yağ qatı.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Picanha (350 qr)<span class="tag">Yeni</span></h3>
+                  <span class="cost">34 ₼</span>
                 </div>
-              </li>
-            </ul>
+                <p>Braziliya üsulu, iri duz dənəcikləri ilə közdə.</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="menu-category reveal" id="mangal">
+
+            <div class="menu-category-head">
+              <h2>Mangal &amp; Kabab</h2>
+              <p class="label">Palıd və tut kömürü üzərində</p>
+            </div>
+
+            <div class="menu-grid">
+
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Quzu tikə kabab<span class="tag">Bestseller</span></h3>
+                  <span class="cost">16 ₼</span>
+                </div>
+                <p>Körpə quzu ətindən, soğan və sumaq ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Lülə kabab</h3>
+                  <span class="cost">11 ₼</span>
+                </div>
+                <p>Əl ilə döyülmüş ət, təndir çörəyi ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Dana tikə kabab</h3>
+                  <span class="cost">14 ₼</span>
+                </div>
+                <p>Marinadlanmış dana filesi, közdə pomidor ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Toyuq kabab</h3>
+                  <span class="cost">9 ₼</span>
+                </div>
+                <p>Zəfəranlı marinad, sarımsaq sousu ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Quzu qabırğa</h3>
+                  <span class="cost">19 ₼</span>
+                </div>
+                <p>Yavaş bişmiş qabırğa, rozmarin və bal qlazuru.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Tərəvəz mangalı<span class="tag">Vegan</span></h3>
+                  <span class="cost">8 ₼</span>
+                </div>
+                <p>Badımcan, bibər, pomidor və göbələk közdə.</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="menu-category reveal" id="baslangic">
+
+            <div class="menu-category-head">
+              <h2>Başlanğıclar</h2>
+              <p class="label">Süfrənin açılışı</p>
+            </div>
+
+            <div class="menu-grid">
+
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Dana karpaççio</h3>
+                  <span class="cost">18 ₼</span>
+                </div>
+                <p>Nazik kəsilmiş ət, parmezan, rukola və kapers.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Pendir tabağı<span class="tag">Paylaşımlıq</span></h3>
+                  <span class="cost">22 ₼</span>
+                </div>
+                <p>5 növ yerli pendir, qoz və bal ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Közdə badımcan</h3>
+                  <span class="cost">10 ₼</span>
+                </div>
+                <p>Mangalda bişmiş badımcan, sarımsaq və qatıq.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Qızardılmış kartof</h3>
+                  <span class="cost">7 ₼</span>
+                </div>
+                <p>Ev üsulu, rozmarin duzu ilə.</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="menu-category reveal" id="salat">
+
+            <div class="menu-category-head">
+              <h2>Salatlar</h2>
+              <p class="label">Təzə və yüngül</p>
+            </div>
+
+            <div class="menu-grid">
+
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Sezar (toyuqla)</h3>
+                  <span class="cost">13 ₼</span>
+                </div>
+                <p>Romen kahısı, parmezan, ev kruton və sezar sousu.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Çoban salatı</h3>
+                  <span class="cost">8 ₼</span>
+                </div>
+                <p>Pomidor, xiyar, soğan, göy-göyərti və zeytun yağı.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Rukola &amp; parmezan</h3>
+                  <span class="cost">12 ₼</span>
+                </div>
+                <p>Rukola, çeri pomidor, balzamik qlazur.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Mangal salatı<span class="tag">Ev xüsusi</span></h3>
+                  <span class="cost">11 ₼</span>
+                </div>
+                <p>Közdə bişmiş tərəvəzlərdən, nar dənəsi ilə.</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="menu-category reveal" id="qarnir">
+
+            <div class="menu-category-head">
+              <h2>Qarnirlər</h2>
+              <p class="label">Steykin yanına</p>
+            </div>
+
+            <div class="menu-grid">
+
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Fırında kartof</h3>
+                  <span class="cost">6 ₼</span>
+                </div>
+                <p>Kərə yağı və göy soğan ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Közdə tərəvəz</h3>
+                  <span class="cost">8 ₼</span>
+                </div>
+                <p>Mövsümi tərəvəzlər, zeytun yağı.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Kartof püresi</h3>
+                  <span class="cost">6 ₼</span>
+                </div>
+                <p>Kremli, trüf yağı damcısı ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Qovrulmuş göbələk</h3>
+                  <span class="cost">7 ₼</span>
+                </div>
+                <p>Şampinyon, sarımsaq və cəfəri.</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="menu-category reveal" id="sirniyyat">
+
+            <div class="menu-category-head">
+              <h2>Şirniyyat</h2>
+              <p class="label">Şirin nöqtə</p>
+            </div>
+
+            <div class="menu-grid">
+
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Şokoladlı fondan<span class="tag">Bestseller</span></h3>
+                  <span class="cost">10 ₼</span>
+                </div>
+                <p>İsti şokolad mərkəzi, vanil dondurması ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Bakı paxlavası</h3>
+                  <span class="cost">7 ₼</span>
+                </div>
+                <p>Ev üsulu, qoz və zəfəran şərbəti ilə.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Medovik</h3>
+                  <span class="cost">8 ₼</span>
+                </div>
+                <p>Bal tortu, incə krem qatları.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Pavlova</h3>
+                  <span class="cost">9 ₼</span>
+                </div>
+                <p>Mövsümi meyvələr və kremlə.</p>
+              </div>
+            </div>
+
+          </div>
+          <div class="menu-category reveal" id="ickiler">
+
+            <div class="menu-category-head">
+              <h2>İçkilər</h2>
+              <p class="label">Sərinlədici və isti</p>
+            </div>
+
+            <div class="menu-grid">
+
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Ev limonadı</h3>
+                  <span class="cost">6 ₼</span>
+                </div>
+                <p>Limon-nanə, feyxoa və ya çiyələk.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Təbii şirə</h3>
+                  <span class="cost">5 ₼</span>
+                </div>
+                <p>Portağal, nar və ya alma — təzə sıxılmış.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Azərbaycan çay dəsti<span class="tag">Paylaşımlıq</span></h3>
+                  <span class="cost">8 ₼</span>
+                </div>
+                <p>Armudu stəkanda, mürəbbə və limonla.</p>
+              </div>
+              <div class="menu-item">
+                <div class="menu-item-top">
+                  <h3>Qırmızı şərab (bokal)<span class="tag">18+</span></h3>
+                  <span class="cost">9 ₼</span>
+                </div>
+                <p>Yerli və import seçimlər — steyklə mükəmməl uyum.</p>
+              </div>
+            </div>
 
           </div>
 
-          <div class="menu-category" id="mangal">
+          <p class="menu-note">Bütün qiymətlərə 18% ƏDV daxildir. Xidmət haqqı ayrıca hesablanmır.</p>
+          <p class="menu-note">Mətbəx sifarişləri gecə saat <span class="span">23:30</span>-a qədər qəbul edir</p>
 
-            <div class="menu-category-head">
-              <h3 class="headline-2 menu-category-title">Mangal &amp; Kabab</h3>
-              <p class="label-2 menu-category-subtitle">Palıd və tut kömürü üzərində</p>
-            </div>
-
-            <ul class="grid-list">
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-2.png" width="100" height="100" loading="lazy" alt="Quzu tikə kabab"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Quzu tikə kabab</span>
-                      </h3>
-                      <span class="badge label-1">Bestseller</span>
-
-                      <span class="span title-2">16 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Körpə quzu ətindən, soğan və sumaq ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-3.png" width="100" height="100" loading="lazy" alt="Lülə kabab"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Lülə kabab</span>
-                      </h3>
-
-                      <span class="span title-2">11 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Əl ilə döyülmüş ət, təndir çörəyi ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-1.png" width="100" height="100" loading="lazy" alt="Dana tikə kabab"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Dana tikə kabab</span>
-                      </h3>
-
-                      <span class="span title-2">14 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Marinadlanmış dana filesi, közdə pomidor ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-4.png" width="100" height="100" loading="lazy" alt="Toyuq kabab"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Toyuq kabab</span>
-                      </h3>
-
-                      <span class="span title-2">9 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Zəfəranlı marinad, sarımsaq sousu ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-5.png" width="100" height="100" loading="lazy" alt="Quzu qabırğa"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Quzu qabırğa</span>
-                      </h3>
-
-                      <span class="span title-2">19 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Yavaş bişmiş qabırğa, rozmarin və bal qlazuru.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-6.png" width="100" height="100" loading="lazy" alt="Tərəvəz mangalı"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Tərəvəz mangalı</span>
-                      </h3>
-                      <span class="badge label-1">Vegan</span>
-
-                      <span class="span title-2">8 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Badımcan, bibər, pomidor və göbələk közdə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-            </ul>
-
+          <div class="form-actions">
+            <a href="rezervasiya.html" class="btn">Masa ayır</a>
           </div>
-
-          <div class="menu-category" id="baslangic">
-
-            <div class="menu-category-head">
-              <h3 class="headline-2 menu-category-title">Başlanğıclar</h3>
-              <p class="label-2 menu-category-subtitle">Süfrənin açılışı</p>
-            </div>
-
-            <ul class="grid-list">
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-3.png" width="100" height="100" loading="lazy" alt="Dana karpaççio"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Dana karpaççio</span>
-                      </h3>
-
-                      <span class="span title-2">18 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Nazik kəsilmiş ət, parmezan, rukola və kapers.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-1.png" width="100" height="100" loading="lazy" alt="Pendir tabağı"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Pendir tabağı</span>
-                      </h3>
-                      <span class="badge label-1">Paylaşımlıq</span>
-
-                      <span class="span title-2">22 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      5 növ yerli pendir, qoz və bal ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-6.png" width="100" height="100" loading="lazy" alt="Közdə badımcan"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Közdə badımcan</span>
-                      </h3>
-
-                      <span class="span title-2">10 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Mangalda bişmiş badımcan, sarımsaq və qatıq.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-4.png" width="100" height="100" loading="lazy" alt="Qızardılmış kartof"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Qızardılmış kartof</span>
-                      </h3>
-
-                      <span class="span title-2">7 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Ev üsulu, rozmarin duzu ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-            </ul>
-
-          </div>
-
-          <div class="menu-category" id="salat">
-
-            <div class="menu-category-head">
-              <h3 class="headline-2 menu-category-title">Salatlar</h3>
-              <p class="label-2 menu-category-subtitle">Təzə və yüngül</p>
-            </div>
-
-            <ul class="grid-list">
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-5.png" width="100" height="100" loading="lazy" alt="Sezar (toyuqla)"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Sezar (toyuqla)</span>
-                      </h3>
-
-                      <span class="span title-2">13 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Romen kahısı, parmezan, ev kruton və sezar sousu.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-2.png" width="100" height="100" loading="lazy" alt="Çoban salatı"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Çoban salatı</span>
-                      </h3>
-
-                      <span class="span title-2">8 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Pomidor, xiyar, soğan, göy-göyərti və zeytun yağı.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-3.png" width="100" height="100" loading="lazy" alt="Rukola &amp; parmezan"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Rukola &amp; parmezan</span>
-                      </h3>
-
-                      <span class="span title-2">12 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Rukola, çeri pomidor, balzamik qlazur.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-1.png" width="100" height="100" loading="lazy" alt="Mangal salatı"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Mangal salatı</span>
-                      </h3>
-                      <span class="badge label-1">Ev xüsusi</span>
-
-                      <span class="span title-2">11 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Közdə bişmiş tərəvəzlərdən, nar dənəsi ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-            </ul>
-
-          </div>
-
-          <div class="menu-category" id="qarnir">
-
-            <div class="menu-category-head">
-              <h3 class="headline-2 menu-category-title">Qarnirlər</h3>
-              <p class="label-2 menu-category-subtitle">Steykin yanına</p>
-            </div>
-
-            <ul class="grid-list">
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-4.png" width="100" height="100" loading="lazy" alt="Fırında kartof"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Fırında kartof</span>
-                      </h3>
-
-                      <span class="span title-2">6 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Kərə yağı və göy soğan ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-6.png" width="100" height="100" loading="lazy" alt="Közdə tərəvəz"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Közdə tərəvəz</span>
-                      </h3>
-
-                      <span class="span title-2">8 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Mövsümi tərəvəzlər, zeytun yağı.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-5.png" width="100" height="100" loading="lazy" alt="Kartof püresi"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Kartof püresi</span>
-                      </h3>
-
-                      <span class="span title-2">6 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Kremli, trüf yağı damcısı ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-2.png" width="100" height="100" loading="lazy" alt="Qovrulmuş göbələk"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Qovrulmuş göbələk</span>
-                      </h3>
-
-                      <span class="span title-2">7 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Şampinyon, sarımsaq və cəfəri.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-            </ul>
-
-          </div>
-
-          <div class="menu-category" id="sirniyyat">
-
-            <div class="menu-category-head">
-              <h3 class="headline-2 menu-category-title">Şirniyyat</h3>
-              <p class="label-2 menu-category-subtitle">Şirin nöqtə</p>
-            </div>
-
-            <ul class="grid-list">
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-1.png" width="100" height="100" loading="lazy" alt="Şokoladlı fondan"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Şokoladlı fondan</span>
-                      </h3>
-                      <span class="badge label-1">Bestseller</span>
-
-                      <span class="span title-2">10 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      İsti şokolad mərkəzi, vanil dondurması ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-3.png" width="100" height="100" loading="lazy" alt="Bakı paxlavası"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Bakı paxlavası</span>
-                      </h3>
-
-                      <span class="span title-2">7 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Ev üsulu, qoz və zəfəran şərbəti ilə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-5.png" width="100" height="100" loading="lazy" alt="Medovik"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Medovik</span>
-                      </h3>
-
-                      <span class="span title-2">8 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Bal tortu, incə krem qatları.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-6.png" width="100" height="100" loading="lazy" alt="Pavlova"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Pavlova</span>
-                      </h3>
-
-                      <span class="span title-2">9 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Mövsümi meyvələr və kremlə.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-            </ul>
-
-          </div>
-
-          <div class="menu-category" id="ickiler">
-
-            <div class="menu-category-head">
-              <h3 class="headline-2 menu-category-title">İçkilər</h3>
-              <p class="label-2 menu-category-subtitle">Sərinlədici və isti</p>
-            </div>
-
-            <ul class="grid-list">
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-2.png" width="100" height="100" loading="lazy" alt="Ev limonadı"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Ev limonadı</span>
-                      </h3>
-
-                      <span class="span title-2">6 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Limon-nanə, feyxoa və ya çiyələk.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-4.png" width="100" height="100" loading="lazy" alt="Təbii şirə"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Təbii şirə</span>
-                      </h3>
-
-                      <span class="span title-2">5 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Portağal, nar və ya alma — təzə sıxılmış.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-6.png" width="100" height="100" loading="lazy" alt="Azərbaycan çay dəsti"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Azərbaycan çay dəsti</span>
-                      </h3>
-                      <span class="badge label-1">Paylaşımlıq</span>
-
-                      <span class="span title-2">8 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Armudu stəkanda, mürəbbə və limonla.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-
-              <li>
-                <div class="menu-card hover:card">
-
-                  <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-                    <img src="./assets/images/menu-1.png" width="100" height="100" loading="lazy" alt="Qırmızı şərab (bokal)"
-                      class="img-cover">
-                  </figure>
-
-                  <div>
-                    <div class="title-wrapper">
-                      <h3 class="title-3">
-                        <span class="card-title">Qırmızı şərab (bokal)</span>
-                      </h3>
-                      <span class="badge label-1">18+</span>
-
-                      <span class="span title-2">9 ₼</span>
-                    </div>
-
-                    <p class="card-text label-1">
-                      Yerli və import seçimlər — steyklə mükəmməl uyum.
-                    </p>
-                  </div>
-
-                </div>
-              </li>
-            </ul>
-
-          </div>
-
-          <p class="menu-text text-center">Bütün qiymətlərə 18% ƏDV daxildir. Xidmət haqqı ayrıca hesablanmır.</p>
-
-          <p class="menu-text text-center">Mətbəx sifarişləri gecə saat <span class="span">23:30</span>-a qədər qəbul edir</p>
-
-          <a href="rezervasiya.html" class="btn btn-primary">
-            <span class="text text-1">Masa ayır</span>
-            <span class="text text-2" aria-hidden="true">Masa ayır</span>
-          </a>
-
-          <img src="./assets/images/shape-5.png" width="921" height="1036" loading="lazy" alt=""
-            class="shape shape-2 move-anim">
-          <img src="./assets/images/shape-6.png" width="343" height="345" loading="lazy" alt=""
-            class="shape shape-3 move-anim">
 
         </div>
       </section>
@@ -1194,40 +476,33 @@
         - #ŞEFİN SEÇİMİ
       -->
 
-      <section class="special-dish text-center" aria-labelledby="dish-label-menu">
+      <section class="section bg-2" aria-labelledby="dish-label">
+        <div class="wrap split reveal">
 
-        <div class="special-dish-banner">
-          <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
-            alt="Dry-Aged Tomahawk" class="img-cover">
-        </div>
+          <div class="split-img">
+            <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
+              alt="Dry-Aged Tomahawk">
+          </div>
 
-        <div class="special-dish-content bg-black-10">
-          <div class="container">
-
-            <img src="./assets/images/badge-1.png" width="28" height="41" loading="lazy" alt="" class="abs-img">
-
-            <p class="section-subtitle label-2">Şefin seçimi</p>
-
-            <h2 class="headline-1 section-title" id="dish-label-menu">Dry-Aged Tomahawk</h2>
-
-            <p class="section-text">1 kq-lıq sümüklü ribeye, 28 gün quru dinləndirilmiş, palıd kömürü üzərində bişirilib. İki nəfər üçün ideal — közdə qovrulmuş tərəvəz və çimçiri sousu ilə təqdim olunur.</p>
-
-            <div class="wrapper">
-              <del class="del body-3">120 ₼</del>
-              <span class="span body-1">95 ₼</span>
+          <div class="split-body">
+            <div class="index-head">
+              <span class="num">№ 01</span>
+              <span class="label">Şefin seçimi</span>
             </div>
 
-            <a href="rezervasiya.html" class="btn btn-primary">
-              <span class="text text-1">Masa ayır</span>
-              <span class="text text-2" aria-hidden="true">Masa ayır</span>
-            </a>
+            <h2 class="title-1" id="dish-label">Dry-Aged Tomahawk</h2>
 
+            <p>1 kq-lıq sümüklü ribeye, 28 gün quru dinləndirilmiş, palıd kömürü üzərində bişirilib. İki nəfər üçün ideal — közdə qovrulmuş tərəvəz və çimçiri sousu ilə təqdim olunur.</p>
+
+            <div class="price-row">
+              <span class="now">95 ₼</span>
+              <span class="was">120 ₼</span>
+            </div>
+
+            <a href="rezervasiya.html" class="btn">Masa ayır</a>
           </div>
+
         </div>
-
-        <img src="./assets/images/shape-4.png" width="179" height="359" loading="lazy" alt="" class="shape shape-1">
-        <img src="./assets/images/shape-9.png" width="351" height="462" loading="lazy" alt="" class="shape shape-2">
-
       </section>
 
 
@@ -1235,235 +510,217 @@
         - #REZERVASİYA (daxili sistem)
       -->
 
-      <section class="reservation" id="rezervasiya" aria-labelledby="rezervasiya-basliq">
-        <div class="container">
+      <section class="section booking" id="rezervasiya" aria-labelledby="rezervasiya-basliq">
+        <div class="narrow">
 
-          <div class="form reservation-form bg-black-10">
+          <div class="booking-head reveal">
+            <p class="label">Onlayn rezervasiya</p>
+            <h2 class="display-2" id="rezervasiya-basliq">Masanızı ayırın</h2>
+            <p class="lede">
+              Sorğunuz birbaşa restoranın rezervasiya sisteminə düşür.
+              Heyətimiz qısa müddətdə təsdiq üçün sizinlə əlaqə saxlayır.
+            </p>
+          </div>
 
-            <form class="form-left" data-reservation-form novalidate>
+          <form data-reservation-form novalidate>
 
-              <h2 class="headline-1 text-center" id="rezervasiya-basliq">Onlayn Rezervasiya</h2>
+            <div class="fields">
 
-              <p class="form-text text-center">
-                Sorğunuz birbaşa restoranın rezervasiya sisteminə düşür.
-                Sual üçün <a href="tel:+994120000000" class="link">+994 12 000 00 00</a>
-              </p>
-
-              <div class="input-wrapper">
-                <input type="text" name="name" placeholder="Ad, Soyad" autocomplete="name" required
-                  maxlength="80" class="input-field" data-field="name">
-
-                <input type="tel" name="phone" placeholder="Telefon (+994 __ ___ __ __)" autocomplete="tel"
-                  required maxlength="25" class="input-field" data-field="phone">
+              <div class="field">
+                <label for="rez-name">Ad, Soyad</label>
+                <input type="text" id="rez-name" name="name" data-field="name" required maxlength="80"
+                  autocomplete="name" placeholder="Aysel Quliyeva">
               </div>
 
-              <div class="input-wrapper">
-
-                <div class="icon-wrapper">
-                  <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
-                  <select name="guests" class="input-field" data-field="guests" aria-label="Nəfər sayı">
-                                        <option value="1">1 nəfər</option>
-                    <option value="2" selected>2 nəfər</option>
-                    <option value="3">3 nəfər</option>
-                    <option value="4">4 nəfər</option>
-                    <option value="5">5 nəfər</option>
-                    <option value="6">6 nəfər</option>
-                    <option value="7">7 nəfər</option>
-                    <option value="8">8 nəfər</option>
-                    <option value="9">9 nəfər</option>
-                    <option value="10">10 nəfər</option>
-                    <option value="11">11 nəfər</option>
-                    <option value="12">12 nəfər</option>
-                    <option value="13">13 nəfər</option>
-                    <option value="14">14 nəfər</option>
-                    <option value="15">15 nəfər</option>
-                    <option value="16">16 nəfər</option>
-                    <option value="17">17 nəfər</option>
-                    <option value="18">18 nəfər</option>
-                    <option value="19">19 nəfər</option>
-                    <option value="20">20 nəfər</option>
-                    <option value="21">20+ nəfər (qrup)</option>
-                  </select>
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
-                <div class="icon-wrapper">
-                  <ion-icon name="calendar-clear-outline" aria-hidden="true"></ion-icon>
-                  <input type="date" name="date" class="input-field" data-field="date" required
-                    aria-label="Tarix">
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
-                <div class="icon-wrapper">
-                  <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
-                  <select name="time" class="input-field" data-field="time" required aria-label="Saat">
-                                        <option value="" disabled selected>Saat seçin</option>
-                    <option value="11:00">11:00</option>
-                    <option value="11:30">11:30</option>
-                    <option value="12:00">12:00</option>
-                    <option value="12:30">12:30</option>
-                    <option value="13:00">13:00</option>
-                    <option value="13:30">13:30</option>
-                    <option value="14:00">14:00</option>
-                    <option value="14:30">14:30</option>
-                    <option value="15:00">15:00</option>
-                    <option value="15:30">15:30</option>
-                    <option value="16:00">16:00</option>
-                    <option value="16:30">16:30</option>
-                    <option value="17:00">17:00</option>
-                    <option value="17:30">17:30</option>
-                    <option value="18:00">18:00</option>
-                    <option value="18:30">18:30</option>
-                    <option value="19:00">19:00</option>
-                    <option value="19:30">19:30</option>
-                    <option value="20:00">20:00</option>
-                    <option value="20:30">20:30</option>
-                    <option value="21:00">21:00</option>
-                    <option value="21:30">21:30</option>
-                    <option value="22:00">22:00</option>
-                    <option value="22:30">22:30</option>
-                    <option value="23:00">23:00</option>
-                  </select>
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
+              <div class="field">
+                <label for="rez-phone">Telefon</label>
+                <input type="tel" id="rez-phone" name="phone" data-field="phone" required maxlength="25"
+                  autocomplete="tel" placeholder="+994 50 123 45 67">
               </div>
 
-              <div class="input-wrapper">
-
-                <div class="icon-wrapper">
-                  <ion-icon name="restaurant-outline" aria-hidden="true"></ion-icon>
-                  <select name="area" class="input-field" data-field="area" aria-label="Zona">
-                                        <option value="salon">Əsas salon</option>
-                    <option value="terrace">Yay terrası</option>
-                    <option value="mangal-zone">Mangal zonası (açıq mətbəx)</option>
-                    <option value="vip">VIP otaq</option>
-                    <option value="any" selected>Fərqi yoxdur</option>
-                  </select>
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
-                <div class="icon-wrapper">
-                  <ion-icon name="sparkles-outline" aria-hidden="true"></ion-icon>
-                  <select name="occasion" class="input-field" data-field="occasion" aria-label="Səbəb">
-                                        <option value="">Səbəb (istəyə bağlı)</option>
-                    <option value="ad-gunu">Ad günü</option>
-                    <option value="is-gorusu">İş görüşü</option>
-                    <option value="yubiley">Yubiley</option>
-                    <option value="ailevi">Ailəvi şam yeməyi</option>
-                    <option value="diger">Digər</option>
-                  </select>
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
+              <div class="field">
+                <label for="rez-date">Tarix</label>
+                <input type="date" id="rez-date" name="date" data-field="date" required>
               </div>
 
-              <textarea name="note" placeholder="Qeyd (uşaq kreslosu, doğum günü tortu, pəncərə kənarı və s.)"
-                autocomplete="off" maxlength="500" class="input-field" data-field="note"></textarea>
-
-              <p class="form-hint">
-                <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
-                Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
-              </p>
-
-              <div class="form-status" data-form-status role="status" aria-live="polite"></div>
-
-              <p class="hp-field" aria-hidden="true">
-                <label>Bu xananı boş buraxın
-                  <input type="text" name="website" tabindex="-1" autocomplete="off">
-                </label>
-              </p>
-
-              <button type="submit" class="btn btn-secondary" data-submit-btn>
-                <span class="text text-1">Masanı ayır</span>
-                <span class="text text-2" aria-hidden="true">Masanı ayır</span>
-              </button>
-
-            </form>
-
-            <div class="form-left form-success" data-form-success hidden>
-              <div class="success-icon" aria-hidden="true">
-                <ion-icon name="checkmark-outline"></ion-icon>
+              <div class="field">
+                <label for="rez-time">Saat</label>
+                <select id="rez-time" name="time" data-field="time" required>
+                                    <option value="" disabled selected>Saat seçin</option>
+                  <option value="11:00">11:00</option>
+                  <option value="11:30">11:30</option>
+                  <option value="12:00">12:00</option>
+                  <option value="12:30">12:30</option>
+                  <option value="13:00">13:00</option>
+                  <option value="13:30">13:30</option>
+                  <option value="14:00">14:00</option>
+                  <option value="14:30">14:30</option>
+                  <option value="15:00">15:00</option>
+                  <option value="15:30">15:30</option>
+                  <option value="16:00">16:00</option>
+                  <option value="16:30">16:30</option>
+                  <option value="17:00">17:00</option>
+                  <option value="17:30">17:30</option>
+                  <option value="18:00">18:00</option>
+                  <option value="18:30">18:30</option>
+                  <option value="19:00">19:00</option>
+                  <option value="19:30">19:30</option>
+                  <option value="20:00">20:00</option>
+                  <option value="20:30">20:30</option>
+                  <option value="21:00">21:00</option>
+                  <option value="21:30">21:30</option>
+                  <option value="22:00">22:00</option>
+                  <option value="22:30">22:30</option>
+                  <option value="23:00">23:00</option>
+                </select>
               </div>
 
-              <h2 class="headline-1 text-center">Rezervasiya qəbul olundu</h2>
-
-              <p class="form-text text-center">
-                Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü.
-                Heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
-              </p>
-
-              <div class="success-code">
-                <span class="contact-label">Rezervasiya kodunuz</span>
-                <strong class="body-1" data-success-code>—</strong>
+              <div class="field">
+                <label for="rez-guests">Nəfər sayı</label>
+                <select id="rez-guests" name="guests" data-field="guests">
+                                    <option value="1">1 nəfər</option>
+                  <option value="2" selected>2 nəfər</option>
+                  <option value="3">3 nəfər</option>
+                  <option value="4">4 nəfər</option>
+                  <option value="5">5 nəfər</option>
+                  <option value="6">6 nəfər</option>
+                  <option value="7">7 nəfər</option>
+                  <option value="8">8 nəfər</option>
+                  <option value="9">9 nəfər</option>
+                  <option value="10">10 nəfər</option>
+                  <option value="11">11 nəfər</option>
+                  <option value="12">12 nəfər</option>
+                  <option value="13">13 nəfər</option>
+                  <option value="14">14 nəfər</option>
+                  <option value="15">15 nəfər</option>
+                  <option value="16">16 nəfər</option>
+                  <option value="17">17 nəfər</option>
+                  <option value="18">18 nəfər</option>
+                  <option value="19">19 nəfər</option>
+                  <option value="20">20 nəfər</option>
+                  <option value="21">20+ nəfər (qrup)</option>
+                </select>
               </div>
 
-              <ul class="success-list" data-success-summary></ul>
+              <div class="field">
+                <label for="rez-area">Zona</label>
+                <select id="rez-area" name="area" data-field="area">
+                                    <option value="salon">Əsas salon</option>
+                  <option value="terrace">Yay terrası</option>
+                  <option value="mangal-zone">Mangal zonası (açıq mətbəx)</option>
+                  <option value="vip">VIP otaq</option>
+                  <option value="any" selected>Fərqi yoxdur</option>
+                </select>
+              </div>
 
-              <p class="form-text text-center">
-                Dəyişiklik və ya ləğv üçün:
-                <a href="tel:+994120000000" class="link">+994 12 000 00 00</a>
-              </p>
+              <div class="field">
+                <label for="rez-occasion">Səbəb</label>
+                <select id="rez-occasion" name="occasion" data-field="occasion">
+                                    <option value="">Səbəb (istəyə bağlı)</option>
+                  <option value="ad-gunu">Ad günü</option>
+                  <option value="is-gorusu">İş görüşü</option>
+                  <option value="yubiley">Yubiley</option>
+                  <option value="ailevi">Ailəvi şam yeməyi</option>
+                  <option value="diger">Digər</option>
+                </select>
+              </div>
 
-              <button type="button" class="btn btn-secondary" data-new-reservation>
-                <span class="text text-1">Yeni rezervasiya</span>
-                <span class="text text-2" aria-hidden="true">Yeni rezervasiya</span>
-              </button>
+              <div class="field full">
+                <label for="rez-note">Qeyd</label>
+                <textarea id="rez-note" name="note" data-field="note" maxlength="500"
+                  placeholder="Uşaq kreslosu, doğum günü tortu, pəncərə kənarı…"></textarea>
+              </div>
+
             </div>
 
-            <div class="form-right text-center" style="background-image: url('./assets/images/form-pattern.png')">
+            <p class="form-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="1.5"/>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+              </svg>
+              Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
+            </p>
 
-              <h2 class="headline-1 text-center">Əlaqə</h2>
+            <div class="form-status" data-form-status role="status" aria-live="polite"></div>
 
-              <p class="contact-label">Rezervasiya üçün</p>
+            <p class="hp-field" aria-hidden="true">
+              <label>Bu xananı boş buraxın
+                <input type="text" name="website" tabindex="-1" autocomplete="off">
+              </label>
+            </p>
 
-              <a href="tel:+994120000000" class="body-1 contact-number hover-underline">+994 12 000 00 00</a>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-solid" data-submit-btn>Masanı ayır</button>
+            </div>
 
-              <div class="separator"></div>
+          </form>
 
-              <p class="contact-label">Ünvan</p>
+          <div class="form-success" data-form-success hidden>
 
-              <address class="body-4">
-                Nizami küçəsi 00, Səbail rayonu,<br> Bakı AZ1005, Azərbaycan
-              </address>
+            <div class="success-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 12.5l5.2 5.2L20 7"/>
+              </svg>
+            </div>
 
-              <p class="contact-label">Nahar saatları</p>
+            <h2 class="display-2">Rezervasiya qəbul olundu</h2>
 
-              <p class="body-4">
-                Bazar ertəsi – Bazar<br> 11:00 – 16:00
-              </p>
+            <p class="lede" style="margin-inline:auto">
+              Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü —
+              heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
+            </p>
 
-              <p class="contact-label">Şam yeməyi</p>
+            <div class="success-code">
+              <span class="label">Rezervasiya kodunuz</span>
+              <strong data-success-code>—</strong>
+            </div>
 
-              <p class="body-4">
-                Bazar ertəsi – Bazar<br> 17:00 – 24:00
-              </p>
+            <ul class="success-list" data-success-summary></ul>
 
+            <p class="dim" style="font-size:14.5px">
+              Dəyişiklik və ya ləğv üçün:
+              <a href="tel:+994120000000" style="color:var(--gold)">+994 12 000 00 00</a>
+            </p>
+
+            <div class="form-actions">
+              <button type="button" class="btn" data-new-reservation>Yeni rezervasiya</button>
             </div>
 
           </div>
+
+          <dl class="booking-contact">
+            <div>
+              <dt>Telefon</dt>
+              <dd>+994 12 000 00 00</dd>
+            </div>
+            <div>
+              <dt>Ünvan</dt>
+              <dd>Nizami küç. 00, Bakı</dd>
+            </div>
+            <div>
+              <dt>İş saatları</dt>
+              <dd>Hər gün 11:00 – 24:00</dd>
+            </div>
+          </dl>
 
         </div>
       </section>
 
 
 
-    </article>
   </main>
 
-  <footer class="footer section has-bg-image text-center"
-    style="background-image: url('./assets/images/footer-bg.jpg')">
-    <div class="container">
+  <footer class="footer">
+    <div class="wrap">
 
-      <div class="footer-top grid-list">
+      <div class="footer-grid">
 
-        <div class="footer-brand has-before has-after">
-
+        <div>
           <a href="index.html" class="logo" aria-label="Mangal Steak House — ana səhifə">
   <span class="logo-mark" aria-hidden="true">
     <svg viewBox="0 0 28 34" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M14 1.5c1.2 4.3-1.1 6.4-3.2 8.6-2.4 2.5-4.6 4.9-4.6 9.1 0 4.7 3.5 8.3 7.8 8.3s7.8-3.6 7.8-8.3c0-2.6-1-4.4-2.2-6 .2 1.9-.5 3.4-1.9 4.1.6-3.7-.7-7.2-3.7-10.4.4 2.6-.5 4.3-2.3 6.2-1.4 1.5-2.2 2.8-2.2 4.6 0 1.4.5 2.6 1.4 3.5-2.5-.9-3.6-3-3.1-5.6.6-3.1 3-4.8 4.6-7.3 1.3-2 1.9-4.2 1.6-6.8z" fill="currentColor"/>
-      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
     </svg>
   </span>
   <span class="logo-text">
@@ -1472,91 +729,73 @@
   </span>
 </a>
 
+          <p>Odun közündə bişən əsl ləzzət</p>
+          <address>Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan</address>
+        </div>
 
-          <address class="body-4">
-            Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan
-          </address>
+        <div>
+          <h4>Səhifələr</h4>
+          <ul>
+            <li><a href="index.html">Ana Səhifə</a></li>
+            <li><a href="menyu.html">Menyu</a></li>
+            <li><a href="haqqimizda.html">Haqqımızda</a></li>
+            <li><a href="qalereya.html">Qalereya</a></li>
+            <li><a href="tedbirler.html">Tədbirlər</a></li>
+            <li><a href="rezervasiya.html">Rezervasiya</a></li>
+          </ul>
+        </div>
 
-          <a href="mailto:rezervasiya@mangalsteakhouse.az" class="body-4 contact-link">rezervasiya@mangalsteakhouse.az</a>
+        <div>
+          <h4>Əlaqə</h4>
+          <p><a href="tel:+994120000000">+994 12 000 00 00</a></p>
+          <p><a href="mailto:rezervasiya@mangalsteakhouse.az">rezervasiya@mangalsteakhouse.az</a></p>
+          <p>Hər gün 11:00 – 24:00</p>
+          <p><a href="https://maps.google.com/?q=Mangal+Steak+House+Baku" target="_blank" rel="noopener">Xəritədə bax</a></p>
+          <ul style="margin-top:14px">
+            <li><a href="https://instagram.com/mangalsteakhouse" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://facebook.com/mangalsteakhouse" target="_blank" rel="noopener">Facebook</a></li>
+            <li><a href="https://tiktok.com/@mangalsteakhouse" target="_blank" rel="noopener">TikTok</a></li>
+          </ul>
+        </div>
 
-          <a href="tel:+994120000000" class="body-4 contact-link">Rezervasiya: +994 12 000 00 00</a>
+        <div>
+          <h4>Xəbər və kampaniyalar</h4>
+          <p>Abunə olun, ilk sifarişinizə <span class="span">10% endirim</span> qazanın.</p>
 
-          <p class="body-4">
-            Hər gün 11:00 – 24:00
-          </p>
-
-          <div class="wrapper">
-            <div class="separator"></div>
-            <div class="separator"></div>
-            <div class="separator"></div>
-          </div>
-
-          <p class="title-1">Xəbər və kampaniyalar</p>
-
-          <p class="label-1">
-            Abunə olun, ilk sifarişinizə <span class="span">10% endirim</span> qazanın.
-          </p>
-
-          <form class="input-wrapper" data-newsletter-form>
-            <div class="icon-wrapper">
-              <ion-icon name="mail-outline" aria-hidden="true"></ion-icon>
-              <input type="email" name="email_address" placeholder="E-mail ünvanınız" autocomplete="email"
-                required class="input-field">
-            </div>
-
-            <button type="submit" class="btn btn-secondary">
-              <span class="text text-1">Abunə ol</span>
-              <span class="text text-2" aria-hidden="true">Abunə ol</span>
-            </button>
+          <form class="newsletter" data-newsletter-form>
+            <input type="email" name="email_address" placeholder="E-mail ünvanınız" autocomplete="email" required
+              aria-label="E-mail ünvanınız">
+            <button type="submit">Abunə ol</button>
           </form>
 
           <p class="newsletter-status" data-newsletter-status role="status" aria-live="polite"></p>
-
         </div>
-
-        <ul class="footer-list">
-          <li><a href="index.html" class="label-2 footer-link hover-underline">Ana Səhifə</a></li>
-          <li><a href="menyu.html" class="label-2 footer-link hover-underline">Menyu</a></li>
-          <li><a href="haqqimizda.html" class="label-2 footer-link hover-underline">Haqqımızda</a></li>
-          <li><a href="qalereya.html" class="label-2 footer-link hover-underline">Qalereya</a></li>
-          <li><a href="tedbirler.html" class="label-2 footer-link hover-underline">Tədbirlər</a></li>
-          <li><a href="rezervasiya.html" class="label-2 footer-link hover-underline">Rezervasiya</a></li>
-        </ul>
-
-        <ul class="footer-list">
-          <li><a href="https://instagram.com/mangalsteakhouse" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">Instagram</a></li>
-          <li><a href="https://facebook.com/mangalsteakhouse" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">Facebook</a></li>
-          <li><a href="https://tiktok.com/@mangalsteakhouse" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">TikTok</a></li>
-          <li><a href="https://youtube.com/@mangalsteakhouse" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">YouTube</a></li>
-          <li><a href="https://maps.google.com/?q=Mangal+Steak+House+Baku" target="_blank" rel="noopener" class="label-2 footer-link hover-underline">Xəritədə bax</a></li>
-          <li><a href="elaqe.html" class="label-2 footer-link hover-underline">Əlaqə</a></li>
-        </ul>
 
       </div>
 
       <div class="footer-bottom">
-        <p class="copyright">
-          &copy; 2026 Mangal Steak House. Bütün hüquqlar qorunur.
-        </p>
+        <span>&copy; 2026 Mangal Steak House. Bütün hüquqlar qorunur.</span>
+        <span>mangalsteakhouse.az</span>
       </div>
 
     </div>
   </footer>
 
-  <a href="#top" class="back-top-btn" aria-label="yuxarı qayıt" data-back-top-btn>
-    <ion-icon name="chevron-up" aria-hidden="true"></ion-icon>
+  <a href="https://wa.me/994500000000" class="float-btn float-whatsapp" target="_blank" rel="noopener"
+    aria-label="WhatsApp ilə yazın">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 1.67c2.2 0 4.27.86 5.83 2.42a8.2 8.2 0 0 1 2.41 5.82c0 4.54-3.7 8.24-8.25 8.24a8.24 8.24 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.26-8.24zm-2.6 4.1c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02s.87 2.34.99 2.5c.12.16 1.7 2.72 4.2 3.7 2.08.82 2.5.66 2.95.62.45-.04 1.45-.59 1.66-1.17.2-.57.2-1.06.14-1.17-.06-.1-.22-.16-.46-.28-.24-.12-1.45-.72-1.67-.8-.22-.08-.39-.12-.55.12-.16.24-.63.8-.77.96-.14.16-.28.18-.52.06-.24-.12-1.03-.38-1.96-1.21-.72-.65-1.21-1.45-1.35-1.69-.14-.24-.02-.37.1-.49.11-.11.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.33-.75-1.82-.19-.46-.39-.4-.54-.4l-.46-.01z"/>
+    </svg>
   </a>
 
-  <a href="https://wa.me/994500000000" class="whatsapp-btn" target="_blank" rel="noopener"
-    aria-label="WhatsApp ilə yazın">
-    <ion-icon name="logo-whatsapp" aria-hidden="true"></ion-icon>
+  <a href="#top" class="float-btn float-top" data-back-top-btn aria-label="Yuxarı qayıt">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+      <path d="M12 19V5M5 12l7-7 7 7"/>
+    </svg>
   </a>
 
   <script src="./assets/js/script.js"></script>
   <script src="./assets/js/reservation.js"></script>
-
-  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 
 </body>
 

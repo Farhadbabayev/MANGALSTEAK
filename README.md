@@ -4,8 +4,9 @@ Restoranın öz domenində işləyən çoxsəhifəli sayt. Bütün səhifələrd
 bölməsi var və forma **heç bir xarici sayta yönləndirmir** — məlumat restoranın
 öz serverinə düşür, oradan isə arxa planda **Vilka** sisteminə ötürülür.
 
-Dizayn [grilli](https://github.com/codewithsadee/grilli) şablonu (MIT) əsasında
-hazırlanıb, bütün mətn və məzmun restorana uyğunlaşdırılıb.
+Dizayn: **Premium Minimal** — demək olar qara fon, süd rəngi mətn, incə qızılı
+xətlər, Cormorant Garamond + Inter tipoqrafiyası. Bütün CSS və HTML bu layihəyə
+məxsusdur; xarici CSS çərçivəsi və ya ikon kitabxanası istifadə olunmur.
 
 ---
 
@@ -184,16 +185,16 @@ Faylı eyni adla üzərinə yazsanız, kod dəyişikliyi lazım deyil:
 
 | Fayl | Harada görünür | Tövsiyə olunan ölçü |
 |---|---|---|
-| `hero-slider-1/2/3.jpg` | Ana səhifə slayderi | 1880×950 |
-| `service-1/2/3.jpg` | Ana səhifədə 3 kart | 285×336 |
-| `about-banner.jpg` | Haqqımızda bölməsi | 570×570 |
-| `about-abs-image.jpg` | Haqqımızda kiçik şəkil | 285×285 |
-| `special-dish-banner.jpg` | Şefin seçimi | 940×900 |
-| `menu-1…6.png` | Menyu yeməkləri (şəffaf fon) | 100×100 |
-| `event-1/2/3.jpg` | Tədbir kartları | 350×450 |
-| `testimonial-bg.jpg` | Rəy bölməsinin fonu | geniş |
-| `footer-bg.jpg` | Footer fonu | geniş |
-| `testi-avatar.jpg` | Rəy müəllifinin şəkli | 100×100 |
+| `hero-slider-1/2/3.jpg` | Ana səhifə slayderi | 1920×1080 |
+| `special-dish-banner.jpg` | Şefin seçimi bölməsi | 800×900 |
+| `about-banner.jpg` | Hekayə bölməsi (ana səhifə + haqqımızda) | 800×900 |
+| `about-abs-image.jpg` | Qalereya | 800×800 |
+| `event-1/2/3.jpg` | Tədbir kartları, səhifə başlıqları | 800×700 |
+| `service-1/2/3.jpg` | Qalereya, əlaqə səhifəsinin başlığı | 800×800 |
+| `testimonial-bg.jpg` | Rəy zolağının fonu | 1920×1080 |
+
+Bütün şəkillər tünd fonun üzərində yarı-şəffaf göstərilir, ona görə
+kontrastlı və tünd fotolar daha yaxşı oturur.
 
 Qalereya şəkillərinin siyahısı `content.config.json` → `gallery.images`
 hissəsindədir.
@@ -281,8 +282,14 @@ src/
   pages/                səhifə şablonları
 scripts/
   build.mjs             statik səhifələri yığır
+  fetch-fonts.mjs       şriftləri Google Fonts-dan yerli yükləyir
   test.mjs              uçdan-uca yoxlamalar
-public/                 hazır sayt (build nəticəsi + şəkillər, css, js)
+public/                 hazır sayt (build nəticəsi)
+  assets/css/site.css   dizayn sistemi (bütün stillər)
+  assets/css/fonts.css  yerli şriftlər (avtomatik yaradılır)
+  assets/fonts/         woff2 şrift faylları
+  assets/js/script.js   menyu, slayder, animasiyalar
+  assets/js/reservation.js  rezervasiya formasının məntiqi
 server/
   index.mjs             HTTP server: statik sayt + API + admin
   admin.html            rezervasiya paneli
@@ -316,8 +323,31 @@ həcmi limiti, admin üçün Basic Auth, qovluqdan kənara çıxışın bağlanm
 
 ---
 
+## 9. Dizaynın tənzimlənməsi
+
+Bütün rənglər və ölçülər `public/assets/css/site.css` faylının başındakı
+`:root` bölməsindədir:
+
+```css
+--black:     #121212;   /* əsas fon */
+--black-2:   #181817;   /* növbələşən bölmələrin fonu */
+--cream:     #FAF8F5;   /* mətn */
+--cream-dim: #A9A49C;   /* ikinci dərəcəli mətn */
+--gold:      #B99B6B;   /* vurğu rəngi */
+--space:     130px;     /* bölmələr arası boşluq */
+```
+
+Şriftlər CDN-dən deyil, `public/assets/fonts/` qovluğundan yüklənir.
+Şrifti dəyişmək üçün `scripts/fetch-fonts.mjs` faylındakı siyahını
+redaktə edib `node scripts/fetch-fonts.mjs` işlədin, sonra `site.css`
+içindəki `--display` / `--body` dəyərlərini yeniləyin.
+
+
 ## Lisenziya
 
-Dizayn: [grilli](https://github.com/codewithsadee/grilli) — MIT © Sadee.
-Şablondakı nümunə şəkillər istehsalata çıxmazdan əvvəl restoranın öz
-fotoları ilə əvəz olunmalıdır.
+Sayt kodu və dizaynı bu layihəyə məxsusdur.
+Şriftlər: Cormorant Garamond və Inter — SIL Open Font License.
+`public/assets/images/` qovluğundakı nümunə şəkillər
+[grilli](https://github.com/codewithsadee/grilli) şablonundan (MIT © Sadee)
+götürülüb və istehsalata çıxmazdan əvvəl restoranın öz fotoları ilə əvəz
+olunmalıdır.

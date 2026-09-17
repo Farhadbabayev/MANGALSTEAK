@@ -4,18 +4,18 @@
         - #QALEREYA
       -->
 
-      <section class="section gallery" aria-label="qalereya">
-        <div class="container">
+      <section class="section" aria-label="Qalereya">
+        <div class="wrap">
 
-          <p class="section-subtitle text-center label-2">{{gallery.subtitle}}</p>
-          <h2 class="headline-1 section-title text-center">{{gallery.title}}</h2>
-          <p class="section-text text-center">{{gallery.text}}</p>
+          <div class="section-head text-center reveal">
+            <p class="label">{{gallery.subtitle}}</p>
+            <h2 class="display-2">{{gallery.title}}</h2>
+            <p class="lede">{{gallery.text}}</p>
+          </div>
 
-          <ul class="gallery-grid">
+          <ul class="gallery-grid reveal">
             {{blocks.galleryItems}}
           </ul>
-
-          <img src="./assets/images/shape-7.png" width="208" height="178" loading="lazy" alt="" class="shape shape-1">
 
         </div>
       </section>
@@ -25,26 +25,14 @@
         - #RƏY
       -->
 
-      <section class="section testi text-center has-bg-image"
-        style="background-image: url('./assets/images/testimonial-bg.jpg')" aria-label="müştəri rəyi">
-        <div class="container">
+      <section class="band" aria-label="Müştəri rəyi">
+        <div class="band-bg">
+          <img src="./assets/images/testimonial-bg.jpg" width="1880" height="900" loading="lazy" alt="">
+        </div>
 
-          <div class="quote">”</div>
-
-          <p class="headline-2 testi-text">{{testimonial.text}}</p>
-
-          <div class="wrapper">
-            <div class="separator"></div>
-            <div class="separator"></div>
-            <div class="separator"></div>
-          </div>
-
-          <div class="profile">
-            <img src="./assets/images/{{testimonial.avatar}}" width="100" height="100" loading="lazy"
-              alt="{{testimonial.author}}" class="img">
-            <p class="label-2 profile-name">{{testimonial.author}}</p>
-          </div>
-
+        <div class="wrap">
+          <blockquote>{{testimonial.text}}</blockquote>
+          <cite>{{testimonial.author}}</cite>
         </div>
       </section>
 

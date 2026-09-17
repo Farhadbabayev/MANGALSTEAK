@@ -1,103 +1,30 @@
   <header class="header" data-header>
-    <div class="container">
+    <div class="wrap">
 
       {{> logo}}
 
-      <nav class="navbar" data-navbar>
-
-        <button class="close-btn" aria-label="menyunu bağla" data-nav-toggler>
-          <ion-icon name="close-outline" aria-hidden="true"></ion-icon>
-        </button>
-
-        {{> logo}}
-
+      <nav class="navbar" data-navbar aria-label="Əsas menyu">
         <ul class="navbar-list">
-
-          <li class="navbar-item">
-            <a href="index.html" class="navbar-link hover-underline {{nav.index}}">
-              <div class="separator"></div>
-              <span class="span">Ana Səhifə</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="menyu.html" class="navbar-link hover-underline {{nav.menyu}}">
-              <div class="separator"></div>
-              <span class="span">Menyu</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="haqqimizda.html" class="navbar-link hover-underline {{nav.haqqimizda}}">
-              <div class="separator"></div>
-              <span class="span">Haqqımızda</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="qalereya.html" class="navbar-link hover-underline {{nav.qalereya}}">
-              <div class="separator"></div>
-              <span class="span">Qalereya</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="tedbirler.html" class="navbar-link hover-underline {{nav.tedbirler}}">
-              <div class="separator"></div>
-              <span class="span">Tədbirlər</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="rezervasiya.html" class="navbar-link hover-underline {{nav.rezervasiya}}">
-              <div class="separator"></div>
-              <span class="span">Rezervasiya</span>
-            </a>
-          </li>
-
-          <li class="navbar-item">
-            <a href="elaqe.html" class="navbar-link hover-underline {{nav.elaqe}}">
-              <div class="separator"></div>
-              <span class="span">Əlaqə</span>
-            </a>
-          </li>
-
+          <li><a href="index.html" class="navbar-link {{nav.index}}">Ana Səhifə</a></li>
+          <li><a href="menyu.html" class="navbar-link {{nav.menyu}}">Menyu</a></li>
+          <li><a href="haqqimizda.html" class="navbar-link {{nav.haqqimizda}}">Haqqımızda</a></li>
+          <li><a href="qalereya.html" class="navbar-link {{nav.qalereya}}">Qalereya</a></li>
+          <li><a href="tedbirler.html" class="navbar-link {{nav.tedbirler}}">Tədbirlər</a></li>
+          <li><a href="elaqe.html" class="navbar-link {{nav.elaqe}}">Əlaqə</a></li>
+          <li><a href="rezervasiya.html" class="header-cta">Masa ayır</a></li>
         </ul>
 
-        <div class="text-center">
-          <p class="headline-1 navbar-title">Bizə gəlin</p>
-
-          <address class="body-4">
-            {{contact.addressFull}}
-          </address>
-
-          <p class="body-4 navbar-text">{{hours.short}}</p>
-
-          <a href="mailto:{{contact.email}}" class="body-4 sidebar-link">{{contact.email}}</a>
-
-          <div class="separator"></div>
-
-          <p class="contact-label">Rezervasiya üçün</p>
-
-          <a href="tel:{{contact.phoneHref}}" class="body-1 contact-number hover-underline">
-            {{contact.phone}}
-          </a>
+        <div class="navbar-foot">
+          <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
+          <span>{{hours.short}}</span>
         </div>
-
       </nav>
 
-      <a href="rezervasiya.html" class="btn btn-secondary">
-        <span class="text text-1">Masa ayır</span>
-        <span class="text text-2" aria-hidden="true">Masa ayır</span>
-      </a>
+      <a href="rezervasiya.html" class="header-cta">Masa ayır</a>
 
-      <button class="nav-open-btn" aria-label="menyunu aç" data-nav-toggler>
-        <span class="line line-1"></span>
-        <span class="line line-2"></span>
-        <span class="line line-3"></span>
+      <button class="nav-toggle" data-nav-toggler aria-label="Menyunu aç" aria-expanded="false">
+        <span></span><span></span><span></span>
       </button>
-
-      <div class="overlay" data-nav-toggler data-overlay></div>
 
     </div>
   </header>

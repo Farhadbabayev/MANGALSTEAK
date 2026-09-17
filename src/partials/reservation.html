@@ -2,159 +2,144 @@
         - #REZERVASİYA (daxili sistem)
       -->
 
-      <section class="reservation" id="rezervasiya" aria-labelledby="rezervasiya-basliq">
-        <div class="container">
+      <section class="section booking" id="rezervasiya" aria-labelledby="rezervasiya-basliq">
+        <div class="narrow">
 
-          <div class="form reservation-form bg-black-10">
+          <div class="booking-head reveal">
+            <p class="label">Onlayn rezervasiya</p>
+            <h2 class="display-2" id="rezervasiya-basliq">Masanızı ayırın</h2>
+            <p class="lede">
+              Sorğunuz birbaşa restoranın rezervasiya sisteminə düşür.
+              Heyətimiz qısa müddətdə təsdiq üçün sizinlə əlaqə saxlayır.
+            </p>
+          </div>
 
-            <form class="form-left" data-reservation-form novalidate>
+          <form data-reservation-form novalidate>
 
-              <h2 class="headline-1 text-center" id="rezervasiya-basliq">Onlayn Rezervasiya</h2>
+            <div class="fields">
 
-              <p class="form-text text-center">
-                Sorğunuz birbaşa restoranın rezervasiya sisteminə düşür.
-                Sual üçün <a href="tel:{{contact.phoneHref}}" class="link">{{contact.phone}}</a>
-              </p>
-
-              <div class="input-wrapper">
-                <input type="text" name="name" placeholder="Ad, Soyad" autocomplete="name" required
-                  maxlength="80" class="input-field" data-field="name">
-
-                <input type="tel" name="phone" placeholder="Telefon (+994 __ ___ __ __)" autocomplete="tel"
-                  required maxlength="25" class="input-field" data-field="phone">
+              <div class="field">
+                <label for="rez-name">Ad, Soyad</label>
+                <input type="text" id="rez-name" name="name" data-field="name" required maxlength="80"
+                  autocomplete="name" placeholder="Aysel Quliyeva">
               </div>
 
-              <div class="input-wrapper">
-
-                <div class="icon-wrapper">
-                  <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
-                  <select name="guests" class="input-field" data-field="guests" aria-label="Nəfər sayı">
-                    {{blocks.guestOptions}}
-                  </select>
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
-                <div class="icon-wrapper">
-                  <ion-icon name="calendar-clear-outline" aria-hidden="true"></ion-icon>
-                  <input type="date" name="date" class="input-field" data-field="date" required
-                    aria-label="Tarix">
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
-                <div class="icon-wrapper">
-                  <ion-icon name="time-outline" aria-hidden="true"></ion-icon>
-                  <select name="time" class="input-field" data-field="time" required aria-label="Saat">
-                    {{blocks.timeOptions}}
-                  </select>
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
+              <div class="field">
+                <label for="rez-phone">Telefon</label>
+                <input type="tel" id="rez-phone" name="phone" data-field="phone" required maxlength="25"
+                  autocomplete="tel" placeholder="+994 50 123 45 67">
               </div>
 
-              <div class="input-wrapper">
-
-                <div class="icon-wrapper">
-                  <ion-icon name="restaurant-outline" aria-hidden="true"></ion-icon>
-                  <select name="area" class="input-field" data-field="area" aria-label="Zona">
-                    {{blocks.areaOptions}}
-                  </select>
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
-                <div class="icon-wrapper">
-                  <ion-icon name="sparkles-outline" aria-hidden="true"></ion-icon>
-                  <select name="occasion" class="input-field" data-field="occasion" aria-label="Səbəb">
-                    {{blocks.occasionOptions}}
-                  </select>
-                  <ion-icon name="chevron-down" aria-hidden="true"></ion-icon>
-                </div>
-
+              <div class="field">
+                <label for="rez-date">Tarix</label>
+                <input type="date" id="rez-date" name="date" data-field="date" required>
               </div>
 
-              <textarea name="note" placeholder="Qeyd (uşaq kreslosu, doğum günü tortu, pəncərə kənarı və s.)"
-                autocomplete="off" maxlength="500" class="input-field" data-field="note"></textarea>
-
-              <p class="form-hint">
-                <ion-icon name="lock-closed-outline" aria-hidden="true"></ion-icon>
-                Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
-              </p>
-
-              <div class="form-status" data-form-status role="status" aria-live="polite"></div>
-
-              <p class="hp-field" aria-hidden="true">
-                <label>Bu xananı boş buraxın
-                  <input type="text" name="website" tabindex="-1" autocomplete="off">
-                </label>
-              </p>
-
-              <button type="submit" class="btn btn-secondary" data-submit-btn>
-                <span class="text text-1">Masanı ayır</span>
-                <span class="text text-2" aria-hidden="true">Masanı ayır</span>
-              </button>
-
-            </form>
-
-            <div class="form-left form-success" data-form-success hidden>
-              <div class="success-icon" aria-hidden="true">
-                <ion-icon name="checkmark-outline"></ion-icon>
+              <div class="field">
+                <label for="rez-time">Saat</label>
+                <select id="rez-time" name="time" data-field="time" required>
+                  {{blocks.timeOptions}}
+                </select>
               </div>
 
-              <h2 class="headline-1 text-center">Rezervasiya qəbul olundu</h2>
-
-              <p class="form-text text-center">
-                Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü.
-                Heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
-              </p>
-
-              <div class="success-code">
-                <span class="contact-label">Rezervasiya kodunuz</span>
-                <strong class="body-1" data-success-code>—</strong>
+              <div class="field">
+                <label for="rez-guests">Nəfər sayı</label>
+                <select id="rez-guests" name="guests" data-field="guests">
+                  {{blocks.guestOptions}}
+                </select>
               </div>
 
-              <ul class="success-list" data-success-summary></ul>
+              <div class="field">
+                <label for="rez-area">Zona</label>
+                <select id="rez-area" name="area" data-field="area">
+                  {{blocks.areaOptions}}
+                </select>
+              </div>
 
-              <p class="form-text text-center">
-                Dəyişiklik və ya ləğv üçün:
-                <a href="tel:{{contact.phoneHref}}" class="link">{{contact.phone}}</a>
-              </p>
+              <div class="field">
+                <label for="rez-occasion">Səbəb</label>
+                <select id="rez-occasion" name="occasion" data-field="occasion">
+                  {{blocks.occasionOptions}}
+                </select>
+              </div>
 
-              <button type="button" class="btn btn-secondary" data-new-reservation>
-                <span class="text text-1">Yeni rezervasiya</span>
-                <span class="text text-2" aria-hidden="true">Yeni rezervasiya</span>
-              </button>
+              <div class="field full">
+                <label for="rez-note">Qeyd</label>
+                <textarea id="rez-note" name="note" data-field="note" maxlength="500"
+                  placeholder="Uşaq kreslosu, doğum günü tortu, pəncərə kənarı…"></textarea>
+              </div>
+
             </div>
 
-            <div class="form-right text-center" style="background-image: url('./assets/images/form-pattern.png')">
+            <p class="form-hint">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <rect x="4" y="10" width="16" height="11" rx="1.5"/>
+                <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+              </svg>
+              Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
+            </p>
 
-              <h2 class="headline-1 text-center">Əlaqə</h2>
+            <div class="form-status" data-form-status role="status" aria-live="polite"></div>
 
-              <p class="contact-label">Rezervasiya üçün</p>
+            <p class="hp-field" aria-hidden="true">
+              <label>Bu xananı boş buraxın
+                <input type="text" name="website" tabindex="-1" autocomplete="off">
+              </label>
+            </p>
 
-              <a href="tel:{{contact.phoneHref}}" class="body-1 contact-number hover-underline">{{contact.phone}}</a>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-solid" data-submit-btn>Masanı ayır</button>
+            </div>
 
-              <div class="separator"></div>
+          </form>
 
-              <p class="contact-label">Ünvan</p>
+          <div class="form-success" data-form-success hidden>
 
-              <address class="body-4">
-                {{contact.addressFull}}
-              </address>
+            <div class="success-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M4 12.5l5.2 5.2L20 7"/>
+              </svg>
+            </div>
 
-              <p class="contact-label">{{hours.lunchTitle}}</p>
+            <h2 class="display-2">Rezervasiya qəbul olundu</h2>
 
-              <p class="body-4">
-                {{hours.lunchValue}}
-              </p>
+            <p class="lede" style="margin-inline:auto">
+              Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü —
+              heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
+            </p>
 
-              <p class="contact-label">{{hours.dinnerTitle}}</p>
+            <div class="success-code">
+              <span class="label">Rezervasiya kodunuz</span>
+              <strong data-success-code>—</strong>
+            </div>
 
-              <p class="body-4">
-                {{hours.dinnerValue}}
-              </p>
+            <ul class="success-list" data-success-summary></ul>
 
+            <p class="dim" style="font-size:14.5px">
+              Dəyişiklik və ya ləğv üçün:
+              <a href="tel:{{contact.phoneHref}}" style="color:var(--gold)">{{contact.phone}}</a>
+            </p>
+
+            <div class="form-actions">
+              <button type="button" class="btn" data-new-reservation>Yeni rezervasiya</button>
             </div>
 
           </div>
+
+          <dl class="booking-contact">
+            <div>
+              <dt>Telefon</dt>
+              <dd>{{contact.phone}}</dd>
+            </div>
+            <div>
+              <dt>Ünvan</dt>
+              <dd>{{contact.addressShort}}</dd>
+            </div>
+            <div>
+              <dt>İş saatları</dt>
+              <dd>{{hours.short}}</dd>
+            </div>
+          </dl>
 
         </div>
       </section>

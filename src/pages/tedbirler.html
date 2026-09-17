@@ -4,24 +4,23 @@
         - #PAKETLƏR
       -->
 
-      <section class="section packages" aria-label="banket paketləri">
-        <div class="container">
+      <section class="section" aria-label="Banket paketləri">
+        <div class="wrap">
 
-          <p class="section-subtitle text-center label-2">{{pages.tedbirler.subtitle}}</p>
-          <h2 class="headline-1 section-title text-center">{{pages.tedbirler.title}}</h2>
-          <p class="section-text text-center">{{pages.tedbirler.lead}}</p>
+          <div class="section-head text-center reveal">
+            <p class="label">{{pages.tedbirler.subtitle}}</p>
+            <h2 class="display-2">{{pages.tedbirler.title}}</h2>
+            <p class="lede">{{pages.tedbirler.lead}}</p>
+          </div>
 
-          <ul class="package-list">
+          <ul class="package-grid reveal">
             {{blocks.packageCards}}
           </ul>
 
-          <p class="menu-text text-center">
-            Paketlər fərdi şəkildə uyğunlaşdırıla bilər — bizə zəng edin:
-            <a href="tel:{{contact.phoneHref}}" class="link">{{contact.phone}}</a>
+          <p class="menu-note">
+            Paketlər fərdi şəkildə uyğunlaşdırıla bilər —
+            <a href="tel:{{contact.phoneHref}}" class="span">{{contact.phone}}</a>
           </p>
-
-          <img src="./assets/images/shape-5.png" width="921" height="1036" loading="lazy" alt=""
-            class="shape shape-2 move-anim">
 
         </div>
       </section>
@@ -31,13 +30,15 @@
         - #TƏDBİRLƏR
       -->
 
-      <section class="section event bg-black-10" aria-label="tədbirlər">
-        <div class="container">
+      <section class="section bg-2" aria-label="Yaxınlaşan tədbirlər">
+        <div class="wrap">
 
-          <p class="section-subtitle label-2 text-center">{{events.subtitle}}</p>
-          <h2 class="section-title headline-1 text-center">{{events.title}}</h2>
+          <div class="section-head text-center reveal">
+            <p class="label">{{events.subtitle}}</p>
+            <h2 class="display-2">{{events.title}}</h2>
+          </div>
 
-          <ul class="grid-list">
+          <ul class="card-grid reveal">
             {{blocks.eventCards}}
           </ul>
 

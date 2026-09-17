@@ -1,75 +1,68 @@
 {{> page-hero}}
 
       <!--
-        - #ƏLAQƏ KARTLARI
+        - #ƏLAQƏ
       -->
 
-      <section class="section contact" aria-label="əlaqə">
-        <div class="container">
+      <section class="section" aria-label="Əlaqə">
+        <div class="wrap">
 
-          <p class="section-subtitle text-center label-2">{{pages.elaqe.subtitle}}</p>
-          <h2 class="headline-1 section-title text-center">{{pages.elaqe.title}}</h2>
-          <p class="section-text text-center">{{pages.elaqe.lead}}</p>
+          <div class="section-head text-center reveal">
+            <p class="label">{{pages.elaqe.subtitle}}</p>
+            <h2 class="display-2">{{pages.elaqe.title}}</h2>
+            <p class="lede">{{pages.elaqe.lead}}</p>
+          </div>
 
-          <ul class="contact-list">
+          <ul class="contact-grid reveal">
 
-            <li class="contact-item">
-              <div class="contact-card">
-                <div class="card-icon" aria-hidden="true">
-                  <ion-icon name="location-outline"></ion-icon>
-                </div>
-                <h3 class="title-2 card-title">Ünvan</h3>
-                <address class="label-1 card-text">{{contact.addressFull}}</address>
-                <a href="{{contact.mapLink}}" target="_blank" rel="noopener"
-                  class="btn-text hover-underline label-2">Xəritədə aç</a>
+            <li class="contact-card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+                  <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/>
+                  <circle cx="12" cy="10" r="2.6"/>
+                </svg>
               </div>
+              <h3>Ünvan</h3>
+              <address>{{contact.addressFull}}</address>
+              <a href="{{contact.mapLink}}" target="_blank" rel="noopener" class="btn-text">Xəritədə aç</a>
             </li>
 
-            <li class="contact-item">
-              <div class="contact-card">
-                <div class="card-icon" aria-hidden="true">
-                  <ion-icon name="call-outline"></ion-icon>
-                </div>
-                <h3 class="title-2 card-title">Telefon</h3>
-                <p class="label-1 card-text">
-                  Rezervasiya: {{contact.phone}}<br>
-                  Mobil: {{contact.mobile}}
-                </p>
-                <a href="tel:{{contact.phoneHref}}" class="btn-text hover-underline label-2">Zəng et</a>
+            <li class="contact-card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+                  <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1.1 1A16 16 0 0 1 4 5.1 1 1 0 0 1 5 4z"/>
+                </svg>
               </div>
+              <h3>Telefon</h3>
+              <p>Rezervasiya: {{contact.phone}}<br>Mobil: {{contact.mobile}}</p>
+              <a href="tel:{{contact.phoneHref}}" class="btn-text">Zəng et</a>
             </li>
 
-            <li class="contact-item">
-              <div class="contact-card">
-                <div class="card-icon" aria-hidden="true">
-                  <ion-icon name="mail-outline"></ion-icon>
-                </div>
-                <h3 class="title-2 card-title">E-mail</h3>
-                <p class="label-1 card-text">
-                  {{contact.email}}<br>
-                  Tədbir və banket sorğuları üçün
-                </p>
-                <a href="mailto:{{contact.email}}" class="btn-text hover-underline label-2">Məktub yaz</a>
+            <li class="contact-card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+                  <rect x="3" y="5" width="18" height="14" rx="1.5"/>
+                  <path d="m3.5 6.5 8.5 6 8.5-6"/>
+                </svg>
               </div>
+              <h3>E-mail</h3>
+              <p>{{contact.email}}<br>Tədbir və banket sorğuları üçün</p>
+              <a href="mailto:{{contact.email}}" class="btn-text">Məktub yaz</a>
             </li>
 
-            <li class="contact-item">
-              <div class="contact-card">
-                <div class="card-icon" aria-hidden="true">
-                  <ion-icon name="time-outline"></ion-icon>
-                </div>
-                <h3 class="title-2 card-title">İş saatları</h3>
-                <p class="label-1 card-text">
-                  {{hours.lunchValue}}<br>
-                  {{hours.dinnerValue}}
-                </p>
-                <a href="rezervasiya.html" class="btn-text hover-underline label-2">Masa ayır</a>
+            <li class="contact-card">
+              <div class="icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
+                  <circle cx="12" cy="12" r="9"/>
+                  <path d="M12 7v5.4l3.4 2"/>
+                </svg>
               </div>
+              <h3>İş saatları</h3>
+              <p>{{hours.lunchValue}}<br>{{hours.dinnerValue}}</p>
+              <a href="rezervasiya.html" class="btn-text">Masa ayır</a>
             </li>
 
           </ul>
-
-          <img src="./assets/images/shape-7.png" width="208" height="178" loading="lazy" alt="" class="shape shape-1">
 
         </div>
       </section>
@@ -79,11 +72,10 @@
         - #XƏRİTƏ
       -->
 
-      <section class="map-section" aria-label="xəritə">
-        <iframe src="{{contact.mapEmbed}}" width="100%" height="450" style="border:0;"
-          allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-          title="{{site.name}} xəritədə"></iframe>
-      </section>
+      <div class="map-frame">
+        <iframe src="{{contact.mapEmbed}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          title="{{site.name}} xəritədə" allowfullscreen></iframe>
+      </div>
 
 
 {{> reservation}}

@@ -1,22 +1,17 @@
-      <!--
-        - #SƏHİFƏ BAŞLIĞI
-      -->
+      <section class="page-hero" aria-label="{{page.heroTitle}}">
+        <div class="page-hero-bg">
+          <img src="./assets/images/{{page.heroImage}}" width="1880" height="900" alt="">
+        </div>
 
-      <section class="page-hero has-bg-image text-center"
-        style="background-image: url('./assets/images/{{page.heroImage}}')" aria-label="{{page.heroTitle}}">
-        <div class="container">
+        <div class="wrap">
+          <p class="label">{{page.heroSubtitle}}</p>
+          <h1 class="display-2">{{page.heroTitle}}</h1>
+          <div class="rule-v"></div>
 
-          <p class="label-2 section-subtitle">{{page.heroSubtitle}}</p>
-
-          <h1 class="headline-1 page-hero-title">{{page.heroTitle}}</h1>
-
-          <img src="./assets/images/separator.svg" width="208" height="8" alt="" class="separator-img">
-
-          <nav class="breadcrumb" aria-label="naviqasiya">
-            <a href="index.html" class="label-2">Ana Səhifə</a>
-            <span class="sep" aria-hidden="true">•</span>
-            <span class="label-2 current">{{page.heroTitle}}</span>
+          <nav class="breadcrumb" aria-label="Naviqasiya">
+            <a href="index.html">Ana Səhifə</a>
+            <span class="sep" aria-hidden="true">·</span>
+            <span class="current">{{page.heroTitle}}</span>
           </nav>
-
         </div>
       </section>

@@ -42,202 +42,190 @@ const expandPartials = (html, depth = 0) => {
  *  Köməkçilər
  * ------------------------------------------------------------------ */
 
-const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-const img = (name) => `./assets/images/${name}`;
+const esc = (s) =>
+  String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+/** HTML saxlayan mətnlər üçün: yalnız dırnaqları qoruyuruq (atribut içində) */
+const attr = (s) => String(s).replace(/"/g, '&quot;');
+
+const img = (name) => `./assets/images/${name}`;
 const pad = (n) => String(n).padStart(2, '0');
 
 /* ------------------------------------------------------------------ *
- *  Bloklar (təkrarlanan HTML hissələri)
+ *  Bloklar
  * ------------------------------------------------------------------ */
 
 const blocks = {};
 
-blocks.heroSlides = content.hero.slides.map((s, i) => `
-          <li class="slider-item${i === 0 ? ' active' : ''}" data-hero-slider-item>
+/* --- Hero --- */
 
-            <div class="slider-bg">
-              <img src="${img(s.image)}" width="1880" height="950" alt="" class="img-cover">
-            </div>
+blocks.heroSlides = content.hero.slides
+  .map(
+    (s, i) => `
+        <div class="hero-slide${i === 0 ? ' active' : ''}" data-hero-slide
+          data-label="${attr(s.subtitle)}" data-title="${attr(s.title)}" data-text="${attr(s.text)}">
+          <img src="${img(s.image)}" width="1880" height="950" alt=""${i === 0 ? '' : ' loading="lazy"'}>
+        </div>`
+  )
+  .join('');
 
-            <p class="label-2 section-subtitle slider-reveal">${s.subtitle}</p>
+blocks.heroDots = content.hero.slides
+  .map(
+    (s, i) => `
+          <button type="button" data-hero-dot class="${i === 0 ? 'active' : ''}"
+            aria-label="Slayd ${i + 1}"></button>`
+  )
+  .join('');
 
-            <h1 class="display-1 hero-title slider-reveal">
-              ${s.title}
-            </h1>
+/* --- Üstünlüklər (hairline şəbəkə) --- */
 
-            <p class="body-2 hero-text slider-reveal">
-              ${s.text}
-            </p>
-
-            <a href="menyu.html" class="btn btn-primary slider-reveal">
-              <span class="text text-1">Menyuya bax</span>
-              <span class="text text-2" aria-hidden="true">Menyuya bax</span>
-            </a>
-
-          </li>`).join('\n');
-
-blocks.serviceCards = content.services.cards.map((c) => `
+blocks.featureCards = content.features.cards
+  .map(
+    (c, i) => `
             <li>
-              <div class="service-card">
+              <p class="label">${pad(i + 1)}</p>
+              <h3 class="title-2">${esc(c.title)}</h3>
+              <p>${esc(c.text)}</p>
+            </li>`
+  )
+  .join('');
 
-                <a href="${c.link}" class="has-before hover:shine">
-                  <figure class="card-banner img-holder" style="--width: 285; --height: 336;">
-                    <img src="${img(c.image)}" width="285" height="336" loading="lazy" alt="${esc(c.title)}"
-                      class="img-cover">
-                  </figure>
-                </a>
+/* --- Menyu --- */
 
-                <div class="card-content">
-                  <h3 class="title-4 card-title">
-                    <a href="${c.link}">${c.title}</a>
-                  </h3>
-
-                  <a href="${c.link}" class="btn-text hover-underline label-2">Menyuya bax</a>
-                </div>
-
-              </div>
-            </li>`).join('\n');
-
-const menuCard = (item, indent = '            ') => `
-${indent}<li>
-${indent}  <div class="menu-card hover:card">
-
-${indent}    <figure class="card-banner img-holder" style="--width: 100; --height: 100;">
-${indent}      <img src="${img(item.image)}" width="100" height="100" loading="lazy" alt="${esc(item.name)}"
-${indent}        class="img-cover">
-${indent}    </figure>
-
-${indent}    <div>
-${indent}      <div class="title-wrapper">
-${indent}        <h3 class="title-3">
-${indent}          <span class="card-title">${esc(item.name)}</span>
-${indent}        </h3>
-${item.badge ? `${indent}        <span class="badge label-1">${esc(item.badge)}</span>\n` : ''}
-${indent}        <span class="span title-2">${esc(item.price)}</span>
-${indent}      </div>
-
-${indent}      <p class="card-text label-1">
-${indent}        ${esc(item.text)}
-${indent}      </p>
-${indent}    </div>
-
+const menuItem = (item, indent = '            ') => `
+${indent}<div class="menu-item">
+${indent}  <div class="menu-item-top">
+${indent}    <h3>${esc(item.name)}${item.badge ? `<span class="tag">${esc(item.badge)}</span>` : ''}</h3>
+${indent}    <span class="cost">${esc(item.price)}</span>
 ${indent}  </div>
-${indent}</li>`;
+${indent}  <p>${esc(item.text)}</p>
+${indent}</div>`;
 
-/* Ana səhifədəki qısa menyu: steyk + mangal kateqoriyalarından ilk 3-3 */
 const previewItems = [
   ...content.menu.categories.find((c) => c.id === 'steyk').items.slice(0, 3),
   ...content.menu.categories.find((c) => c.id === 'mangal').items.slice(0, 3),
 ];
-blocks.menuPreviewCards = previewItems.map((i) => menuCard(i)).join('\n');
 
-blocks.menuNav = content.menu.categories.map((c) => `
-            <a href="#${c.id}" class="menu-nav-link label-2 hover-underline">${esc(c.name)}</a>`).join('');
+blocks.menuPreviewItems = previewItems.map((i) => menuItem(i)).join('');
 
-blocks.menuCategories = content.menu.categories.map((c) => `
-          <div class="menu-category" id="${c.id}">
+blocks.menuNav = content.menu.categories
+  .map((c) => `
+            <a href="#${c.id}">${esc(c.name)}</a>`)
+  .join('');
+
+blocks.menuCategories = content.menu.categories
+  .map(
+    (c) => `
+          <div class="menu-category reveal" id="${c.id}">
 
             <div class="menu-category-head">
-              <h3 class="headline-2 menu-category-title">${esc(c.name)}</h3>
-              <p class="label-2 menu-category-subtitle">${esc(c.subtitle)}</p>
+              <h2>${esc(c.name)}</h2>
+              <p class="label">${esc(c.subtitle)}</p>
             </div>
 
-            <ul class="grid-list">
-${c.items.map((i) => menuCard(i, '              ')).join('\n')}
-            </ul>
+            <div class="menu-grid">
+${c.items.map((i) => menuItem(i, '              ')).join('')}
+            </div>
 
-          </div>`).join('\n');
+          </div>`
+  )
+  .join('');
 
-blocks.featureCards = content.features.cards.map((c) => `
-            <li class="feature-item">
-              <div class="feature-card">
+/* --- Tədbirlər --- */
 
-                <div class="card-icon">
-                  <img src="${img(c.icon)}" width="100" height="80" loading="lazy" alt="">
-                </div>
-
-                <h3 class="title-2 card-title">${esc(c.title)}</h3>
-
-                <p class="label-1 card-text">${esc(c.text)}</p>
-
-              </div>
-            </li>`).join('\n');
-
-blocks.eventCards = content.events.cards.map((c) => `
+blocks.eventCards = content.events.cards
+  .map(
+    (c) => `
             <li>
-              <div class="event-card has-before hover:shine">
-
-                <div class="card-banner img-holder" style="--width: 350; --height: 450;">
-                  <img src="${img(c.image)}" width="350" height="450" loading="lazy" alt="${esc(c.title)}"
-                    class="img-cover">
-
-                  <time class="publish-date label-2" datetime="${c.date}">${c.dateText}</time>
+              <article class="event-card">
+                <figure>
+                  <img src="${img(c.image)}" width="350" height="300" loading="lazy" alt="${esc(c.title)}">
+                </figure>
+                <div class="event-body">
+                  <time datetime="${c.date}">${c.dateText} · ${esc(c.category)}</time>
+                  <h3>${esc(c.title)}</h3>
                 </div>
+              </article>
+            </li>`
+  )
+  .join('');
 
-                <div class="card-content">
-                  <p class="card-subtitle label-2 text-center">${esc(c.category)}</p>
+/* --- Qalereya --- */
 
-                  <h3 class="card-title title-2 text-center">
-                    ${esc(c.title)}
-                  </h3>
-                </div>
-
-              </div>
-            </li>`).join('\n');
-
-blocks.galleryItems = content.gallery.images.map((g) => `
-            <li class="gallery-item">
-              <figure class="gallery-figure img-holder has-before hover:shine" style="--width: 400; --height: 400;">
-                <img src="${img(g.src)}" width="400" height="400" loading="lazy" alt="${esc(g.alt)}"
-                  class="img-cover">
-                <figcaption class="label-2">${esc(g.alt)}</figcaption>
+blocks.galleryItems = content.gallery.images
+  .map(
+    (g, i) => `
+            <li class="gallery-item${i % 5 === 0 ? ' tall' : ''}">
+              <figure>
+                <img src="${img(g.src)}" width="500" height="500" loading="lazy" alt="${esc(g.alt)}">
+                <figcaption>${esc(g.alt)}</figcaption>
               </figure>
-            </li>`).join('\n');
+            </li>`
+  )
+  .join('');
 
-blocks.statCards = content.pages.haqqimizda.stats.map((s) => `
-            <li class="stats-item">
-              <p class="stats-value headline-1">${esc(s.value)}</p>
-              <p class="label-2 stats-label">${esc(s.label)}</p>
-            </li>`).join('\n');
+/* --- Haqqımızda --- */
 
-blocks.storyBlocks = content.pages.haqqimizda.blocks.map((b, i) => `
+blocks.statCards = content.pages.haqqimizda.stats
+  .map(
+    (s) => `
+            <li>
+              <p class="value">${esc(s.value)}</p>
+              <span class="label">${esc(s.label)}</span>
+            </li>`
+  )
+  .join('');
+
+blocks.storyBlocks = content.pages.haqqimizda.blocks
+  .map(
+    (b, i) => `
             <li class="story-item">
-              <span class="story-num headline-2" aria-hidden="true">${pad(i + 1)}</span>
-              <h3 class="title-2 story-title">${esc(b.title)}</h3>
-              <p class="label-1 story-text">${esc(b.text)}</p>
-            </li>`).join('\n');
-
-blocks.packageCards = content.pages.tedbirler.packages.map((p) => `
-            <li class="package-item">
-              <div class="package-card${p.featured ? ' is-featured' : ''}">
-                ${p.featured ? '<span class="package-badge label-2">Ən çox seçilən</span>' : ''}
-                <h3 class="title-2 package-name">${esc(p.name)}</h3>
-                <p class="label-2 package-capacity">${esc(p.capacity)}</p>
-                <p class="package-price headline-2">${esc(p.price)}</p>
-
-                <ul class="package-features">
-${p.features.map((f) => `                  <li class="label-1"><ion-icon name="checkmark-outline" aria-hidden="true"></ion-icon><span>${esc(f)}</span></li>`).join('\n')}
-                </ul>
-
-                <a href="rezervasiya.html" class="btn btn-primary">
-                  <span class="text text-1">Sorğu göndər</span>
-                  <span class="text text-2" aria-hidden="true">Sorğu göndər</span>
-                </a>
+              <span class="num">№ ${pad(i + 1)}</span>
+              <div>
+                <h3>${esc(b.title)}</h3>
+                <p>${esc(b.text)}</p>
               </div>
-            </li>`).join('\n');
+            </li>`
+  )
+  .join('');
 
-blocks.stepCards = content.pages.rezervasiya.steps.map((s) => `
-            <li class="step-item">
-              <div class="step-card">
-                <span class="step-num headline-2" aria-hidden="true">${esc(s.num)}</span>
-                <h3 class="title-2 step-title">${esc(s.title)}</h3>
-                <p class="label-1 step-text">${esc(s.text)}</p>
-              </div>
-            </li>`).join('\n');
+/* --- Banket paketləri --- */
 
-blocks.ruleItems = content.pages.rezervasiya.rules.map((r) => `
-                <li class="label-1"><ion-icon name="ellipse-outline" aria-hidden="true"></ion-icon><span>${esc(r)}</span></li>`).join('');
+blocks.packageCards = content.pages.tedbirler.packages
+  .map(
+    (p) => `
+            <li class="package-card${p.featured ? ' is-featured' : ''}">
+              ${p.featured ? '<span class="package-badge">Ən çox seçilən</span>' : ''}
+              <h3>${esc(p.name)}</h3>
+              <p class="package-capacity">${esc(p.capacity)}</p>
+              <p class="package-price">${esc(p.price)}</p>
+
+              <ul class="package-features">
+${p.features.map((f) => `                <li>${esc(f)}</li>`).join('\n')}
+              </ul>
+
+              <a href="rezervasiya.html" class="btn">Sorğu göndər</a>
+            </li>`
+  )
+  .join('');
+
+/* --- Rezervasiya səhifəsi --- */
+
+blocks.stepCards = content.pages.rezervasiya.steps
+  .map(
+    (s) => `
+            <li class="step">
+              <span class="num">${esc(s.num)}</span>
+              <h3>${esc(s.title)}</h3>
+              <p>${esc(s.text)}</p>
+            </li>`
+  )
+  .join('');
+
+blocks.ruleItems = content.pages.rezervasiya.rules
+  .map((r) => `
+              <li>${esc(r)}</li>`)
+  .join('');
 
 /* --- Forma seçimləri --- */
 
@@ -246,30 +234,33 @@ const r = site.reservation;
 blocks.guestOptions = (() => {
   const out = [];
   for (let n = r.minGuests; n <= r.maxGuests; n++) {
-    out.push(`                    <option value="${n}"${n === 2 ? ' selected' : ''}>${n} nəfər</option>`);
+    out.push(`                  <option value="${n}"${n === 2 ? ' selected' : ''}>${n} nəfər</option>`);
   }
-  out.push(`                    <option value="${r.maxGuests + 1}">${r.maxGuests}+ nəfər (qrup)</option>`);
+  out.push(`                  <option value="${r.maxGuests + 1}">${r.maxGuests}+ nəfər (qrup)</option>`);
   return out.join('\n');
 })();
 
 blocks.timeOptions = (() => {
-  const out = [`                    <option value="" disabled selected>Saat seçin</option>`];
+  const out = ['                  <option value="" disabled selected>Saat seçin</option>'];
   for (let h = r.openHour; h <= r.closeHour; h++) {
     for (let m = 0; m < 60; m += r.slotMinutes) {
       if (h === r.closeHour && m > 0) break;
       const t = `${pad(h)}:${pad(m)}`;
-      out.push(`                    <option value="${t}">${t}</option>`);
+      out.push(`                  <option value="${t}">${t}</option>`);
     }
   }
   return out.join('\n');
 })();
 
 blocks.areaOptions = r.areas
-  .map((a) => `                    <option value="${a.value}"${a.value === 'any' ? ' selected' : ''}>${esc(a.label)}</option>`)
+  .map(
+    (a) =>
+      `                  <option value="${a.value}"${a.value === 'any' ? ' selected' : ''}>${esc(a.label)}</option>`
+  )
   .join('\n');
 
 blocks.occasionOptions = r.occasions
-  .map((o) => `                    <option value="${o.value}">${esc(o.label)}</option>`)
+  .map((o) => `                  <option value="${o.value}">${esc(o.label)}</option>`)
   .join('\n');
 
 /* ------------------------------------------------------------------ *
@@ -284,13 +275,14 @@ const pages = [
     nav: 'index',
     title: `${N} — ${site.site.tagline}`,
     description: site.site.description,
-    preload: ['hero-slider-1.jpg', 'hero-slider-2.jpg', 'hero-slider-3.jpg'],
+    preload: ['hero-slider-1.jpg'],
   },
   {
     file: 'menyu.html',
     nav: 'menyu',
     title: `Menyu — ${N}`,
-    description: 'Steyklər, mangal və kabablar, başlanğıclar, salatlar, şirniyyat və içkilər. Qiymətlər və təsvirlər.',
+    description:
+      'Steyklər, mangal və kabablar, başlanğıclar, salatlar, şirniyyat və içkilər. Qiymətlər və təsvirlər.',
     heroTitle: content.pages.menyu.title,
     heroSubtitle: content.pages.menyu.subtitle,
     heroImage: 'hero-slider-2.jpg',
@@ -299,7 +291,8 @@ const pages = [
     file: 'haqqimizda.html',
     nav: 'haqqimizda',
     title: `Haqqımızda — ${N}`,
-    description: 'Mangal Steak House-un hekayəsi: 28 gün dinləndirilmiş ət, palıd kömürü və Azərbaycan süfrə ənənəsi.',
+    description:
+      'Mangal Steak House-un hekayəsi: 28 gün dinləndirilmiş ət, palıd kömürü və Azərbaycan süfrə ənənəsi.',
     heroTitle: content.pages.haqqimizda.title,
     heroSubtitle: content.pages.haqqimizda.subtitle,
     heroImage: 'about-banner.jpg',
@@ -326,7 +319,8 @@ const pages = [
     file: 'rezervasiya.html',
     nav: 'rezervasiya',
     title: `Onlayn Rezervasiya — ${N}`,
-    description: 'Masanızı onlayn ayırın: tarix, saat və nəfər sayını seçin — sorğunuz birbaşa restoranın sisteminə düşür.',
+    description:
+      'Masanızı onlayn ayırın: tarix, saat və nəfər sayını seçin — sorğunuz birbaşa restoranın sisteminə düşür.',
     heroTitle: content.pages.rezervasiya.title,
     heroSubtitle: content.pages.rezervasiya.subtitle,
     heroImage: 'hero-slider-3.jpg',
@@ -349,7 +343,7 @@ const pages = [
   },
 ];
 
-const navKeys = pages.map((p) => p.nav);
+const navKeys = pages.map((p) => p.nav).filter(Boolean);
 
 /* ------------------------------------------------------------------ *
  *  Render
@@ -380,9 +374,9 @@ for (const page of pages) {
     partials.head,
     partials.topbar,
     partials.header,
-    '\n  <main>\n    <article>\n',
+    '\n  <main>\n',
     body,
-    '\n    </article>\n  </main>\n',
+    '\n  </main>\n',
     partials.footer,
     partials.scripts,
   ].join('\n');
@@ -457,10 +451,10 @@ Sitemap: ${base}/sitemap.xml
   'utf8'
 );
 
-console.log(`  ✓ public/sitemap.xml\n  ✓ public/robots.txt`);
+console.log('  ✓ public/sitemap.xml\n  ✓ public/robots.txt');
 
-if (!existsSync(join(OUT, 'assets', 'css', 'style.css'))) {
-  console.warn('  ! Diqqət: public/assets/css/style.css tapılmadı.');
+if (!existsSync(join(OUT, 'assets', 'css', 'site.css'))) {
+  console.warn('  ! Diqqət: public/assets/css/site.css tapılmadı.');
 }
 
 if (failed) {

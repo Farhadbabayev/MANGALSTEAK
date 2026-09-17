@@ -3,11 +3,9 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>{{page.title}}</title>
-  <meta name="title" content="{{page.title}}">
   <meta name="description" content="{{page.description}}">
   <link rel="canonical" href="{{site.url}}/{{page.file}}">
 
@@ -19,17 +17,20 @@
   <meta property="og:url" content="{{site.url}}/{{page.file}}">
   <meta property="og:image" content="{{site.url}}/assets/images/hero-slider-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="theme-color" content="#0e0f0f">
+  <meta name="theme-color" content="#121212">
 
   <link rel="shortcut icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./favicon.svg">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Forum&display=swap" rel="stylesheet">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="./assets/fonts/cormorant-garamond-300-normal-latin-ext.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="./assets/fonts/inter-300-normal-latin-ext.woff2">
 
-  <link rel="stylesheet" href="./assets/css/style.css">
-  <link rel="stylesheet" href="./assets/css/mangal.css">
+  <script>document.documentElement.classList.add('js');</script>
+
+  <link rel="stylesheet" href="./assets/css/fonts.css">
+  <link rel="stylesheet" href="./assets/css/site.css">
 
 {{page.preload}}
   <script type="application/ld+json">
@@ -41,7 +42,7 @@
     "url": "{{site.url}}",
     "telephone": "{{contact.phone}}",
     "email": "{{contact.email}}",
-    "priceRange": "₼₼",
+    "priceRange": "20-95 AZN",
     "servesCuisine": ["Steak House", "Azərbaycan mətbəxi", "Mangal"],
     "address": {
       "@type": "PostalAddress",
@@ -55,9 +56,4 @@
 </head>
 
 <body id="top">
-
-  <div class="preload" data-preaload>
-    <div class="circle"></div>
-    <p class="text">{{site.shortName}}</p>
-  </div>
 
