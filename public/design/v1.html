@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Variant 1 — Köz &amp; Alov | Mangal Steak House</title>
+  <link rel="stylesheet" href="../assets/css/fonts.css">
+  <style>
+    /* ============================================================
+       VARIANT 1 — KÖZ & ALOV
+       Cəsur, müasir, enerjili. Tünd kömür + köz narıncısı.
+       ============================================================ */
+
+    :root {
+      --ink: #0B0B0C;
+      --ash: #141416;
+      --ash-2: #1C1C1F;
+      --ember: #E2571F;
+      --copper: #C97B3A;
+      --cream: #F5F1EA;
+      --smoke: #8C8880;
+      --line: rgba(245, 241, 234, 0.12);
+
+      --display: 'Anton', 'Arial Narrow', sans-serif;
+      --body: 'Manrope', system-ui, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--ink);
+      color: var(--cream);
+      font-family: var(--body);
+      font-size: 17px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    .wrap { width: min(1320px, 100% - 48px); margin-inline: auto; }
+
+    .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--ember);
+    }
+
+    h1, h2, h3 {
+      font-family: var(--display);
+      font-weight: 400;
+      text-transform: uppercase;
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+    }
+
+    /* ---------- TICKER ---------- */
+
+    .ticker {
+      background: var(--ember);
+      color: var(--ink);
+      overflow: hidden;
+      white-space: nowrap;
+      padding-block: 9px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+    }
+
+    .ticker span { display: inline-block; padding-inline: 18px; }
+
+    .ticker-track {
+      display: inline-block;
+      animation: slide 28s linear infinite;
+    }
+
+    @keyframes slide {
+      to { transform: translateX(-50%); }
+    }
+
+    /* ---------- HEADER ---------- */
+
+    .site-head {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(11, 11, 12, 0.88);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .head-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding-block: 18px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+
+    .brand svg { width: 26px; color: var(--ember); }
+
+    .brand-name {
+      font-family: var(--display);
+      font-size: 26px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .brand-name small {
+      display: block;
+      font-family: var(--body);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.4em;
+      color: var(--smoke);
+      margin-top: 3px;
+    }
+
+    .nav { display: flex; gap: 32px; }
+
+    .nav a {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--smoke);
+      position: relative;
+      padding-block: 4px;
+      transition: color 200ms;
+    }
+
+    .nav a::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 2px;
+      background: var(--ember);
+      transition: width 260ms;
+    }
+
+    .nav a:hover, .nav a.on { color: var(--cream); }
+    .nav a:hover::after, .nav a.on::after { width: 100%; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--ember);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      padding: 15px 26px;
+      border: 0;
+      cursor: pointer;
+      transition: transform 200ms, background 200ms;
+    }
+
+    .btn:hover { background: var(--cream); transform: translateY(-2px); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--cream);
+      border: 1px solid var(--line);
+    }
+
+    .btn-ghost:hover { background: var(--cream); color: var(--ink); }
+
+    /* ---------- HERO ---------- */
+
+    .hero {
+      position: relative;
+      min-height: 88vh;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    .hero-bg { position: absolute; inset: 0; }
+
+    .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(to right, rgba(11,11,12,0.94) 0%, rgba(11,11,12,0.6) 55%, rgba(11,11,12,0.3) 100%),
+        linear-gradient(to top, var(--ink) 2%, transparent 45%);
+    }
+
+    .hero-inner { position: relative; padding-block: 90px 60px; }
+
+    .hero h1 {
+      font-size: clamp(64px, 11.5vw, 170px);
+      max-width: 15ch;
+      margin-block: 20px 26px;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--ember);
+      display: inline-block;
+    }
+
+    .hero p {
+      max-width: 46ch;
+      color: #cdc8c0;
+      font-size: 19px;
+      margin-bottom: 34px;
+    }
+
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 14px; }
+
+    .hero-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0;
+      margin-top: 70px;
+      border-top: 1px solid var(--line);
+    }
+
+    .hero-stats li {
+      flex: 1 1 160px;
+      padding: 22px 26px 0 0;
+    }
+
+    .hero-stats b {
+      display: block;
+      font-family: var(--display);
+      font-size: 42px;
+      color: var(--cream);
+      line-height: 1;
+    }
+
+    .hero-stats span {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--smoke);
+    }
+
+    /* ---------- BÖLMƏLƏR ---------- */
+
+    section { padding-block: 110px; }
+
+    .sec-head { margin-bottom: 56px; max-width: 46ch; }
+
+    .sec-head h2 {
+      font-size: clamp(42px, 6vw, 84px);
+      margin-top: 14px;
+    }
+
+    /* üç sütun — asimmetrik */
+
+    .three {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
+    }
+
+    .pill {
+      position: relative;
+      background: var(--ash);
+      border: 1px solid var(--line);
+      padding: 38px 30px 34px;
+      overflow: hidden;
+      transition: border-color 260ms, transform 260ms;
+    }
+
+    .three li:nth-child(2) .pill { transform: translateY(38px); }
+
+    .pill:hover { border-color: var(--ember); transform: translateY(-6px); }
+    .three li:nth-child(2) .pill:hover { transform: translateY(32px); }
+
+    .pill .num {
+      font-family: var(--display);
+      font-size: 78px;
+      line-height: 0.8;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(226, 87, 31, 0.55);
+    }
+
+    .pill h3 { font-size: 26px; margin-block: 18px 12px; }
+
+    .pill p { color: var(--smoke); font-size: 15.5px; }
+
+    /* şef seçimi */
+
+    .signature {
+      background: var(--ash);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .sig-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+      align-items: center;
+      gap: 70px;
+    }
+
+    .sig-img { position: relative; }
+
+    .sig-img img { width: 100%; height: 560px; object-fit: cover; }
+
+    .sig-tag {
+      position: absolute;
+      top: 26px;
+      left: -18px;
+      background: var(--ember);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 11px 20px;
+    }
+
+    .sig-body h2 { font-size: clamp(40px, 5.4vw, 74px); margin-block: 16px 20px; }
+
+    .sig-body p { color: var(--smoke); max-width: 44ch; margin-bottom: 30px; }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 18px;
+      margin-bottom: 34px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+
+    .price-row .now {
+      font-family: var(--display);
+      font-size: 56px;
+      color: var(--ember);
+      line-height: 1;
+    }
+
+    .price-row .was {
+      font-size: 20px;
+      color: var(--smoke);
+      text-decoration: line-through;
+    }
+
+    /* menyu — redaksiya siyahısı */
+
+    .menu-list { border-top: 1px solid var(--line); }
+
+    .menu-row {
+      display: grid;
+      grid-template-columns: 58px 1fr auto;
+      align-items: center;
+      gap: 26px;
+      padding: 26px 8px;
+      border-bottom: 1px solid var(--line);
+      transition: background 240ms, padding 240ms;
+    }
+
+    .menu-row:hover { background: var(--ash); padding-inline: 20px; }
+
+    .menu-row .idx {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      color: var(--smoke);
+    }
+
+    .menu-row h3 { font-size: 27px; }
+
+    .menu-row:hover h3 { color: var(--ember); }
+
+    .menu-row p { color: var(--smoke); font-size: 15px; margin-top: 4px; max-width: 60ch; }
+
+    .menu-row .tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--copper);
+      border: 1px solid rgba(201, 123, 58, 0.5);
+      padding: 3px 9px;
+      margin-left: 12px;
+      vertical-align: 5px;
+    }
+
+    .menu-row .cost {
+      font-family: var(--display);
+      font-size: 34px;
+      white-space: nowrap;
+    }
+
+    /* rezervasiya */
+
+    .book {
+      background:
+        linear-gradient(rgba(11,11,12,0.93), rgba(11,11,12,0.97)),
+        url('../assets/images/testimonial-bg.jpg') center/cover;
+    }
+
+    .book-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 70px;
+      align-items: start;
+    }
+
+    .book h2 { font-size: clamp(42px, 6vw, 82px); margin-block: 14px 22px; }
+
+    .book-note { color: var(--smoke); max-width: 40ch; margin-bottom: 34px; }
+
+    .book-contact { display: grid; gap: 22px; }
+
+    .book-contact div { border-top: 1px solid var(--line); padding-top: 16px; }
+
+    .book-contact dt {
+      font-size: 11px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--smoke);
+      margin-bottom: 6px;
+    }
+
+    .book-contact dd { font-size: 19px; font-weight: 600; }
+
+    form.card {
+      background: var(--ash);
+      border: 1px solid var(--line);
+      padding: 40px;
+    }
+
+    .fields { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .field { display: grid; gap: 7px; }
+
+    .field.full { grid-column: 1 / -1; }
+
+    .field label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--smoke);
+    }
+
+    .field input, .field select, .field textarea {
+      background: var(--ink);
+      border: 1px solid var(--line);
+      color: var(--cream);
+      font-family: inherit;
+      font-size: 16px;
+      padding: 14px 15px;
+      outline: none;
+      transition: border-color 200ms;
+    }
+
+    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--ember); }
+
+    .field textarea { resize: none; height: 96px; }
+
+    form.card .btn { width: 100%; justify-content: center; margin-top: 22px; }
+
+    /* footer */
+
+    .site-foot { border-top: 1px solid var(--line); padding-block: 80px 34px; }
+
+    .foot-word {
+      font-family: var(--display);
+      font-size: clamp(56px, 13vw, 190px);
+      line-height: 0.85;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(245, 241, 234, 0.22);
+      margin-bottom: 60px;
+    }
+
+    .foot-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 34px;
+      padding-bottom: 46px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .foot-grid h4 {
+      font-family: var(--body);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--ember);
+      margin-bottom: 16px;
+    }
+
+    .foot-grid li, .foot-grid p { color: var(--smoke); font-size: 15px; margin-bottom: 8px; }
+
+    .foot-bottom {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-top: 24px;
+      font-size: 13px;
+      color: var(--smoke);
+    }
+
+    @media (max-width: 960px) {
+      .nav { display: none; }
+      .three, .sig-grid, .book-grid, .foot-grid { grid-template-columns: 1fr; }
+      .three li:nth-child(2) .pill { transform: none; }
+      .sig-grid { gap: 36px; }
+      .fields { grid-template-columns: 1fr; }
+      section { padding-block: 72px; }
+      .menu-row { grid-template-columns: 1fr auto; }
+      .menu-row .idx { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="ticker">
+    <div class="ticker-track">
+      <span>Odun közü üzərində</span><span>◆</span><span>28 gün dry-aged</span><span>◆</span>
+      <span>Hər gün 11:00 – 24:00</span><span>◆</span><span>Bakı, Nizami küç. 00</span><span>◆</span>
+      <span>Odun közü üzərində</span><span>◆</span><span>28 gün dry-aged</span><span>◆</span>
+      <span>Hər gün 11:00 – 24:00</span><span>◆</span><span>Bakı, Nizami küç. 00</span><span>◆</span>
+    </div>
+  </div>
+
+  <header class="site-head">
+    <div class="wrap head-inner">
+      <a href="#" class="brand">
+        <svg viewBox="0 0 28 34" fill="none" aria-hidden="true">
+          <path d="M14 1.5c1.2 4.3-1.1 6.4-3.2 8.6-2.4 2.5-4.6 4.9-4.6 9.1 0 4.7 3.5 8.3 7.8 8.3s7.8-3.6 7.8-8.3c0-2.6-1-4.4-2.2-6 .2 1.9-.5 3.4-1.9 4.1.6-3.7-.7-7.2-3.7-10.4.4 2.6-.5 4.3-2.3 6.2-1.4 1.5-2.2 2.8-2.2 4.6 0 1.4.5 2.6 1.4 3.5-2.5-.9-3.6-3-3.1-5.6.6-3.1 3-4.8 4.6-7.3 1.3-2 1.9-4.2 1.6-6.8z" fill="currentColor"/>
+          <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <span class="brand-name">Mangal<small>Steak House</small></span>
+      </a>
+
+      <nav class="nav">
+        <a href="#" class="on">Ana Səhifə</a>
+        <a href="#menyu">Menyu</a>
+        <a href="#">Haqqımızda</a>
+        <a href="#">Qalereya</a>
+        <a href="#">Tədbirlər</a>
+        <a href="#">Əlaqə</a>
+      </nav>
+
+      <a href="#rezerv" class="btn">Masa ayır</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="../assets/images/hero-slider-1.jpg" alt="">
+    </div>
+
+    <div class="wrap hero-inner">
+      <p class="eyebrow">Odun közü &amp; premium ət</p>
+
+      <h1>Ət, alov<br> və <em>səbr</em></h1>
+
+      <p>28 gün dinləndirilmiş ribeye, palıd kömürü üzərində bişən quzu tikə və
+         açıq mangal zonası — Bakının mərkəzində.</p>
+
+      <div class="hero-actions">
+        <a href="#rezerv" class="btn">Masanı ayır</a>
+        <a href="#menyu" class="btn btn-ghost">Menyuya bax</a>
+      </div>
+
+      <ul class="hero-stats">
+        <li><b>28</b><span>gün dry-aged</span></li>
+        <li><b>12</b><span>il təcrübə</span></li>
+        <li><b>140</b><span>oturacaq</span></li>
+        <li><b>4.8</b><span>orta reytinq</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Niyə biz</p>
+        <h2>Üç şeyi ciddi edirik</h2>
+      </div>
+
+      <ul class="three">
+        <li>
+          <div class="pill">
+            <span class="num">01</span>
+            <h3>Ət seçimi</h3>
+            <p>Hər həftə eyni təsərrüfatlardan bütöv kəsim. Öz ustamız parçalayır,
+               öz otağımızda 28 gün dinləndirilir.</p>
+          </div>
+        </li>
+        <li>
+          <div class="pill">
+            <span class="num">02</span>
+            <h3>Yalnız kömür</h3>
+            <p>Qaz sobası yoxdur. Palıd və tut kömürü, əl ilə çevirmə,
+               ürək ritmi kimi izlənən temperatur.</p>
+          </div>
+        </li>
+        <li>
+          <div class="pill">
+            <span class="num">03</span>
+            <h3>Paylaşmaq üçün</h3>
+            <p>Menyumuz masanın ortasına qoyulan böyük tabaqlar üçün qurulub —
+               Azərbaycan süfrəsi belə olur.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="signature">
+    <div class="wrap sig-grid">
+      <div class="sig-img">
+        <span class="sig-tag">Şefin seçimi</span>
+        <img src="../assets/images/special-dish-banner.jpg" alt="Dry-aged tomahawk">
+      </div>
+
+      <div class="sig-body">
+        <p class="eyebrow">1000 qram · iki nəfərlik</p>
+        <h2>Dry-Aged<br> Tomahawk</h2>
+        <p>Sümüklü ribeye, 28 gün quru dinləndirilmiş, palıd kömürü üzərində.
+           Közdə qovrulmuş tərəvəz və çimçiri sousu ilə təqdim olunur.</p>
+
+        <div class="price-row">
+          <span class="now">95 ₼</span>
+          <span class="was">120 ₼</span>
+        </div>
+
+        <a href="#rezerv" class="btn">Masanı ayır</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="menyu">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="eyebrow">Kömürün üzərindən süfrənizə</p>
+        <h2>Steyklər</h2>
+      </div>
+
+      <ul class="menu-list">
+        <li class="menu-row">
+          <span class="idx">01</span>
+          <div>
+            <h3>Ribeye <span class="tag">Bestseller</span></h3>
+            <p>300 qr · 28 gün dry-aged, dəniz duzu və çəkilmiş qara istiot ilə.</p>
+          </div>
+          <span class="cost">38 ₼</span>
+        </li>
+        <li class="menu-row">
+          <span class="idx">02</span>
+          <div>
+            <h3>Tomahawk <span class="tag">2 nəfərlik</span></h3>
+            <p>1000 qr · Sümüklü ribeye, közdə tərəvəz və çimçiri sousu ilə.</p>
+          </div>
+          <span class="cost">95 ₼</span>
+        </li>
+        <li class="menu-row">
+          <span class="idx">03</span>
+          <div>
+            <h3>T-Bone</h3>
+            <p>450 qr · Bir tərəfdə fileminyon, digər tərəfdə striploin.</p>
+          </div>
+          <span class="cost">45 ₼</span>
+        </li>
+        <li class="menu-row">
+          <span class="idx">04</span>
+          <div>
+            <h3>Fileminyon</h3>
+            <p>220 qr · Ən zərif kəsim, göbələk sousu və kartof püresi ilə.</p>
+          </div>
+          <span class="cost">42 ₼</span>
+        </li>
+        <li class="menu-row">
+          <span class="idx">05</span>
+          <div>
+            <h3>Picanha <span class="tag">Yeni</span></h3>
+            <p>350 qr · Braziliya üsulu, iri duz dənəcikləri ilə közdə.</p>
+          </div>
+          <span class="cost">34 ₼</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="book" id="rezerv">
+    <div class="wrap book-grid">
+      <div>
+        <p class="eyebrow">Onlayn rezervasiya</p>
+        <h2>Masanızı<br> ayırın</h2>
+        <p class="book-note">Formanı doldurun — sorğunuz birbaşa restoranın rezervasiya
+           sisteminə düşür, heyətimiz 15 dəqiqə ərzində təsdiq üçün zəng edir.</p>
+
+        <dl class="book-contact">
+          <div><dt>Rezervasiya</dt><dd>+994 12 000 00 00</dd></div>
+          <div><dt>Ünvan</dt><dd>Nizami küçəsi 00, Bakı</dd></div>
+          <div><dt>İş saatları</dt><dd>Hər gün 11:00 – 24:00</dd></div>
+        </dl>
+      </div>
+
+      <form class="card" onsubmit="return false">
+        <div class="fields">
+          <div class="field">
+            <label>Ad, Soyad</label>
+            <input type="text" placeholder="Aysel Quliyeva">
+          </div>
+          <div class="field">
+            <label>Telefon</label>
+            <input type="tel" placeholder="+994 50 123 45 67">
+          </div>
+          <div class="field">
+            <label>Tarix</label>
+            <input type="date" value="2026-09-20">
+          </div>
+          <div class="field">
+            <label>Saat</label>
+            <select><option>19:30</option><option>20:00</option></select>
+          </div>
+          <div class="field">
+            <label>Nəfər</label>
+            <select><option>4 nəfər</option><option>2 nəfər</option></select>
+          </div>
+          <div class="field">
+            <label>Zona</label>
+            <select><option>Yay terrası</option><option>Əsas salon</option></select>
+          </div>
+          <div class="field full">
+            <label>Qeyd</label>
+            <textarea placeholder="Uşaq kreslosu, doğum günü tortu, pəncərə kənarı…"></textarea>
+          </div>
+        </div>
+
+        <button class="btn">Masanı ayır</button>
+      </form>
+    </div>
+  </section>
+
+  <footer class="site-foot">
+    <div class="wrap">
+      <p class="foot-word">Mangal</p>
+
+      <div class="foot-grid">
+        <div>
+          <h4>Ünvan</h4>
+          <p>Nizami küçəsi 00,<br> Səbail, Bakı AZ1005</p>
+        </div>
+        <div>
+          <h4>Əlaqə</h4>
+          <p>+994 12 000 00 00<br> rezervasiya@mangalsteakhouse.az</p>
+        </div>
+        <div>
+          <h4>Saatlar</h4>
+          <p>Hər gün 11:00 – 24:00<br> Mətbəx 23:30-a qədər</p>
+        </div>
+        <div>
+          <h4>Sosial</h4>
+          <ul>
+            <li>Instagram</li>
+            <li>Facebook</li>
+            <li>TikTok</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="foot-bottom">
+        <span>© 2026 Mangal Steak House</span>
+        <span>Variant 1 — Köz &amp; Alov</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
