@@ -25,7 +25,7 @@ npm start         # saytı və rezervasiya API-sini işə salır
 Sonra: <http://localhost:3000>
 
 ```bash
-npm test          # uçdan-uca yoxlama (55 test) — saxta Vilka serveri ilə
+npm test          # uçdan-uca yoxlama (77 test) — saxta Vilka serveri ilə
 npm run new-site  # başqa restoran üçün mətnləri sıfırlayır
 npm run fonts     # şriftləri Google Fonts-dan yerli yükləyir
 ```
@@ -72,6 +72,23 @@ panelində "Vilka-ya düşməyib" kimi görünür və avtomatik təkrar göndər
 Müştəri bunu hiss etmir.
 
 ### Konfiqurasiya
+
+Ən rahat yol — **idarəetmə panelindəki «Rezervasiya sistemi» bölməsi**:
+orada API ünvanını, açarı, filial kodunu və sahə uyğunluğunu doldurub
+yadda saxlayırsınız. Serveri yenidən başlatmaq lazım deyil.
+Parametrlər `data/integration.json` faylında saxlanılır (git-ə düşmür,
+açar panelə bir daha göstərilmir).
+
+Panel həm də iki düymə verir:
+
+- **Göndəriləcək məlumatı göstər** — heç nə göndərmədən, tam JSON-u və
+  başlıqları göstərir (açar gizlədilmiş halda). Vilka tərəfi ilə
+  razılaşdırmaq üçün ən sürətli yol.
+- **Sınaq rezervasiyası göndər** — real sorğu göndərir və cavabı göstərir.
+  Tətbiqdə sınaq qeydi yarada bilər, sonra silin.
+
+Alternativ olaraq `.env` faylından da təyin etmək olar (server ilk
+qurulanda əlverişlidir; panel dəyəri onu üstələyir):
 
 ```bash
 cp .env.example .env
@@ -160,13 +177,19 @@ Hər dəyişiklikdən sonra sayt avtomatik yenidən yığılır.
 
 | Bölmə | Nə edir |
 |---|---|
-| **Rezervasiyalar** | Gün üzrə siyahı, qonaq sayı, təsdiq/ləğv, xarici sistemə təkrar göndərmə, axtarış, CSV ixracı |
+| **Rezervasiya sistemi** | Vilka API bağlantısı (ünvan, açar, filial kodu, sahə uyğunluğu), göndəriləcək məlumatın önizləməsi, sınaq göndərişi və **çatdırılma jurnalı** |
 | **Restoran məlumatları** | Ad, domen, telefon, ünvan, e-mail, iş saatları, sosial şəbəkələr, rezervasiya qaydaları (zonalar, saat aralığı, nəfər limiti) |
 | **Menyu** | Kateqoriya və yemək əlavə et/sil/sırala, qiymət, nişan (Bestseller və s.), təsvir |
 | **Səhifə mətnləri** | Slayder, haqqımızda, şefin seçimi, üstünlüklər, tədbirlər, qalereya, banket paketləri, rezervasiya addımları və qaydaları — bütün səhifələrin mətnləri |
 | **Şəkillər** | Yüklə, əvəz et, sil. Eyni adla yükləmək saytdakı şəkli dərhal dəyişir |
 | **Dizayn** | Rənglər, şriftlər, bölmə boşluqları, loqo (nişan / yazı / yüklənmiş şəkil) — canlı önizləmə ilə |
 | **Sistem** | Sistemin vəziyyəti, son əməliyyatın jurnalı, saytı yenidən yığma |
+
+> **Rezervasiyalar bu paneldən idarə olunmur.** Masaların təsdiqi, ləğvi və
+> yerləşdirilməsi Vilka tətbiqində aparılır — sayt yalnız sorğunu ora ötürür.
+> Paneldəki jurnal göndərişin baş tutub-tutmadığını izləmək üçündür:
+> çatdırılmayan sorğunu yenidən göndərmək və ya «əl ilə həll olundu»
+> kimi işarələmək olar.
 
 ### Təhlükəsizlik və geri qaytarma
 
@@ -334,7 +357,8 @@ server/
   lib/vilka.mjs         Vilka inteqrasiyası
   lib/notify.mjs        Telegram bildirişi
   lib/cms.mjs           konfiqurasiya, şəkil və yığma əməliyyatları
-data/                   rezervasiyalar və ehtiyat nüsxələr (git-ə düşmür)
+  lib/integration.mjs   Vilka bağlantısının parametrləri
+data/                   rezervasiyalar, bağlantı açarı və ehtiyat nüsxələr (git-ə düşmür)
 ```
 
 > `public/` qovluğu `npm run build` ilə yenidən yaradılır — HTML faylları
@@ -353,6 +377,10 @@ data/                   rezervasiyalar və ehtiyat nüsxələr (git-ə düşmür
 | `/api/admin/status` | POST | Statusun dəyişdirilməsi |
 | `/api/admin/retry` | POST | Vilka-ya təkrar göndərmə |
 | `/api/admin/export.csv` | GET | CSV ixracı |
+| `/api/admin/integration` | GET / POST | Vilka bağlantısını oxu / yadda saxla |
+| `/api/admin/integration/preview` | GET | Göndəriləcək JSON-un önizləməsi |
+| `/api/admin/integration/test` | POST | Sınaq göndərişi |
+| `/api/admin/resolve` | POST | «Əl ilə həll olundu» işarəsi |
 | `/api/admin/config` | GET / POST | Konfiqurasiyanı oxu / yadda saxla |
 | `/api/admin/build` | POST | Saytı yenidən yığ |
 | `/api/admin/images` | GET / POST | Şəkil siyahısı / yükləmə |

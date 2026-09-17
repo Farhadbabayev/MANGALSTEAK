@@ -11,7 +11,8 @@ import { createReadStream, existsSync, statSync, readFileSync } from 'node:fs';
 import { join, normalize, extname, sep, basename } from 'node:path';
 import { timingSafeEqual } from 'node:crypto';
 
-import { config, ROOT, vilkaEnabled } from './lib/config.mjs';
+import { config, ROOT } from './lib/config.mjs';
+import { getVilka, vilkaEnabled, maskedVilka, saveVilka } from './lib/integration.mjs';
 import {
   createReservation,
   listReservations,
@@ -21,7 +22,7 @@ import {
   addNewsletter,
 } from './lib/store.mjs';
 import { validateReservation, validateEmail } from './lib/validate.mjs';
-import { deliverOnce, vilkaStatus } from './lib/vilka.mjs';
+import { deliverOnce, vilkaStatus, previewPayload, sendTest } from './lib/vilka.mjs';
 import { notifyReservation, telegramEnabled } from './lib/notify.mjs';
 import {
   readAllConfigs,
@@ -207,25 +208,29 @@ const attemptDelivery = async (reservation) => {
   return updated || reservation;
 };
 
-/** Çatdırılmayanları arxa planda təkrar sınayır. */
+/**
+ * Çatdırılmayanları arxa planda təkrar sınayır.
+ * Parametrlər hər dəfə yenidən oxunur — paneldən dəyişdirmək serveri
+ * yenidən başlatmağı tələb etmir.
+ */
 const startRetryLoop = () => {
-  if (!vilkaEnabled()) return;
-
   const tick = async () => {
+    if (!vilkaEnabled()) return;
+
     try {
-      const queue = await pendingDeliveries(config.vilka.maxAttempts);
+      const queue = await pendingDeliveries(getVilka().maxAttempts);
       for (const reservation of queue) {
         const updated = await attemptDelivery(reservation);
         if (updated.delivery.status === 'sent') {
-          console.log('[vilka] təkrar cəhd uğurlu: ' + updated.code);
+          console.log('[rezervasiya] təkrar cəhd uğurlu: ' + updated.code);
         }
       }
     } catch (err) {
-      console.warn('[vilka] təkrar cəhd xətası:', (err && err.message) || err);
+      console.warn('[rezervasiya] təkrar cəhd xətası:', (err && err.message) || err);
     }
   };
 
-  const timer = setInterval(tick, config.vilka.retryEveryMs);
+  const timer = setInterval(tick, 60 * 1000);
   timer.unref();
   setTimeout(tick, 20 * 1000).unref();
 };
@@ -365,9 +370,13 @@ const handleAdminApi = async (req, res, url) => {
     return sendJson(res, 200, { ok: true, reservation: updated });
   }
 
-  if (path === '/api/admin/status' && req.method === 'POST') {
+  /**
+   * Çatdırılmamış rezervasiyanı «əl ilə həll olundu» kimi işarələyir —
+   * heyət onu rezervasiya tətbiqinə özü daxil edibsə, təkrar cəhd dayanır.
+   */
+  if (path === '/api/admin/resolve' && req.method === 'POST') {
     const body = await readJsonBody(req).catch(() => ({}));
-    const allowed = ['new', 'confirmed', 'cancelled'];
+    const allowed = ['new', 'manual'];
     if (!allowed.includes(body.status)) {
       return sendJson(res, 400, { ok: false, error: 'Status düzgün deyil.' });
     }
@@ -376,6 +385,32 @@ const handleAdminApi = async (req, res, url) => {
     if (!updated) return sendJson(res, 404, { ok: false, error: 'Rezervasiya tapılmadı.' });
 
     return sendJson(res, 200, { ok: true, reservation: updated });
+  }
+
+  /* ---------------- Rezervasiya sisteminin bağlantısı ---------------- */
+
+  if (path === '/api/admin/integration' && req.method === 'GET') {
+    return sendJson(res, 200, { ok: true, settings: maskedVilka(), status: vilkaStatus() });
+  }
+
+  if (path === '/api/admin/integration' && req.method === 'POST') {
+    const body = await readJsonBody(req).catch(() => null);
+    if (!body) return sendJson(res, 400, { ok: false, error: 'Məlumat oxunmadı.' });
+
+    const result = saveVilka(body);
+    if (!result.ok) return sendJson(res, 400, result);
+
+    console.log('[rezervasiya] bağlantı parametrləri yeniləndi (rejim: ' + getVilka().mode + ')');
+    return sendJson(res, 200, { ...result, status: vilkaStatus() });
+  }
+
+  if (path === '/api/admin/integration/preview' && req.method === 'GET') {
+    return sendJson(res, 200, { ok: true, preview: previewPayload() });
+  }
+
+  if (path === '/api/admin/integration/test' && req.method === 'POST') {
+    const result = await sendTest();
+    return sendJson(res, result.ok ? 200 : 400, result);
   }
 
   /* ---------------- Məzmun idarəetməsi ---------------- */

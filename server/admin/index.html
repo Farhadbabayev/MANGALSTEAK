@@ -30,7 +30,7 @@
 
     <nav class="sidenav" aria-label="Bölmələr">
       <button class="nav-item is-active" data-tab="rezervasiya">
-        <span class="nav-ico" aria-hidden="true">▤</span> Rezervasiyalar
+        <span class="nav-ico" aria-hidden="true">⇄</span> Rezervasiya sistemi
         <span class="nav-badge" data-pending-badge hidden>0</span>
       </button>
       <button class="nav-item" data-tab="melumat"><span class="nav-ico" aria-hidden="true">✦</span> Restoran məlumatları</button>
@@ -43,19 +43,115 @@
 
     <main class="content">
 
-      <!-- ============ REZERVASİYALAR ============ -->
+      <!-- ============ REZERVASİYA SİSTEMİ ============ -->
       <section class="tab is-active" data-panel="rezervasiya">
         <div class="page-head">
-          <h1>Rezervasiyalar</h1>
+          <h1>Rezervasiya sistemi</h1>
           <div class="page-actions">
             <button class="btn btn-ghost" data-refresh-res>Yenilə</button>
-            <a class="btn btn-ghost" href="/api/admin/export.csv">CSV yüklə</a>
+            <button class="btn btn-primary" data-save-integration>Bağlantını yadda saxla</button>
           </div>
         </div>
 
-        <div data-res-banner></div>
+        <p class="page-note">
+          Rezervasiyalar bu paneldən idarə olunmur — saytdakı forma sorğunu bu serverə göndərir,
+          server isə onu aşağıda göstərilən API vasitəsilə rezervasiya tətbiqinizə (Vilka) ötürür.
+          Masaların təsdiqi və idarəsi tətbiqin öz panelində aparılır.
+          Aşağıdakı jurnal yalnız çatdırılmanı izləmək üçündür.
+        </p>
 
         <div class="cards" data-res-stats></div>
+
+        <div data-res-banner></div>
+
+        <section class="group">
+          <div class="group-head">
+            <div>
+              <h2>API bağlantısı</h2>
+              <span class="hint" data-int-source></span>
+            </div>
+          </div>
+
+          <div class="group-body">
+            <div class="grid-2">
+
+              <div class="field">
+                <label for="int-mode">Rejim</label>
+                <select id="int-mode" data-int="mode">
+                  <option value="off">Sönülü — yalnız bu serverdə saxlanılır</option>
+                  <option value="api">API — tətbiqin ünvanına birbaşa göndər</option>
+                  <option value="webhook">Webhook — aralıq xidmət vasitəsilə</option>
+                </select>
+                <span class="help">Açar hələ yoxdursa «Sönülü» qoyun — sayt işləməyə davam edir.</span>
+              </div>
+
+              <div class="field">
+                <label for="int-restaurant">Restoran / filial kodu</label>
+                <input type="text" id="int-restaurant" data-int="restaurantId" placeholder="məsələn: 123">
+                <span class="help">Tətbiq tələb edirsə doldurun</span>
+              </div>
+
+              <div class="field full">
+                <label for="int-url">API ünvanı</label>
+                <input type="url" id="int-url" data-int="apiUrl" placeholder="https://api.vilka.az/v1/reservations">
+                <span class="help">Rezervasiyanın POST ediləcəyi ünvan — tətbiqdən alınır</span>
+              </div>
+
+              <div class="field full">
+                <label for="int-key">API açarı</label>
+                <input type="password" id="int-key" data-int="apiKey" autocomplete="off" placeholder="dəyişmək üçün yeni açarı yazın">
+                <span class="help" data-key-hint>Açar yadda saxlanılır və bir daha göstərilmir.</span>
+              </div>
+
+              <div class="field">
+                <label for="int-header">Açarın başlığı</label>
+                <input type="text" id="int-header" data-int="authHeader" placeholder="Authorization">
+                <span class="help">Bəzi sistemlər X-Api-Key istəyir</span>
+              </div>
+
+              <div class="field">
+                <label for="int-scheme">Açarın öncəsi</label>
+                <input type="text" id="int-scheme" data-int="authScheme" placeholder="Bearer">
+                <span class="help">Öncə lazım deyilsə boş buraxın</span>
+              </div>
+
+              <div class="field full">
+                <label for="int-map">Sahə uyğunluğu (JSON)</label>
+                <textarea id="int-map" data-int="fieldMap" spellcheck="false"
+                  placeholder='{"name":"guest_name","phone":"guest_phone","comment":"note"}'></textarea>
+                <span class="help">Tətbiq başqa sahə adları gözləyirsə burada uyğunlaşdırın: «bizim ad» → «onların adı»</span>
+              </div>
+
+              <div class="field full">
+                <label for="int-extra">Əlavə sabit sahələr (JSON)</label>
+                <textarea id="int-extra" data-int="extraFields" spellcheck="false"
+                  placeholder='{"branch_id":3,"channel":"website"}'></textarea>
+                <span class="help">Hər sorğuya əlavə olunur</span>
+              </div>
+
+              <div class="field">
+                <label for="int-timeout">Gözləmə vaxtı (ms)</label>
+                <input type="number" id="int-timeout" data-int="timeoutMs">
+              </div>
+
+              <div class="field">
+                <label for="int-attempts">Təkrar cəhd sayı</label>
+                <input type="number" id="int-attempts" data-int="maxAttempts">
+                <span class="help">Çatdırılmayan rezervasiya bu qədər dəfə yenidən göndərilir</span>
+              </div>
+
+            </div>
+
+            <div class="page-actions" style="margin-top:6px">
+              <button class="btn btn-ghost" data-int-preview>Göndəriləcək məlumatı göstər</button>
+              <button class="btn btn-ghost" data-int-test>Sınaq rezervasiyası göndər</button>
+            </div>
+
+            <pre class="log" data-int-log hidden>—</pre>
+          </div>
+        </section>
+
+        <h3 class="sys-h">Çatdırılma jurnalı</h3>
 
         <div class="toolbar">
           <label class="field-inline">
@@ -67,12 +163,13 @@
             <input type="date" data-filter="to">
           </label>
           <label class="field-inline">
-            <span>Status</span>
-            <select data-filter="status">
+            <span>Çatdırılma</span>
+            <select data-filter="delivery">
               <option value="">Hamısı</option>
-              <option value="new">Yeni</option>
-              <option value="confirmed">Təsdiqlənib</option>
-              <option value="cancelled">Ləğv edilib</option>
+              <option value="sent">Göndərildi</option>
+              <option value="failed">Uğursuz</option>
+              <option value="pending">Gözləyir</option>
+              <option value="skipped">Sönülü</option>
             </select>
           </label>
           <label class="field-inline grow">
@@ -80,6 +177,7 @@
             <input type="search" data-filter="search" placeholder="Ad, telefon və ya kod">
           </label>
           <button class="btn btn-ghost" data-filter-reset>Sıfırla</button>
+          <a class="btn btn-ghost" href="/api/admin/export.csv">CSV yüklə</a>
         </div>
 
         <div class="table-wrap">
@@ -87,11 +185,11 @@
             <thead>
               <tr>
                 <th>Kod</th><th>Tarix / Saat</th><th>Qonaq</th><th>Nəfər</th>
-                <th>Zona</th><th>Qeyd</th><th>Status</th><th>Vilka</th><th>Əməliyyat</th>
+                <th>Zona</th><th>Qeyd</th><th>Çatdırılma</th><th>Əməliyyat</th>
               </tr>
             </thead>
             <tbody data-res-rows>
-              <tr><td colspan="9" class="empty">Yüklənir…</td></tr>
+              <tr><td colspan="8" class="empty">Yüklənir…</td></tr>
             </tbody>
           </table>
         </div>

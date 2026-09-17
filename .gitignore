@@ -3,6 +3,7 @@ node_modules/
 .env.local
 data/*.jsonl
 data/backups/
+data/integration.json
 data/*.tmp
 *.log
 .DS_Store

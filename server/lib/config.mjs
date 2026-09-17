@@ -95,4 +95,4 @@ export const config = {
   trustProxy: str('TRUST_PROXY', 'false') === 'true',
 };
 
-export const vilkaEnabled = () => config.vilka.mode === 'api' || config.vilka.mode === 'webhook';
+/* Qeyd: aktiv rejim integration.mjs-dən oxunur — paneldən dəyişdirilə bilər. */

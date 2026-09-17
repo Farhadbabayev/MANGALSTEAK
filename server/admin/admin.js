@@ -64,7 +64,7 @@
    *  Vəziyyət
    * ================================================================ */
 
-  const state = { site: null, content: null, theme: null, images: [], fonts: [], reservations: [], siteUrl: '' };
+  const state = { site: null, content: null, theme: null, images: [], fonts: [], reservations: [], integration: null, siteUrl: '' };
   const dirty = new Set();
 
   const markDirty = (name) => {
@@ -1030,7 +1030,67 @@
   };
 
   /* ================================================================ *
-   *  Rezervasiyalar
+   *  Rezervasiya sisteminin bağlantısı
+   * ================================================================ */
+
+  const INT_FIELDS = ['mode', 'apiUrl', 'apiKey', 'authHeader', 'authScheme',
+    'restaurantId', 'fieldMap', 'extraFields', 'timeoutMs', 'maxAttempts'];
+
+  const intInput = (name) => $('[data-int="' + name + '"]');
+
+  const fillIntegration = (settings) => {
+    state.integration = settings;
+
+    INT_FIELDS.forEach((name) => {
+      const input = intInput(name);
+      if (!input) return;
+
+      if (name === 'apiKey') { input.value = ''; return; }
+
+      if (name === 'fieldMap' || name === 'extraFields') {
+        const value = settings[name] || {};
+        input.value = Object.keys(value).length ? JSON.stringify(value, null, 2) : '';
+        return;
+      }
+
+      input.value = settings[name] == null ? '' : settings[name];
+    });
+
+    $('[data-key-hint]').textContent = settings.apiKeySet
+      ? 'Açar yazılıb (' + settings.apiKeyHint + '). Dəyişmək üçün yenisini yazın, saxlamaq üçün boş buraxın.'
+      : 'Açar hələ yazılmayıb.';
+
+    $('[data-int-source]').textContent = settings.source === 'panel'
+      ? 'Parametrlər bu paneldən idarə olunur'
+      : '.env faylından oxunur — burada dəyişsəniz panel üstün olacaq';
+  };
+
+  const collectIntegration = () => {
+    const out = {};
+    INT_FIELDS.forEach((name) => {
+      const input = intInput(name);
+      if (input) out[name] = input.value;
+    });
+    return out;
+  };
+
+  const loadIntegration = async () => {
+    try {
+      const data = await api('/api/admin/integration');
+      fillIntegration(data.settings);
+    } catch (err) {
+      toast('Bağlantı parametrləri yüklənmədi: ' + err.message, 'bad');
+    }
+  };
+
+  const showIntLog = (text) => {
+    const box = $('[data-int-log]');
+    box.hidden = false;
+    box.textContent = text;
+  };
+
+  /* ================================================================ *
+   *  Çatdırılma jurnalı
    * ================================================================ */
 
   const AREA_LABELS = () => {
@@ -1039,13 +1099,16 @@
     return map;
   };
 
-  const STATUS = { new: ['Yeni', 'warn'], confirmed: ['Təsdiqlənib', 'ok'], cancelled: ['Ləğv edilib', 'bad'] };
-  const DELIVERY = { sent: ['Göndərildi', 'ok'], pending: ['Gözləyir', 'warn'], failed: ['Uğursuz', 'bad'], skipped: ['Sönülü', 'muted'] };
+  const DELIVERY = {
+    sent: ['Göndərildi', 'ok'],
+    pending: ['Gözləyir', 'warn'],
+    failed: ['Uğursuz', 'bad'],
+    skipped: ['Göndərilmədi', 'muted'],
+  };
 
   const pill = (map, key) => {
     const entry = map[key] || [key || '—', 'muted'];
-    const span = el('span', 'pill ' + entry[1], entry[0]);
-    return span;
+    return el('span', 'pill ' + entry[1], entry[0]);
   };
 
   const fmtDate = (iso) => {
@@ -1059,12 +1122,13 @@
     const areas = AREA_LABELS();
 
     const search = ($('[data-filter="search"]').value || '').trim().toLowerCase();
-    const status = $('[data-filter="status"]').value;
+    const delivery = $('[data-filter="delivery"]').value;
     const from = $('[data-filter="from"]').value;
     const to = $('[data-filter="to"]').value;
 
     const list = state.reservations.filter((r) => {
-      if (status && r.status !== status) return false;
+      const status = (r.delivery || {}).status;
+      if (delivery && status !== delivery) return false;
       if (from && r.date < from) return false;
       if (to && r.date > to) return false;
       if (search && (r.name + ' ' + r.phone + ' ' + r.code).toLowerCase().indexOf(search) === -1) return false;
@@ -1075,16 +1139,16 @@
 
     if (!list.length) {
       const tr = el('tr');
-      const td = el('td', 'empty', 'Rezervasiya tapılmadı.');
-      td.colSpan = 9;
+      const td = el('td', 'empty', 'Qeyd tapılmadı.');
+      td.colSpan = 8;
       tr.appendChild(td);
       tbody.appendChild(tr);
       return;
     }
 
     list.forEach((r) => {
-      const delivery = r.delivery || {};
-      const tr = el('tr', r.status === 'cancelled' ? 'is-cancelled' : '');
+      const d = r.delivery || {};
+      const tr = el('tr', r.status === 'manual' ? 'is-cancelled' : '');
 
       tr.appendChild(el('td', 'code nowrap', r.code));
 
@@ -1109,17 +1173,14 @@
       if (r.occasion) { note.appendChild(el('br')); note.appendChild(el('span', 'muted', r.occasion)); }
       tr.appendChild(note);
 
-      const st = el('td');
-      st.appendChild(pill(STATUS, r.status));
-      tr.appendChild(st);
-
       const dv = el('td');
-      dv.appendChild(pill(DELIVERY, delivery.status));
-      if (delivery.reference) { dv.appendChild(el('br')); dv.appendChild(el('span', 'muted', '#' + delivery.reference)); }
-      if (delivery.lastError) {
+      dv.appendChild(pill(DELIVERY, d.status));
+      if (r.status === 'manual') { dv.appendChild(el('br')); dv.appendChild(el('span', 'muted', 'əl ilə həll olunub')); }
+      if (d.reference) { dv.appendChild(el('br')); dv.appendChild(el('span', 'muted', '#' + d.reference)); }
+      if (d.lastError) {
         dv.appendChild(el('br'));
-        const err = el('span', 'muted', String(delivery.lastError).slice(0, 40) + '…');
-        err.title = delivery.lastError;
+        const err = el('span', 'muted', String(d.lastError).slice(0, 44) + '…');
+        err.title = d.lastError;
         dv.appendChild(err);
       }
       tr.appendChild(dv);
@@ -1137,17 +1198,21 @@
         return b;
       };
 
-      if (r.status !== 'confirmed') {
-        tools.appendChild(action('Təsdiqlə', () =>
-          api('/api/admin/status', { method: 'POST', body: JSON.stringify({ id: r.id, status: 'confirmed' }) })));
-      }
-      if (r.status !== 'cancelled') {
-        tools.appendChild(action('Ləğv et', () =>
-          api('/api/admin/status', { method: 'POST', body: JSON.stringify({ id: r.id, status: 'cancelled' }) })));
-      }
-      if (delivery.status === 'failed' || delivery.status === 'pending') {
+      const unresolved = d.status === 'failed' || d.status === 'pending' || d.status === 'skipped';
+
+      if (unresolved) {
         tools.appendChild(action('Yenidən göndər', () =>
           api('/api/admin/retry', { method: 'POST', body: JSON.stringify({ id: r.id }) })));
+      }
+
+      if (unresolved && r.status !== 'manual') {
+        tools.appendChild(action('Əl ilə həll olundu', () =>
+          api('/api/admin/resolve', { method: 'POST', body: JSON.stringify({ id: r.id, status: 'manual' }) })));
+      }
+
+      if (r.status === 'manual') {
+        tools.appendChild(action('Geri qaytar', () =>
+          api('/api/admin/resolve', { method: 'POST', body: JSON.stringify({ id: r.id, status: 'new' }) })));
       }
 
       act.appendChild(tools);
@@ -1161,20 +1226,18 @@
     const today = new Date().toISOString().slice(0, 10);
     const list = state.reservations;
 
-    const pending = list.filter((r) => {
+    const failed = list.filter((r) => {
       const s = (r.delivery || {}).status;
-      return s === 'pending' || s === 'failed';
+      return (s === 'pending' || s === 'failed') && r.status !== 'manual';
     }).length;
 
-    const guestsToday = list
-      .filter((r) => r.date === today && r.status !== 'cancelled')
-      .reduce((sum, r) => sum + Number(r.guests || 0), 0);
+    const sent = list.filter((r) => (r.delivery || {}).status === 'sent').length;
 
     const cards = [
-      [list.filter((r) => r.date === today).length, 'Bu gün'],
-      [guestsToday, 'Bu gün qonaq'],
-      [list.filter((r) => r.date >= today && r.status === 'new').length, 'Təsdiq gözləyir'],
-      [pending, 'Sistemə düşməyib'],
+      [list.filter((r) => r.date === today).length, 'Bu gün gələn'],
+      [list.filter((r) => r.createdAt && r.createdAt.slice(0, 10) === today).length, 'Bu gün sorğu'],
+      [sent, 'Tətbiqə göndərilib'],
+      [failed, 'Çatdırılmayıb'],
       [list.length, 'Ümumi'],
     ];
 
@@ -1188,20 +1251,21 @@
     });
 
     const badge = $('[data-pending-badge]');
-    const waiting = list.filter((r) => r.date >= today && r.status === 'new').length;
-    badge.textContent = String(waiting);
-    badge.hidden = waiting === 0;
+    badge.textContent = String(failed);
+    badge.hidden = failed === 0;
 
     const banner = $('[data-res-banner]');
     banner.innerHTML = '';
+
     if (meta && meta.vilka && meta.vilka.mode === 'off') {
       banner.appendChild(el('div', 'banner warn',
-        'Xarici rezervasiya sistemi sönülüdür (VILKA_MODE=off). Rezervasiyalar yalnız bu paneldə saxlanılır.'));
+        'Rejim «sönülü»dür — rezervasiyalar tətbiqə göndərilmir, yalnız aşağıdakı jurnalda saxlanılır.'));
     } else if (meta && meta.vilka && !meta.vilka.configured) {
-      banner.appendChild(el('div', 'banner bad', 'Rezervasiya sisteminin ünvanı təyin olunmayıb — göndərmə işləmir.'));
-    } else if (pending > 0) {
-      banner.appendChild(el('div', 'banner warn',
-        pending + ' rezervasiya xarici sistemə çatdırılmayıb. Sistem avtomatik təkrar cəhd edir.'));
+      banner.appendChild(el('div', 'banner bad', 'API ünvanı təyin olunmayıb — göndərmə işləmir.'));
+    } else if (failed > 0) {
+      banner.appendChild(el('div', 'banner bad',
+        failed + ' rezervasiya tətbiqə çatdırılmayıb. Sistem avtomatik təkrar cəhd edir; ' +
+        'təcili hallarda qonaqla əlaqə saxlayıb tətbiqə əl ilə daxil edin.'));
     }
   };
 
@@ -1216,7 +1280,7 @@
       $('[data-res-rows]').innerHTML = '';
       const tr = el('tr');
       const td = el('td', 'empty', 'Yüklənmədi: ' + err.message);
-      td.colSpan = 9;
+      td.colSpan = 8;
       tr.appendChild(td);
       $('[data-res-rows]').appendChild(tr);
     }
@@ -1231,10 +1295,10 @@
     if (!host) return;
 
     const rows = [
-      ['Rezervasiya sistemi', meta && meta.vilka ? meta.vilka.mode : '—'],
+      ['Bağlantı rejimi', meta && meta.vilka ? meta.vilka.mode : '—'],
       ['Ünvan', (meta && meta.vilka && meta.vilka.endpoint) || 'təyin olunmayıb'],
       ['Telegram bildirişi', meta && meta.telegram ? 'aktiv' : 'sönülü'],
-      ['Ümumi rezervasiya', String(state.reservations.length)],
+      ['Jurnaldakı qeyd', String(state.reservations.length)],
       ['Şəkil sayı', String(state.images.length)],
       ['Menyu yeməkləri', String((state.content.menu.categories || []).reduce((n, c) => n + (c.items || []).length, 0))],
     ];
@@ -1326,7 +1390,58 @@
       if (files.length) handleUpload(files);
     });
 
-    $('[data-refresh-res]').addEventListener('click', loadReservations);
+    await loadIntegration();
+
+    $('[data-refresh-res]').addEventListener('click', async (event) => {
+      await withBusy(event.currentTarget, 'Yenilənir…', async () => {
+        await loadReservations();
+        await loadIntegration();
+      });
+    });
+
+    $('[data-save-integration]').addEventListener('click', async (event) => {
+      await withBusy(event.currentTarget, 'Saxlanılır…', async () => {
+        try {
+          const result = await api('/api/admin/integration', {
+            method: 'POST',
+            body: JSON.stringify(collectIntegration()),
+          });
+          fillIntegration(result.settings);
+          toast('Bağlantı yadda saxlanıldı.', 'ok');
+          await loadReservations();
+        } catch (err) {
+          toast(err.message, 'bad');
+        }
+      });
+    });
+
+    $('[data-int-preview]').addEventListener('click', async (event) => {
+      await withBusy(event.currentTarget, 'Hazırlanır…', async () => {
+        try {
+          const result = await api('/api/admin/integration/preview');
+          showIntLog(
+            result.preview.method + ' ' + result.preview.url + '\n\n' +
+            JSON.stringify(result.preview.headers, null, 2) + '\n\n' +
+            JSON.stringify(result.preview.body, null, 2)
+          );
+        } catch (err) { toast(err.message, 'bad'); }
+      });
+    });
+
+    $('[data-int-test]').addEventListener('click', async (event) => {
+      if (!confirm('Sınaq rezervasiyası göndərilsin?\n\nTətbiqdə real qeyd yarana bilər — sonra silin.')) return;
+
+      await withBusy(event.currentTarget, 'Göndərilir…', async () => {
+        try {
+          const result = await api('/api/admin/integration/test', { method: 'POST' });
+          showIntLog('Uğurlu. Tətbiqdəki nömrə: ' + (result.reference || '(qaytarılmadı)'));
+          toast('Sınaq göndərişi uğurlu oldu.', 'ok');
+        } catch (err) {
+          showIntLog('Uğursuz: ' + err.message);
+          toast('Sınaq göndərişi alınmadı.', 'bad');
+        }
+      });
+    });
 
     $$('[data-filter]').forEach((input) => {
       input.addEventListener('input', renderReservations);

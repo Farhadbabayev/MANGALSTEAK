@@ -58,7 +58,7 @@ export const createReservation = async (fields) =>
       id: randomUUID(),
       code: makeCode(),
       createdAt: new Date().toISOString(),
-      status: 'new', // new | confirmed | cancelled
+      status: 'new', // new | manual (əl ilə həll olunub)
       delivery: {
         status: 'pending', // pending | sent | failed | skipped
         attempts: 0,
@@ -114,7 +114,7 @@ export const pendingDeliveries = async (maxAttempts) => {
       r.delivery &&
       (r.delivery.status === 'pending' || r.delivery.status === 'failed') &&
       (r.delivery.attempts || 0) < maxAttempts &&
-      r.status !== 'cancelled'
+      r.status !== 'manual'
   );
 };
 

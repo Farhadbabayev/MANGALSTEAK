@@ -189,9 +189,15 @@ const run = async () => {
   check('Vilka istinadı yazılıb', record && record.delivery.reference === 'VLK-1',
     record && record.delivery.reference);
 
-  const confirm = await post('/api/admin/status', { id: record.id, status: 'confirmed' }, adminAuth);
-  const confirmBody = await confirm.json();
-  check('Status dəyişdirilir', confirm.status === 200 && confirmBody.reservation.status === 'confirmed');
+  const resolved = await post('/api/admin/resolve', { id: record.id, status: 'manual' }, adminAuth);
+  const resolvedBody = await resolved.json();
+  check('«Əl ilə həll olundu» işarəsi qoyulur',
+    resolved.status === 200 && resolvedBody.reservation.status === 'manual');
+
+  const badResolve = await post('/api/admin/resolve', { id: record.id, status: 'confirmed' }, adminAuth);
+  check('Naməlum status rədd olunur', badResolve.status === 400);
+
+  await post('/api/admin/resolve', { id: record.id, status: 'new' }, adminAuth);
 
   const csv = await fetch(BASE + '/api/admin/export.csv', { headers: adminAuth });
   const csvText = await csv.text();
@@ -199,6 +205,82 @@ const run = async () => {
 
   const adminPage = await fetch(BASE + '/admin', { headers: adminAuth });
   check('Admin səhifəsi açılır', adminPage.status === 200, 'status ' + adminPage.status);
+
+  console.log('\n  BAĞLANTI PARAMETRLƏRİ\n');
+
+  const intRes = await fetch(BASE + '/api/admin/integration', { headers: adminAuth });
+  const intBody = await intRes.json();
+  check('Bağlantı parametrləri oxunur', intRes.status === 200 && intBody.ok === true);
+  check('Açar açıq şəkildə qaytarılmır', !JSON.stringify(intBody).includes('test-acar'),
+    JSON.stringify(intBody.settings).slice(0, 160));
+  check('Açarın yazıldığı bilinir', intBody.settings.apiKeySet === true);
+  check('Mənbə .env göstərilir', intBody.settings.source === 'env', intBody.settings.source);
+
+  const badMode = await post('/api/admin/integration', { mode: 'yalnis' }, adminAuth);
+  check('Naməlum rejim rədd olunur', badMode.status === 400);
+
+  const noUrl = await post('/api/admin/integration', { mode: 'api', apiUrl: '' }, adminAuth);
+  check('API rejimində ünvan tələb olunur', noUrl.status === 400);
+
+  const badUrl = await post('/api/admin/integration', { mode: 'api', apiUrl: 'ftp://yalnis' }, adminAuth);
+  check('Yanlış ünvan rədd olunur', badUrl.status === 400);
+
+  const badJson = await post('/api/admin/integration',
+    { mode: 'api', apiUrl: 'http://127.0.0.1:' + MOCK_PORT + '/r', fieldMap: '{yalnis' }, adminAuth);
+  check('Pozuq JSON rədd olunur', badJson.status === 400);
+
+  /* Paneldən ünvanı dəyişirik — yeni ucnöqtəyə göndərilməlidir */
+  const savedInt = await post('/api/admin/integration', {
+    mode: 'api',
+    apiUrl: 'http://127.0.0.1:' + MOCK_PORT + '/panel-endpoint',
+    restaurantId: '77',
+    authHeader: 'X-Api-Key',
+    authScheme: '',
+    fieldMap: '{"name":"musteri_adi"}',
+    extraFields: '{"kanal":"sayt"}',
+    timeoutMs: 9000,
+    maxAttempts: 3,
+  }, adminAuth);
+  const savedIntBody = await savedInt.json();
+  check('Paneldən yadda saxlanılır', savedInt.status === 200 && savedIntBody.ok === true,
+    JSON.stringify(savedIntBody).slice(0, 160));
+  check('Mənbə artıq panel olur', savedIntBody.settings.source === 'panel');
+  check('Açar boş göndərildikdə silinmir', savedIntBody.settings.apiKeySet === true);
+
+  const previewRes = await fetch(BASE + '/api/admin/integration/preview', { headers: adminAuth });
+  const previewBody = await previewRes.json();
+  check('Önizləmə hazırlanır', previewRes.status === 200 && previewBody.ok === true);
+  check('Önizləmədə yeni ünvan var', (previewBody.preview.url || '').includes('/panel-endpoint'));
+  check('Önizləmədə sahə adı dəyişib', 'musteri_adi' in previewBody.preview.body);
+  check('Önizləmədə açar gizlədilib',
+    JSON.stringify(previewBody.preview.headers).includes('••••'),
+    JSON.stringify(previewBody.preview.headers));
+
+  const before = received.length;
+  const testSend = await post('/api/admin/integration/test', {}, adminAuth);
+  check('Sınaq göndərişi işləyir', testSend.status === 200, 'status ' + testSend.status);
+
+  const testHit = received[received.length - 1];
+  check('Sınaq yeni ünvana getdi', received.length === before + 1 && testHit.path === '/panel-endpoint',
+    testHit && testHit.path);
+  check('Yeni açar başlığı istifadə olunur', testHit && testHit.auth === null);
+  check('Əlavə sahə göndərilir', testHit && testHit.body.kanal === 'sayt');
+  check('Filial kodu göndərilir', testHit && String(testHit.body.restaurant_id) === '77');
+
+  /* Rejimi söndürüb yoxlayırıq */
+  await post('/api/admin/integration', { mode: 'off' }, adminAuth);
+  const offTest = await post('/api/admin/integration/test', {}, adminAuth);
+  check('Sönülü rejimdə göndərmə dayanır', offTest.status === 400);
+
+  /* Geri qaytarırıq */
+  await post('/api/admin/integration', {
+    mode: 'api',
+    apiUrl: 'http://127.0.0.1:' + MOCK_PORT + '/reservations',
+    authHeader: 'Authorization',
+    authScheme: 'Bearer',
+    fieldMap: '{"name":"guest_name","note":"comment"}',
+    extraFields: '{"branch_id":7}',
+  }, adminAuth);
 
   console.log('\n  MƏZMUN İDARƏETMƏSİ\n');
 

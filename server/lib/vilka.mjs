@@ -10,13 +10,16 @@
  *   webhook  — aralıq webhook-a POST (Make, n8n, Zapier və s.)
  */
 
-import { config, vilkaEnabled } from './config.mjs';
+import { config } from './config.mjs';
+import { getVilka, vilkaEnabled } from './integration.mjs';
 
 /** Rezervasiyanı Vilka-nın gözlədiyi formaya salır. */
-export const buildPayload = (reservation) => {
+export const buildPayload = (reservation, settings) => {
+  const vilka = settings || getVilka();
+
   const base = {
     external_id: reservation.code,
-    restaurant_id: config.vilka.restaurantId || undefined,
+    restaurant_id: vilka.restaurantId || undefined,
     name: reservation.name,
     phone: reservation.phone,
     guests: reservation.guests,
@@ -36,14 +39,14 @@ export const buildPayload = (reservation) => {
     if (value !== undefined && value !== null && value !== '') compact[key] = value;
   }
 
-  /* VILKA_FIELD_MAP: { "bizim_sahə": "onların_sahəsi" } */
-  const map = config.vilka.fieldMap || {};
+  /* Sahə uyğunluğu: { "bizim_sahə": "onların_sahəsi" } */
+  const map = vilka.fieldMap || {};
   const mapped = {};
   for (const [key, value] of Object.entries(compact)) {
     mapped[map[key] || key] = value;
   }
 
-  return { ...mapped, ...(config.vilka.extraFields || {}) };
+  return { ...mapped, ...(vilka.extraFields || {}) };
 };
 
 const timeoutSignal = (ms) => {
@@ -68,16 +71,18 @@ const extractReference = (body) => {
  * @returns {Promise<{ status: 'sent'|'failed'|'skipped', reference?: string|null, error?: string }>}
  */
 export const deliverOnce = async (reservation) => {
+  const vilka = getVilka();
+
   if (!vilkaEnabled()) {
     return { status: 'skipped', error: null, reference: null };
   }
 
-  const url = config.vilka.apiUrl;
+  const url = vilka.apiUrl;
   if (!url) {
-    return { status: 'failed', error: 'VILKA_API_URL təyin olunmayıb.', reference: null };
+    return { status: 'failed', error: 'API ünvanı təyin olunmayıb.', reference: null };
   }
 
-  const payload = buildPayload(reservation);
+  const payload = buildPayload(reservation, vilka);
 
   const headers = {
     'Content-Type': 'application/json',
@@ -85,12 +90,12 @@ export const deliverOnce = async (reservation) => {
     'User-Agent': config.restaurantName + ' Website',
   };
 
-  if (config.vilka.apiKey) {
-    const scheme = config.vilka.authScheme;
-    headers[config.vilka.authHeader] = scheme ? scheme + ' ' + config.vilka.apiKey : config.vilka.apiKey;
+  if (vilka.apiKey) {
+    const scheme = vilka.authScheme;
+    headers[vilka.authHeader] = scheme ? scheme + ' ' + vilka.apiKey : vilka.apiKey;
   }
 
-  const { signal, done } = timeoutSignal(config.vilka.timeoutMs);
+  const { signal, done } = timeoutSignal(vilka.timeoutMs);
 
   try {
     const response = await fetch(url, {
@@ -129,8 +134,76 @@ export const deliverOnce = async (reservation) => {
   }
 };
 
-export const vilkaStatus = () => ({
-  mode: config.vilka.mode,
-  configured: vilkaEnabled() && Boolean(config.vilka.apiUrl),
-  endpoint: config.vilka.apiUrl ? config.vilka.apiUrl.replace(/\/\/([^/]+).*/, '//$1/…') : null,
-});
+export const vilkaStatus = () => {
+  const vilka = getVilka();
+  return {
+    mode: vilka.mode,
+    configured: vilkaEnabled() && Boolean(vilka.apiUrl),
+    endpoint: vilka.apiUrl ? vilka.apiUrl.replace(/\/\/([^/]+).*/, '//$1/…') : null,
+  };
+};
+
+/** Paneldə göstərmək üçün: real göndərilən JSON (açar olmadan) */
+export const previewPayload = () => {
+  const vilka = getVilka();
+  const sample = {
+    code: 'MS-260101-1234',
+    name: 'Nümunə Qonaq',
+    phone: '+994501234567',
+    guests: 4,
+    date: '2026-01-01',
+    time: '19:30',
+    datetimeLocal: '2026-01-01T19:30:00+04:00',
+    datetime: '2026-01-01T15:30:00.000Z',
+    area: 'salon',
+    occasion: 'ad-gunu',
+    note: 'Pəncərə kənarı',
+    createdAt: new Date().toISOString(),
+  };
+
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+  };
+
+  if (vilka.apiKey) {
+    const scheme = vilka.authScheme;
+    headers[vilka.authHeader] = (scheme ? scheme + ' ' : '') + '••••' + String(vilka.apiKey).slice(-4);
+  }
+
+  return {
+    method: 'POST',
+    url: vilka.apiUrl || '(təyin olunmayıb)',
+    headers,
+    body: buildPayload(sample, vilka),
+  };
+};
+
+/** Sınaq göndərişi — Vilka-da real qeyd yarada bilər */
+export const sendTest = async () => {
+  const vilka = getVilka();
+
+  if (!vilkaEnabled()) return { ok: false, error: 'Rejim «off» seçilib — göndərmə sönülüdür.' };
+  if (!vilka.apiUrl) return { ok: false, error: 'API ünvanı təyin olunmayıb.' };
+
+  const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000);
+  const date = tomorrow.toISOString().slice(0, 10);
+
+  const result = await deliverOnce({
+    code: 'TEST-' + Date.now().toString().slice(-6),
+    name: 'SINAQ — silin',
+    phone: '+994500000000',
+    guests: 2,
+    date,
+    time: '12:00',
+    datetimeLocal: date + 'T12:00:00+04:00',
+    datetime: new Date(date + 'T12:00:00Z').toISOString(),
+    area: 'any',
+    note: 'Bu sınaq göndərişidir, real rezervasiya deyil.',
+    createdAt: new Date().toISOString(),
+  });
+
+  return result.status === 'sent'
+    ? { ok: true, reference: result.reference }
+    : { ok: false, error: result.error || 'Naməlum xəta' };
+};
