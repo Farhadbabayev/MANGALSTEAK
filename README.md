@@ -191,6 +191,22 @@ Hər dəyişiklikdən sonra sayt avtomatik yenidən yığılır.
 > çatdırılmayan sorğunu yenidən göndərmək və ya «əl ilə həll olundu»
 > kimi işarələmək olar.
 
+### Panel canlı saytda
+
+Panel həm öz serverinizdə, həm də Vercel-də işləyir — fərq yalnız dəyişikliyin
+hara yazılmasındadır:
+
+| | Öz serveriniz | Vercel |
+|---|---|---|
+| Dəyişiklik hara yazılır | birbaşa fayllara | GitHub reposuna commit |
+| Sayta nə vaxt çıxır | dərhal | 1–2 dəqiqə (Vercel özü yığır) |
+| Rezervasiya jurnalı | ✅ | ❌ (əvəzinə Telegram) |
+| Bağlantı parametrləri | paneldən | Vercel mühit dəyişənlərindən |
+
+Panel hansı rejimdə olduğunu özü başa düşür: işləyən sahələr açıq qalır,
+işləməyənlər gizlədilir və səbəbi yazılır. Vercel üçün `GITHUB_TOKEN` və
+`GITHUB_REPO` dəyişənləri lazımdır — bax [DEPLOY.md](DEPLOY.md).
+
 ### Təhlükəsizlik və geri qaytarma
 
 - Bütün panel Basic Auth arxasındadır; şəkil formatları yoxlanılır, SVG-dən skript təmizlənir.
@@ -259,13 +275,14 @@ hissəsindədir.
 
 ## 6. Yerləşdirmə (deployment)
 
-> Vercel, VPS və hibrid variantların müqayisəsi və addım-addım təlimat:
+> Vercel və VPS variantlarının müqayisəsi və addım-addım təlimat:
 > **[DEPLOY.md](DEPLOY.md)**
 
 ### Vacib
 
-Rezervasiya forması **Node serveri tələb edir**. Saytı sadəcə statik hostinqə
-(`public/` qovluğunu) atsanız, səhifələr açılacaq, amma forma işləməyəcək.
+Rezervasiya forması **Node tələb edir** — ya öz serveriniz, ya da Vercel-in
+serverless funksiyaları. Saytı sadəcə statik hostinqə (`public/` qovluğunu)
+atsanız, səhifələr açılacaq, amma forma işləməyəcək.
 
 ### VPS (Ubuntu) nümunəsi
 

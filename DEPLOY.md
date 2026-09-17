@@ -1,22 +1,32 @@
 # Yerləşdirmə (deployment)
 
-Saytın iki hissəsi var və onların tələbləri fərqlidir:
+Sayt iki cür işlədilə bilər. Hər ikisində **idarəetmə paneli canlı saytda açılır**.
 
-| Hissə | Nə tələb edir |
-|---|---|
-| Sayt səhifələri | Sadəcə statik fayl hostinqi |
-| Rezervasiya forması | Sorğunu Vilka-ya ötürən kiçik funksiya |
-| İdarəetmə paneli (`/admin`) | **Yazıla bilən fayl sistemi** — konfiqurasiyanı dəyişib saytı yenidən yığır |
-
-Buna görə iki yol var.
+| | Vercel | Öz serveriniz (VPS) |
+|---|---|---|
+| Qiymət | Pulsuz (hobby) | ~4–5 $/ay |
+| Sayt sürəti | CDN — çox sürətli | Yaxşı |
+| Rezervasiya → Vilka | ✅ | ✅ |
+| Panel canlı saytda | ✅ (dəyişiklik GitHub-a yazılır) | ✅ (birbaşa) |
+| Dəyişikliyin sayta çıxması | 1–2 dəqiqə | dərhal |
+| Rezervasiya jurnalı | ❌ (Telegram əvəzinə) | ✅ |
+| Çatdırılmayanın avtomatik təkrarı | ❌ | ✅ |
+| Bağlantı parametrləri | Vercel mühit dəyişənləri | Paneldən |
 
 ---
 
-## A. Vercel (statik + serverless)
+## A. Vercel
 
-Sayt CDN-dən verilir, rezervasiya funksiyası serverless işləyir.
-**Panel bu ünvanda işləmir** — o, öz kompüterinizdə işə salınır, dəyişiklik
-`git push` ilə sayta çıxır.
+Sayt CDN-dən verilir, rezervasiya və panel serverless funksiyalarda işləyir.
+Paneldə etdiyiniz dəyişiklik GitHub reposuna commit olunur, Vercel isə push-u
+görüb saytı özü yenidən yığır.
+
+```
+Panel (canlı saytda)
+   │  dəyişiklik
+   ▼
+GitHub repo ──push──► Vercel ──► sayt yeniləndi  (1–2 dəqiqə)
+```
 
 ### 1. Vercel-i GitHub-a bağlayın
 
@@ -25,85 +35,88 @@ Bu addımı yalnız hesab sahibi edə bilər:
 1. <https://vercel.com> → komandanızı seçin
 2. **Add New → Project → Import Git Repository**
 3. GitHub qoşulu deyilsə **Connect GitHub Account** → icazə verin
-4. **Install Vercel** düyməsi ilə GitHub App-i quraşdırın və
+4. **Install Vercel** ilə GitHub App-i quraşdırın və
    `Farhadbabayev/MANGALSTEAK` reposuna giriş verin
 5. Reponu seçib **Import** edin
 
 > Qoşduğunuz GitHub hesabının bu repoda yazma icazəsi olmalıdır.
 
-### 2. Build parametrləri
+Build parametrlərini `vercel.json` özü təyin edir — əl ilə dəyişmək lazım deyil.
 
-`vercel.json` faylı hər şeyi özü təyin edir — Vercel-də əl ilə dəyişmək
-lazım deyil:
+### 2. GitHub token yaradın (panelin işləməsi üçün)
 
-```
-Build Command      node scripts/build.mjs
-Output Directory   public
-Install Command    (paket yoxdur)
-```
+Panel dəyişikliyi repoya yazdığı üçün ona token lazımdır:
+
+1. GitHub → **Settings → Developer settings → Personal access tokens →
+   Fine-grained tokens → Generate new token**
+2. **Repository access:** yalnız `MANGALSTEAK`
+3. **Permissions → Repository permissions → Contents: Read and write**
+4. Tokeni kopyalayın (bir daha göstərilmir)
 
 ### 3. Mühit dəyişənləri
 
-**Settings → Environment Variables** bölməsində:
+Vercel → **Settings → Environment Variables**:
 
-| Dəyişən | Nə üçün |
-|---|---|
-| `VILKA_MODE` | `api` (və ya `webhook`) |
-| `VILKA_API_URL` | Vilka-nın rezervasiya ünvanı |
-| `VILKA_API_KEY` | Vilka açarı |
-| `VILKA_RESTAURANT_ID` | Filial kodu (tələb olunursa) |
-| `VILKA_FIELD_MAP` | Sahə uyğunluğu, JSON |
-| `VILKA_EXTRA_FIELDS` | Əlavə sabit sahələr, JSON |
-| `TELEGRAM_BOT_TOKEN` | Ehtiyat kanal (çox tövsiyə olunur) |
-| `TELEGRAM_CHAT_ID` | Telegram qrupunun ID-si |
+| Dəyişən | Nə üçün | Vacibliyi |
+|---|---|---|
+| `ADMIN_USER` | Panelə giriş adı | mütləq |
+| `ADMIN_PASSWORD` | Panelə giriş şifrəsi | **mütləq** (boşdursa panel bağlıdır) |
+| `GITHUB_TOKEN` | Panelin dəyişikliyi yazması | panel üçün mütləq |
+| `GITHUB_REPO` | `Farhadbabayev/MANGALSTEAK` | panel üçün mütləq |
+| `GITHUB_BRANCH` | `main` | standart: main |
+| `SITE_URL` | `https://mangalsteakhouse.az` | tövsiyə |
+| `VILKA_MODE` | `api` və ya `webhook` | rezervasiya üçün |
+| `VILKA_API_URL` | Vilka-nın rezervasiya ünvanı | rezervasiya üçün |
+| `VILKA_API_KEY` | Vilka açarı | rezervasiya üçün |
+| `VILKA_RESTAURANT_ID` | Filial kodu | tələb olunursa |
+| `VILKA_FIELD_MAP` | Sahə uyğunluğu, JSON | lazım olsa |
+| `VILKA_EXTRA_FIELDS` | Əlavə sabit sahələr, JSON | lazım olsa |
+| `TELEGRAM_BOT_TOKEN` | Ehtiyat kanal | **çox tövsiyə olunur** |
+| `TELEGRAM_CHAT_ID` | Telegram qrupunun ID-si | **çox tövsiyə olunur** |
 
-> **Vacib:** heç bir kanal təyin olunmayıbsa, forma müştəriyə
-> «rezervasiya qəbul olundu» demir — telefonla əlaqə saxlamağı təklif edir.
-> Beləliklə sorğu səssizcə itmir. Ən azı Telegram-ı qoşun.
+> **Vacib:** bu quruluşda rezervasiya jurnalı saxlanılmır. Heç bir kanal
+> (Vilka və ya Telegram) təyin olunmayıbsa, forma müştəriyə «qəbul olundu»
+> demir — telefonla əlaqə saxlamağı təklif edir və sorğu Vercel-in
+> jurnalına yazılır. **Ən azı Telegram-ı qoşun.**
 
 ### 4. Domen
 
-**Settings → Domains** → `mangalsteakhouse.az` əlavə edin və göstərilən
-DNS qeydlərini domen panelinizdə yazın. SSL avtomatik qoşulur.
+**Settings → Domains** → `mangalsteakhouse.az` əlavə edin və göstərilən DNS
+qeydlərini domen panelinizdə yazın. SSL avtomatik qoşulur.
 
-Sonra `site.config.json` → `site.url` dəyərini eyni domenlə yeniləyin
-(panel → Restoran məlumatları → Tam ünvan) və dəyişikliyi push edin.
+Sonra paneldə **Restoran məlumatları → Tam ünvan** sahəsini eyni domenlə
+yeniləyin.
 
-### 5. Məzmunu dəyişmək
+### 5. Panel: `https://sizin-domen/admin`
+
+Bu quruluşda paneldə:
+
+- ✅ Restoran məlumatları, menyu, səhifə mətnləri, şəkillər, dizayn
+- ✅ Rezervasiya sisteminin sınağı və göndəriləcək məlumatın önizləməsi
+- ❌ Rezervasiya jurnalı (əvəzinə Telegram)
+- ❌ Bağlantı parametrlərinin dəyişdirilməsi (Vercel dəyişənlərindən)
+
+Hər dəyişiklikdən sonra sayt 1–2 dəqiqəyə yenilənir.
+
+---
+
+## B. Öz serveriniz (VPS)
+
+Heç bir məhdudiyyət yoxdur: panel birbaşa fayllara yazır, dəyişiklik dərhal
+görünür, rezervasiya jurnalı saxlanılır, çatdırılmayan sorğular avtomatik
+təkrar göndərilir, bağlantı parametrləri də paneldən idarə olunur.
+
+Quraşdırma (systemd + nginx + certbot) README-nin «Yerləşdirmə» bölməsindədir.
+
+---
+
+## Yerli işləmə
+
+Hər iki halda kompüterinizdə də işlədə bilərsiniz:
 
 ```bash
 git clone https://github.com/Farhadbabayev/MANGALSTEAK.git
 cd MANGALSTEAK
-cp .env.example .env        # ADMIN_PASSWORD təyin edin
-npm start                   # http://localhost:3000/admin
+cp .env.example .env     # ADMIN_PASSWORD təyin edin
+npm start                # http://localhost:3000  və  /admin
 ```
-
-Paneldə dəyişikliyi edin → `git push` → Vercel saytı 1 dəqiqəyə yeniləyir.
-
----
-
-## B. Kiçik server (VPS) — hər şey işləyir
-
-Aylıq 4–5 dollarlıq serverdə (Hetzner, DigitalOcean, Contabo) heç bir
-məhdudiyyət yoxdur: panel canlı saytda açılır, rezervasiya jurnalı saxlanılır,
-çatdırılmayan sorğular avtomatik təkrar göndərilir.
-
-Quraşdırma addımları README-nin «Yerləşdirmə» bölməsindədir
-(systemd + nginx + certbot).
-
----
-
-## Müqayisə
-
-| | Vercel | VPS |
-|---|---|---|
-| Qiymət | Pulsuz (hobby) | ~4–5 $/ay |
-| Sayt sürəti | CDN — çox sürətli | Yaxşı |
-| Rezervasiya → Vilka | ✅ | ✅ |
-| Rezervasiya jurnalı | ❌ (yalnız Telegram) | ✅ |
-| Çatdırılmayanın təkrarı | ❌ | ✅ |
-| Panel canlı saytda | ❌ (yerli işləyir) | ✅ |
-| Şəkil yükləmə paneldən | ❌ | ✅ |
-
-İkisini birləşdirmək də olar: sayt Vercel-də, panel isə yalnız sizin
-kompüterinizdə. Bu halda rezervasiyaların Telegram-a düşməsi mütləqdir.

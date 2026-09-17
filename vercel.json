@@ -1,51 +1,89 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-
   "buildCommand": "node scripts/build.mjs",
   "outputDirectory": "public",
   "installCommand": "echo 'xarici paket yoxdur'",
   "framework": null,
-
   "cleanUrls": true,
   "trailingSlash": false,
-
   "functions": {
-    "api/*.js": {
+    "api/reservations.js": {
       "includeFiles": "*.config.json"
+    },
+    "api/newsletter.js": {
+      "includeFiles": "*.config.json"
+    },
+    "api/admin/**": {
+      "includeFiles": "{*.config.json,server/admin/**,public/assets/css/fonts.css}",
+      "maxDuration": 30
     }
   },
-
   "rewrites": [
-    { "source": "/admin", "destination": "/admin-info.html" },
-    { "source": "/admin/(.*)", "destination": "/admin-info.html" }
+    {
+      "source": "/admin",
+      "destination": "/api/admin/index"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/api/admin/$1"
+    }
   ],
-
   "headers": [
     {
       "source": "/assets/fonts/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
     },
     {
       "source": "/assets/images/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=2592000" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=2592000"
+        }
+      ]
     },
     {
       "source": "/assets/css/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/assets/js/(.*)",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=3600, must-revalidate" }]
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600, must-revalidate"
+        }
+      ]
     },
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
-        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
       ]
     }
   ]

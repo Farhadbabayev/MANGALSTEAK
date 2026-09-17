@@ -64,7 +64,8 @@
    *  Vəziyyət
    * ================================================================ */
 
-  const state = { site: null, content: null, theme: null, images: [], fonts: [], reservations: [], integration: null, siteUrl: '' };
+  const state = { site: null, content: null, theme: null, images: [], fonts: [], reservations: [],
+    integration: null, siteUrl: '', caps: { mode: 'server', build: true, journal: true, integrationWrite: true, imageWrite: true, configWrite: true } };
   const dirty = new Set();
 
   const markDirty = (name) => {
@@ -929,7 +930,12 @@
           body: JSON.stringify({ name: file.name, data: dataUrl }),
         });
         state.images = result.images;
-        toast(file.name + ' yükləndi.', 'ok');
+        toast(
+          result.deploy === 'queued'
+            ? file.name + ' yükləndi — sayt 1–2 dəqiqəyə yenilənəcək.'
+            : file.name + ' yükləndi.',
+          'ok'
+        );
       } catch (err) {
         const banner = el('div', 'banner bad', file.name + ': ' + err.message);
         status.appendChild(banner);
@@ -996,7 +1002,12 @@
         });
         clearDirty(name);
         $('[data-log]').textContent = result.log || '—';
-        toast('Yadda saxlanıldı və sayt yeniləndi.', 'ok');
+        toast(
+          result.deploy === 'queued'
+            ? 'Yadda saxlanıldı. Sayt 1–2 dəqiqəyə yenilənəcək.'
+            : 'Yadda saxlanıldı və sayt yeniləndi.',
+          'ok'
+        );
         if (name === 'site') refreshBrand();
       } catch (err) {
         $('[data-log]').textContent = (err.payload && err.payload.log) || err.message;
@@ -1015,7 +1026,15 @@
         }
         const result = await api('/api/admin/build', { method: 'POST' });
         $('[data-log]').textContent = result.log || '—';
-        toast(pending.length ? 'Dəyişikliklər yayımlandı.' : 'Sayt yenidən yığıldı.', 'ok');
+
+        if (state.caps.mode === 'git') {
+          toast(pending.length
+            ? 'Dəyişikliklər repoya yazıldı — sayt 1–2 dəqiqəyə yenilənəcək.'
+            : 'Dəyişiklik yox idi.', 'ok');
+        } else {
+          toast(pending.length ? 'Dəyişikliklər yayımlandı.' : 'Sayt yenidən yığıldı.', 'ok');
+        }
+
         refreshBrand();
       } catch (err) {
         $('[data-log]').textContent = (err.payload && err.payload.log) || err.message;
@@ -1060,9 +1079,14 @@
       ? 'Açar yazılıb (' + settings.apiKeyHint + '). Dəyişmək üçün yenisini yazın, saxlamaq üçün boş buraxın.'
       : 'Açar hələ yazılmayıb.';
 
-    $('[data-int-source]').textContent = settings.source === 'panel'
-      ? 'Parametrlər bu paneldən idarə olunur'
-      : '.env faylından oxunur — burada dəyişsəniz panel üstün olacaq';
+    if (state.caps && state.caps.integrationWrite === false) {
+      $('[data-int-source]').textContent =
+        'Parametrlər Vercel-in mühit dəyişənlərindən oxunur (Settings → Environment Variables)';
+    } else {
+      $('[data-int-source]').textContent = settings.source === 'panel'
+        ? 'Parametrlər bu paneldən idarə olunur'
+        : '.env faylından oxunur — burada dəyişsəniz panel üstün olacaq';
+    }
   };
 
   const collectIntegration = () => {
@@ -1313,6 +1337,73 @@
   };
 
   /* ================================================================ *
+   *  Quruluşa uyğunlaşma (server / Vercel+GitHub)
+   * ================================================================ */
+
+  const applyCapabilities = () => {
+    const caps = state.caps || {};
+    const git = caps.mode === 'git';
+
+    /* Yayım düymələrinin yazısı */
+    if (git) {
+      $('[data-publish]').textContent = 'Dəyişiklikləri yayımla';
+      $$('[data-save]').forEach((b) => { b.textContent = 'Yadda saxla'; });
+      $('.brand-sub').textContent = 'Sayt idarəetməsi · Vercel';
+    }
+
+    /* Yazma icazəsi yoxdursa */
+    if (caps.configWrite === false) {
+      $$('[data-save], [data-publish], [data-upload]').forEach((b) => { b.disabled = true; });
+      const warn = el('div', 'banner bad',
+        caps.error || 'Dəyişikliyi yadda saxlamaq mümkün deyil: GITHUB_TOKEN və GITHUB_REPO təyin olunmayıb.');
+      $('.content').prepend(warn);
+    }
+
+    /* Yığma düyməsi */
+    if (!caps.build) {
+      const rebuild = $('[data-rebuild]');
+      if (rebuild) rebuild.hidden = true;
+    }
+
+    /* Çatdırılma jurnalı */
+    if (!caps.journal) {
+      const panel = $('[data-panel="rezervasiya"]');
+      const journalHead = Array.prototype.find.call(panel.querySelectorAll('.sys-h'), (h) => true);
+      if (journalHead) journalHead.hidden = true;
+      const toolbar = panel.querySelector('.toolbar');
+      if (toolbar) toolbar.hidden = true;
+      const table = panel.querySelector('.table-wrap');
+      if (table) {
+        table.hidden = true;
+        const note = el('div', 'banner warn',
+          'Bu quruluşda rezervasiya jurnalı saxlanılmır. Sorğular birbaşa rezervasiya tətbiqinə göndərilir — ' +
+          'ehtiyat üçün Telegram bildirişini mütləq qoşun (TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID).');
+        table.parentNode.insertBefore(note, table);
+      }
+      const stats = $('[data-res-stats]');
+      if (stats) stats.hidden = true;
+    }
+
+    /* Bağlantı parametrləri yalnız oxunur */
+    if (caps.integrationWrite === false) {
+      $$('[data-int]').forEach((input) => { input.disabled = true; });
+      const save = $('[data-save-integration]');
+      if (save) save.hidden = true;
+      $('[data-int-source]').textContent =
+        'Parametrlər Vercel-in mühit dəyişənlərindən oxunur (Settings → Environment Variables)';
+    }
+
+    /* Repo məlumatı */
+    if (git && caps.repo) {
+      const note = $('[data-panel="sistem"] .help');
+      if (note) {
+        const line = el('p', null, 'Dəyişikliklər «' + caps.repo + '» reposunun «' + caps.branch + '» budağına yazılır.');
+        note.prepend(line);
+      }
+    }
+  };
+
+  /* ================================================================ *
    *  Tablar
    * ================================================================ */
 
@@ -1343,12 +1434,14 @@
       state.images = data.images || [];
       state.fonts = data.fonts || [];
       state.siteUrl = data.site_url || '';
+      if (data.capabilities) state.caps = data.capabilities;
     } catch (err) {
       toast('Konfiqurasiya yüklənmədi: ' + err.message, 'bad');
       return;
     }
 
     refreshBrand();
+    applyCapabilities();
     renderForm('[data-form="site"]', SITE_SCHEMA, 'site');
     renderForm('[data-form="content"]', CONTENT_SCHEMA, 'content');
     renderForm('[data-form="theme"]', THEME_SCHEMA, 'theme');

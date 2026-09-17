@@ -422,6 +422,14 @@ const handleAdminApi = async (req, res, url) => {
       images: listImages(),
       fonts: listFonts(),
       site_url: config.siteUrl,
+      capabilities: {
+        mode: 'server',
+        build: true,
+        journal: true,
+        integrationWrite: true,
+        imageWrite: true,
+        configWrite: true,
+      },
     });
   }
 
