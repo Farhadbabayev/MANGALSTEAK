@@ -259,6 +259,9 @@ hissəsindədir.
 
 ## 6. Yerləşdirmə (deployment)
 
+> Vercel, VPS və hibrid variantların müqayisəsi və addım-addım təlimat:
+> **[DEPLOY.md](DEPLOY.md)**
+
 ### Vacib
 
 Rezervasiya forması **Node serveri tələb edir**. Saytı sadəcə statik hostinqə
