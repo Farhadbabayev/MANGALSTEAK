@@ -17,6 +17,7 @@ const OUT = join(ROOT, 'public');
 
 const site = JSON.parse(readFileSync(join(ROOT, 'site.config.json'), 'utf8'));
 const content = JSON.parse(readFileSync(join(ROOT, 'content.config.json'), 'utf8'));
+const theme = JSON.parse(readFileSync(join(ROOT, 'theme.config.json'), 'utf8'));
 
 /* ------------------------------------------------------------------ *
  *  Partial-lar
@@ -56,6 +57,50 @@ const pad = (n) => String(n).padStart(2, '0');
  * ------------------------------------------------------------------ */
 
 const blocks = {};
+
+/* --- Loqo --- */
+
+const MARKS = {
+  bull: `<svg viewBox="0 0 160 225" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M5 8 C22 28 48 37 80 37 C112 37 138 28 155 8 C140 31 118 50 80 50 C42 50 20 31 5 8 Z"/>
+      <path fill-rule="evenodd" d="M80 33 C92 33 101 43 102 58 C103 72 100 85 96 97 C92 109 87 118 82 127 L80 132 L78 127 C73 118 68 109 64 97 C60 85 57 72 58 58 C59 43 68 33 80 33 Z M65 57 L79 63 L76 77 L63 69 Z M95 57 L81 63 L84 77 L97 69 Z M80 86 L87 100 L73 100 Z"/>
+      <path d="M76 130 L84 130 L84 140 L89 145 L84 149 L84 203 L80 220 L76 203 L76 149 L71 145 L76 140 Z"/>
+    </svg>`,
+
+  flame: `<svg viewBox="0 0 28 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M14 1.5c1.2 4.3-1.1 6.4-3.2 8.6-2.4 2.5-4.6 4.9-4.6 9.1 0 4.7 3.5 8.3 7.8 8.3s7.8-3.6 7.8-8.3c0-2.6-1-4.4-2.2-6 .2 1.9-.5 3.4-1.9 4.1.6-3.7-.7-7.2-3.7-10.4.4 2.6-.5 4.3-2.3 6.2-1.4 1.5-2.2 2.8-2.2 4.6 0 1.4.5 2.6 1.4 3.5-2.5-.9-3.6-3-3.1-5.6.6-3.1 3-4.8 4.6-7.3 1.3-2 1.9-4.2 1.6-6.8z" fill="currentColor"/>
+      <path d="M3 29h22M6 32h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>`,
+
+  fork: `<svg viewBox="0 0 40 120" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8 6v26a6 6 0 0 0 4 5.6V114h4V37.6A6 6 0 0 0 20 32V6h-3v22h-2.5V6h-3v22H9V6H8z"/>
+      <path d="M30 6c-4 6-6 14-6 22s2 12 4 13v73h4V6h-2z"/>
+    </svg>`,
+
+  leaf: `<svg viewBox="0 0 40 40" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M33 5C18 5 8 12 8 24c0 3 .8 5.6 2.2 7.6L5 37l2 2 5.4-5.2C14.4 35.2 17 36 20 36c12 0 17-13 13-31zM20 32c-2 0-3.8-.5-5.2-1.4L28 17.4l-2.8-2.8-13.2 13.2C11 26.4 10.5 24.4 10.5 22 10.5 13 18 9 30.5 8.6 32.6 21 29 32 20 32z"/>
+    </svg>`,
+};
+
+const logoInner = (() => {
+  const mode = theme.logo?.mode || 'mark';
+  const nameHtml =
+    `<span class="logo-text">` +
+    `<span class="logo-title">${esc(site.site.logoTop)}</span>` +
+    `<span class="logo-sub">${esc(site.site.logoBottom)}</span>` +
+    `</span>`;
+
+  if (mode === 'image' && theme.logo.image) {
+    return `<img src="${img(theme.logo.image)}" alt="${esc(site.site.name)}" class="logo-img">`;
+  }
+
+  if (mode === 'text') return nameHtml;
+
+  const mark = MARKS[theme.logo?.mark] || MARKS.bull;
+  return `<span class="logo-mark" aria-hidden="true">${mark}</span>\n  ${nameHtml}`;
+})();
+
+blocks.logoInner = logoInner;
 
 /* --- Hero --- */
 
@@ -101,10 +146,10 @@ ${indent}  </div>
 ${indent}  <p>${esc(item.text)}</p>
 ${indent}</div>`;
 
-const previewItems = [
-  ...content.menu.categories.find((c) => c.id === 'steyk').items.slice(0, 3),
-  ...content.menu.categories.find((c) => c.id === 'mangal').items.slice(0, 3),
-];
+/* İlk iki kateqoriyadan 3-3 yemək — kateqoriya adlarından asılı deyil */
+const previewItems = content.menu.categories
+  .slice(0, 2)
+  .flatMap((c) => c.items.slice(0, 3));
 
 blocks.menuPreviewItems = previewItems.map((i) => menuItem(i)).join('');
 
@@ -411,6 +456,50 @@ for (const page of pages) {
   writeFileSync(join(OUT, page.file), html, 'utf8');
   console.log(`  ✓ public/${page.file}  (${(html.length / 1024).toFixed(1)} KB)`);
 }
+
+/* ------------------------------------------------------------------ *
+ *  theme.css — rəng, şrift və ölçü dəyişənləri
+ * ------------------------------------------------------------------ */
+
+const fontStack = (name, fallback) => `'${name}', ${fallback}`;
+
+const c = theme.colors || {};
+const f = theme.fonts || {};
+const l = theme.layout || {};
+
+writeFileSync(
+  join(OUT, 'assets', 'css', 'theme.css'),
+  `/*-----------------------------------*\\
+  #theme.css
+  Admin panelin «Dizayn» bölməsindən yaradılır — əl ilə redaktə etməyin.
+  (Mənbə: theme.config.json)
+\\*-----------------------------------*/
+
+:root {
+  --black: ${c.black || '#121212'};
+  --black-2: ${c.black2 || '#181817'};
+  --black-3: ${c.black3 || '#0D0D0D'};
+  --cream: ${c.cream || '#FAF8F5'};
+  --cream-dim: ${c.creamDim || '#A9A49C'};
+  --gold: ${c.gold || '#B99B6B'};
+  --brand: ${c.brand || '#4E0007'};
+  --brand-2: ${c.brand2 || '#6B0A12'};
+
+  --display: ${fontStack(f.display || 'Cormorant Garamond', "Garamond, 'Times New Roman', serif")};
+  --body: ${fontStack(f.body || 'Inter', 'system-ui, -apple-system, sans-serif')};
+  --logo: ${fontStack(f.logo || 'Grenze Gotisch', "'Cormorant Garamond', serif")};
+
+  --space: ${Number(l.sectionSpace) || 130}px;
+}
+
+.logo-title { font-size: ${Number(l.logoSize) || 31}px; }
+.logo-mark { width: ${Number(l.markSize) || 26}px; }
+.logo-img { max-height: ${Math.round((Number(l.logoSize) || 31) * 1.6)}px; width: auto; }
+`,
+  'utf8'
+);
+
+console.log('  ✓ public/assets/css/theme.css');
 
 /* ------------------------------------------------------------------ *
  *  robots.txt + sitemap.xml

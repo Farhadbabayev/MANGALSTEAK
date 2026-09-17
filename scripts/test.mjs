@@ -200,6 +200,69 @@ const run = async () => {
   const adminPage = await fetch(BASE + '/admin', { headers: adminAuth });
   check('Admin səhifəsi açılır', adminPage.status === 200, 'status ' + adminPage.status);
 
+  console.log('\n  MƏZMUN İDARƏETMƏSİ\n');
+
+  const cfgRes = await fetch(BASE + '/api/admin/config', { headers: adminAuth });
+  const cfg = await cfgRes.json();
+  check('Konfiqurasiya oxunur', cfgRes.status === 200 && cfg.ok === true);
+  check('Üç konfiqurasiya da gəlir', Boolean(cfg.site && cfg.content && cfg.theme));
+  check('Şəkil siyahısı gəlir', Array.isArray(cfg.images) && cfg.images.length > 0);
+  check('Şrift siyahısı gəlir', Array.isArray(cfg.fonts) && cfg.fonts.length > 0);
+
+  const badSave = await post('/api/admin/config', { name: 'site', data: { yalnis: true } }, adminAuth);
+  check('Yarımçıq konfiqurasiya rədd olunur', badSave.status === 400, 'status ' + badSave.status);
+
+  const unknownSave = await post('/api/admin/config', { name: 'basqa', data: {} }, adminAuth);
+  check('Naməlum bölmə rədd olunur', unknownSave.status === 400);
+
+  /* Real dəyişiklik: telefonu dəyişib saytda yoxlayırıq, sonra geri qaytarırıq */
+  const original = JSON.parse(JSON.stringify(cfg.site));
+  const changed = JSON.parse(JSON.stringify(cfg.site));
+  changed.contact.phone = '+994 55 777 88 99';
+
+  try {
+    const saved = await post('/api/admin/config', { name: 'site', data: changed }, adminAuth);
+    const savedBody = await saved.json();
+    check('Dəyişiklik yadda saxlanılır', saved.status === 200 && savedBody.ok === true,
+      JSON.stringify(savedBody).slice(0, 160));
+
+    const rebuilt = await (await fetch(BASE + '/index.html')).text();
+    check('Dəyişiklik sayta düşür', rebuilt.includes('+994 55 777 88 99'));
+  } finally {
+    await post('/api/admin/config', { name: 'site', data: original }, adminAuth);
+  }
+
+  const restored = await (await fetch(BASE + '/index.html')).text();
+  check('Geri qaytarma işləyir', restored.includes(original.contact.phone));
+
+  const built = await post('/api/admin/build', {}, adminAuth);
+  check('Saytı yenidən yığmaq işləyir', built.status === 200, 'status ' + built.status);
+
+  /* Şəkil yükləmə — 1x1 piksel PNG */
+  const onePixel =
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+
+  const upload = await post('/api/admin/images', { name: 'test-yoxlama.png', data: onePixel }, adminAuth);
+  const uploadBody = await upload.json();
+  check('Şəkil yüklənir', upload.status === 201 && uploadBody.ok === true, JSON.stringify(uploadBody).slice(0, 120));
+  check('Yüklənən şəkil siyahıda görünür',
+    (uploadBody.images || []).some((i) => i.name === 'test-yoxlama.png'));
+
+  const badExt = await post('/api/admin/images', { name: 'zerer.exe', data: onePixel }, adminAuth);
+  check('Yanlış format rədd olunur', badExt.status === 400);
+
+  const usedDelete = await post('/api/admin/images/delete', { name: 'hero-slider-1.jpg' }, adminAuth);
+  check('İstifadədə olan şəkil silinmir', usedDelete.status === 400);
+
+  const removed = await post('/api/admin/images/delete', { name: 'test-yoxlama.png' }, adminAuth);
+  check('Şəkil silinir', removed.status === 200, 'status ' + removed.status);
+
+  const adminAsset = await fetch(BASE + '/admin/admin.js');
+  check('Admin faylları şifrəsiz bağlıdır', adminAsset.status === 401, 'status ' + adminAsset.status);
+
+  const adminAssetOk = await fetch(BASE + '/admin/admin.js', { headers: adminAuth });
+  check('Admin faylları şifrə ilə açılır', adminAssetOk.status === 200);
+
   console.log('\n  QORUMA\n');
 
   /* RATE_LIMIT_PER_HOUR=3 olaraq başladılıb; artıq 1 uğurlu sorğu var. */

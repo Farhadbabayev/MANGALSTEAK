@@ -8,7 +8,7 @@
 
 import { createServer } from 'node:http';
 import { createReadStream, existsSync, statSync, readFileSync } from 'node:fs';
-import { join, normalize, extname, sep } from 'node:path';
+import { join, normalize, extname, sep, basename } from 'node:path';
 import { timingSafeEqual } from 'node:crypto';
 
 import { config, ROOT, vilkaEnabled } from './lib/config.mjs';
@@ -23,6 +23,16 @@ import {
 import { validateReservation, validateEmail } from './lib/validate.mjs';
 import { deliverOnce, vilkaStatus } from './lib/vilka.mjs';
 import { notifyReservation, telegramEnabled } from './lib/notify.mjs';
+import {
+  readAllConfigs,
+  saveConfig,
+  runBuild,
+  listImages,
+  saveImage,
+  deleteImage,
+  listFonts,
+  MAX_IMAGE_BYTES,
+} from './lib/cms.mjs';
 
 /* ------------------------------------------------------------------ *
  *  Köməkçilər
@@ -92,11 +102,14 @@ const readBody = (req, limit) =>
     req.on('error', reject);
   });
 
-const readJsonBody = async (req) => {
-  const raw = await readBody(req, config.maxBodyBytes);
+const readJsonBody = async (req, limit) => {
+  const raw = await readBody(req, limit || config.maxBodyBytes);
   if (!raw) return {};
   return JSON.parse(raw);
 };
+
+/* Şəkil yükləmə base64 ilə gəlir — daha böyük gövdəyə icazə verilir */
+const UPLOAD_LIMIT = Math.round(MAX_IMAGE_BYTES * 1.4);
 
 /* ------------------------------------------------------------------ *
  *  Sürət məhdudiyyəti (yaddaşda + fayl üzrə yoxlama)
@@ -365,6 +378,61 @@ const handleAdminApi = async (req, res, url) => {
     return sendJson(res, 200, { ok: true, reservation: updated });
   }
 
+  /* ---------------- Məzmun idarəetməsi ---------------- */
+
+  if (path === '/api/admin/config' && req.method === 'GET') {
+    return sendJson(res, 200, {
+      ok: true,
+      ...readAllConfigs(),
+      images: listImages(),
+      fonts: listFonts(),
+      site_url: config.siteUrl,
+    });
+  }
+
+  if (path === '/api/admin/config' && req.method === 'POST') {
+    let body;
+    try {
+      body = await readJsonBody(req, 4 * 1024 * 1024);
+    } catch (_) {
+      return sendJson(res, 400, { ok: false, error: 'Məlumat oxunmadı.' });
+    }
+
+    const result = await saveConfig(body.name, body.data);
+    return sendJson(res, result.ok ? 200 : 400, result);
+  }
+
+  if (path === '/api/admin/build' && req.method === 'POST') {
+    const result = await runBuild();
+    return sendJson(res, result.ok ? 200 : 500, result);
+  }
+
+  if (path === '/api/admin/images' && req.method === 'GET') {
+    return sendJson(res, 200, { ok: true, images: listImages() });
+  }
+
+  if (path === '/api/admin/images' && req.method === 'POST') {
+    let body;
+    try {
+      body = await readJsonBody(req, UPLOAD_LIMIT);
+    } catch (err) {
+      const tooLarge = err && err.message === 'too-large';
+      return sendJson(res, tooLarge ? 413 : 400, {
+        ok: false,
+        error: tooLarge ? 'Şəkil çox böyükdür (maksimum 8 MB).' : 'Fayl oxunmadı.',
+      });
+    }
+
+    const result = saveImage(body.name, body.data);
+    return sendJson(res, result.ok ? 201 : 400, { ...result, images: listImages() });
+  }
+
+  if (path === '/api/admin/images/delete' && req.method === 'POST') {
+    const body = await readJsonBody(req).catch(() => ({}));
+    const result = deleteImage(body.name);
+    return sendJson(res, result.ok ? 200 : 400, { ...result, images: listImages() });
+  }
+
   return sendJson(res, 404, { ok: false, error: 'Tapılmadı.' });
 };
 
@@ -431,7 +499,8 @@ const serveStatic = (req, res, pathname) => {
  *  Server
  * ------------------------------------------------------------------ */
 
-const ADMIN_PAGE = join(ROOT, 'server', 'admin.html');
+const ADMIN_DIR = join(ROOT, 'server', 'admin');
+const ADMIN_PAGE = join(ADMIN_DIR, 'index.html');
 
 const server = createServer(async (req, res) => {
   const url = new URL(req.url, 'http://' + (req.headers.host || 'localhost'));
@@ -478,6 +547,22 @@ const server = createServer(async (req, res) => {
       const html = readFileSync(ADMIN_PAGE);
       res.writeHead(200, { 'Content-Type': MIME['.html'], 'Cache-Control': 'no-store' });
       return res.end(html);
+    }
+
+    /* Admin panelin öz css/js faylları */
+    if (path.startsWith('/admin/')) {
+      if (!requireAdmin(req, res)) return;
+
+      const file = basename(path);
+      const ext = extname(file).toLowerCase();
+
+      if (!['.css', '.js'].includes(ext) || !existsSync(join(ADMIN_DIR, file))) {
+        return sendText(res, 404, 'Tapılmadı.');
+      }
+
+      const body = readFileSync(join(ADMIN_DIR, file));
+      res.writeHead(200, { 'Content-Type': MIME[ext], 'Cache-Control': 'no-store' });
+      return res.end(body);
     }
 
     /* --- Statik sayt --- */

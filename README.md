@@ -25,8 +25,12 @@ npm start         # saytı və rezervasiya API-sini işə salır
 Sonra: <http://localhost:3000>
 
 ```bash
-npm test          # uçdan-uca yoxlama (38 test) — saxta Vilka serveri ilə
+npm test          # uçdan-uca yoxlama (55 test) — saxta Vilka serveri ilə
+npm run new-site  # başqa restoran üçün mətnləri sıfırlayır
+npm run fonts     # şriftləri Google Fonts-dan yerli yükləyir
 ```
+
+Saytın məzmunu **`/admin` panelindən** idarə olunur — bax: 4-cü bölmə.
 
 Node.js 18.17+ tələb olunur. **Heç bir xarici paket quraşdırılmır** —
 yalnız Node-un öz modulları istifadə olunur (`npm install` lazım deyil).
@@ -142,7 +146,7 @@ sifariş gözdən qaçmır.
 
 ---
 
-## 4. Admin paneli — `/admin`
+## 4. İdarəetmə paneli — `/admin`
 
 ```env
 ADMIN_USER=admin
@@ -151,19 +155,43 @@ ADMIN_PASSWORD=güclü-şifrə
 
 > Şifrə boş olarsa panel **tamamilə söndürülür**. Mütləq təyin edin.
 
-Panel imkanları: günün rezervasiyaları və qonaq sayı, tarix/status/axtarış
-filtri, təsdiq və ləğv, Vilka-ya təkrar göndərmə, CSV ixracı.
+Saytdakı demək olar hər şey buradan idarə olunur — kodu açmağa ehtiyac yoxdur.
+Hər dəyişiklikdən sonra sayt avtomatik yenidən yığılır.
+
+| Bölmə | Nə edir |
+|---|---|
+| **Rezervasiyalar** | Gün üzrə siyahı, qonaq sayı, təsdiq/ləğv, xarici sistemə təkrar göndərmə, axtarış, CSV ixracı |
+| **Restoran məlumatları** | Ad, domen, telefon, ünvan, e-mail, iş saatları, sosial şəbəkələr, rezervasiya qaydaları (zonalar, saat aralığı, nəfər limiti) |
+| **Menyu** | Kateqoriya və yemək əlavə et/sil/sırala, qiymət, nişan (Bestseller və s.), təsvir |
+| **Səhifə mətnləri** | Slayder, haqqımızda, şefin seçimi, üstünlüklər, tədbirlər, qalereya, banket paketləri, rezervasiya addımları və qaydaları — bütün səhifələrin mətnləri |
+| **Şəkillər** | Yüklə, əvəz et, sil. Eyni adla yükləmək saytdakı şəkli dərhal dəyişir |
+| **Dizayn** | Rənglər, şriftlər, bölmə boşluqları, loqo (nişan / yazı / yüklənmiş şəkil) — canlı önizləmə ilə |
+| **Sistem** | Sistemin vəziyyəti, son əməliyyatın jurnalı, saytı yenidən yığma |
+
+### Təhlükəsizlik və geri qaytarma
+
+- Bütün panel Basic Auth arxasındadır; şəkil formatları yoxlanılır, SVG-dən skript təmizlənir.
+- Hər yaddasaxlamadan əvvəl köhnə konfiqurasiya `data/backups/` qovluğuna yazılır.
+- Yadda saxlamadan sonra sayt yenidən yığılır; **yığılma uğursuz olarsa dəyişiklik avtomatik geri qaytarılır** və panel xətanı göstərir.
+
+> Qeyd: panel `site.config.json`, `content.config.json` və `theme.config.json`
+> fayllarını dəyişir. Serverdə git istifadə edirsinizsə, `git pull` etməzdən əvvəl
+> bu dəyişiklikləri commit edin.
 
 ---
 
 ## 5. Məzmunun dəyişdirilməsi
 
-Bütün mətnlər iki JSON faylındadır — HTML-ə toxunmaq lazım deyil:
+**Adi halda bunun üçün `/admin` panelindən istifadə edin** — orada hər sahənin
+izahı var və dəyişiklik dərhal sayta düşür.
+
+Faylları birbaşa redaktə etmək istəsəniz, bütün məzmun üç JSON faylındadır:
 
 | Fayl | Nə var |
 |---|---|
 | `site.config.json` | Ad, domen, ünvan, telefon, e-mail, iş saatları, sosial şəbəkələr, rezervasiya qaydaları |
 | `content.config.json` | Menyu və qiymətlər, slayder, haqqımızda, tədbirlər, qalereya, banket paketləri |
+| `theme.config.json` | Rənglər, şriftlər, ölçülər, loqo |
 
 Dəyişikdən sonra:
 
@@ -282,12 +310,14 @@ ehtiyat nüsxəsini götürün:
 ```
 site.config.json        restoran məlumatları
 content.config.json     menyu və səhifə mətnləri
+theme.config.json       rənglər, şriftlər, loqo
 src/
   partials/             təkrarlanan hissələr (header, footer, rezervasiya forması)
   pages/                səhifə şablonları
 scripts/
   build.mjs             statik səhifələri yığır
   fetch-fonts.mjs       şriftləri Google Fonts-dan yerli yükləyir
+  new-site.mjs          başqa restoran üçün sıfırlama
   test.mjs              uçdan-uca yoxlamalar
 public/                 hazır sayt (build nəticəsi)
   assets/css/site.css   dizayn sistemi (bütün stillər)
@@ -297,13 +327,14 @@ public/                 hazır sayt (build nəticəsi)
   assets/js/reservation.js  rezervasiya formasının məntiqi
 server/
   index.mjs             HTTP server: statik sayt + API + admin
-  admin.html            rezervasiya paneli
+  admin/                idarəetmə paneli (html + css + js)
   lib/config.mjs        .env oxunması
   lib/store.mjs         fayl əsaslı anbar
   lib/validate.mjs      server tərəfi yoxlama
   lib/vilka.mjs         Vilka inteqrasiyası
   lib/notify.mjs        Telegram bildirişi
-data/                   rezervasiyalar (git-ə düşmür)
+  lib/cms.mjs           konfiqurasiya, şəkil və yığma əməliyyatları
+data/                   rezervasiyalar və ehtiyat nüsxələr (git-ə düşmür)
 ```
 
 > `public/` qovluğu `npm run build` ilə yenidən yaradılır — HTML faylları
@@ -322,13 +353,44 @@ data/                   rezervasiyalar (git-ə düşmür)
 | `/api/admin/status` | POST | Statusun dəyişdirilməsi |
 | `/api/admin/retry` | POST | Vilka-ya təkrar göndərmə |
 | `/api/admin/export.csv` | GET | CSV ixracı |
+| `/api/admin/config` | GET / POST | Konfiqurasiyanı oxu / yadda saxla |
+| `/api/admin/build` | POST | Saytı yenidən yığ |
+| `/api/admin/images` | GET / POST | Şəkil siyahısı / yükləmə |
+| `/api/admin/images/delete` | POST | Şəkil silmə |
 
 Qoruma: bot tələsi, IP üzrə saatlıq limit (`RATE_LIMIT_PER_HOUR`), sorğu
 həcmi limiti, admin üçün Basic Auth, qovluqdan kənara çıxışın bağlanması.
 
 ---
 
-## 9. Dizaynın tənzimlənməsi
+## 9. Bu reponu başqa restoran üçün istifadə
+
+Sayt tam olaraq konfiqurasiya ilə işləyir — kod restorana bağlı deyil.
+
+```bash
+git clone <repo> yeni-restoran
+cd yeni-restoran
+npm run new-site -- --yes     # mətnləri boş şablona qaytarır
+cp .env.example .env          # ADMIN_PASSWORD təyin edin
+npm run build && npm start
+```
+
+Sonra `/admin` panelindən:
+
+1. **Restoran məlumatları** — ad, domen, telefon, ünvan, iş saatları
+2. **Dizayn** — brend rəngi, şriftlər, loqo növü (nişan seçimləri: buğa kəlləsi, alov, çəngəl-bıçaq, yarpaq — və ya öz şəkliniz)
+3. **Şəkillər** — restoranın fotolarını yükləyin
+4. **Menyu** və **Səhifə mətnləri** — məzmunu doldurun
+
+`npm run new-site` köhnə məlumatları silmir — hamısını `data/backups/` qovluğuna köçürür.
+
+Yalnız bunlar kod tələb edir: yeni səhifə növü əlavə etmək
+(`src/pages/`), bölmələrin düzülüşünü dəyişmək (`src/partials/`),
+yeni şrift gətirmək (`npm run fonts`).
+
+---
+
+## 10. Dizaynın tənzimlənməsi
 
 Bütün rənglər və ölçülər `public/assets/css/site.css` faylının başındakı
 `:root` bölməsindədir:

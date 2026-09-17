@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="az">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>İdarəetmə paneli</title>
+  <link rel="shortcut icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/assets/css/fonts.css">
+  <link rel="stylesheet" href="/admin/admin.css">
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-name" data-site-name>İdarəetmə paneli</span>
+      <span class="brand-sub">Sayt idarəetməsi</span>
+    </div>
+
+    <div class="topbar-actions">
+      <span class="save-hint" data-dirty hidden>Yadda saxlanmamış dəyişiklik var</span>
+      <a class="btn btn-ghost" href="/" target="_blank" rel="noopener">Saytı aç</a>
+      <button class="btn btn-primary" data-publish>Yayımla</button>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <nav class="sidenav" aria-label="Bölmələr">
+      <button class="nav-item is-active" data-tab="rezervasiya">
+        <span class="nav-ico" aria-hidden="true">▤</span> Rezervasiyalar
+        <span class="nav-badge" data-pending-badge hidden>0</span>
+      </button>
+      <button class="nav-item" data-tab="melumat"><span class="nav-ico" aria-hidden="true">✦</span> Restoran məlumatları</button>
+      <button class="nav-item" data-tab="menyu"><span class="nav-ico" aria-hidden="true">≡</span> Menyu</button>
+      <button class="nav-item" data-tab="metnler"><span class="nav-ico" aria-hidden="true">¶</span> Səhifə mətnləri</button>
+      <button class="nav-item" data-tab="sekiller"><span class="nav-ico" aria-hidden="true">▣</span> Şəkillər</button>
+      <button class="nav-item" data-tab="dizayn"><span class="nav-ico" aria-hidden="true">◐</span> Dizayn</button>
+      <button class="nav-item" data-tab="sistem"><span class="nav-ico" aria-hidden="true">⚙</span> Sistem</button>
+    </nav>
+
+    <main class="content">
+
+      <!-- ============ REZERVASİYALAR ============ -->
+      <section class="tab is-active" data-panel="rezervasiya">
+        <div class="page-head">
+          <h1>Rezervasiyalar</h1>
+          <div class="page-actions">
+            <button class="btn btn-ghost" data-refresh-res>Yenilə</button>
+            <a class="btn btn-ghost" href="/api/admin/export.csv">CSV yüklə</a>
+          </div>
+        </div>
+
+        <div data-res-banner></div>
+
+        <div class="cards" data-res-stats></div>
+
+        <div class="toolbar">
+          <label class="field-inline">
+            <span>Tarixdən</span>
+            <input type="date" data-filter="from">
+          </label>
+          <label class="field-inline">
+            <span>Tarixə</span>
+            <input type="date" data-filter="to">
+          </label>
+          <label class="field-inline">
+            <span>Status</span>
+            <select data-filter="status">
+              <option value="">Hamısı</option>
+              <option value="new">Yeni</option>
+              <option value="confirmed">Təsdiqlənib</option>
+              <option value="cancelled">Ləğv edilib</option>
+            </select>
+          </label>
+          <label class="field-inline grow">
+            <span>Axtarış</span>
+            <input type="search" data-filter="search" placeholder="Ad, telefon və ya kod">
+          </label>
+          <button class="btn btn-ghost" data-filter-reset>Sıfırla</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Kod</th><th>Tarix / Saat</th><th>Qonaq</th><th>Nəfər</th>
+                <th>Zona</th><th>Qeyd</th><th>Status</th><th>Vilka</th><th>Əməliyyat</th>
+              </tr>
+            </thead>
+            <tbody data-res-rows>
+              <tr><td colspan="9" class="empty">Yüklənir…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ============ RESTORAN MƏLUMATLARI ============ -->
+      <section class="tab" data-panel="melumat">
+        <div class="page-head">
+          <h1>Restoran məlumatları</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary" data-save="site">Yadda saxla və yayımla</button>
+          </div>
+        </div>
+        <p class="page-note">Bu bölmədəki dəyişikliklər saytın hər səhifəsində — başlıqda, footer-də və rezervasiya formasında əks olunur.</p>
+        <div data-form="site"></div>
+      </section>
+
+      <!-- ============ MENYU ============ -->
+      <section class="tab" data-panel="menyu">
+        <div class="page-head">
+          <h1>Menyu</h1>
+          <div class="page-actions">
+            <button class="btn btn-ghost" data-add-category>Kateqoriya əlavə et</button>
+            <button class="btn btn-primary" data-save="content">Yadda saxla və yayımla</button>
+          </div>
+        </div>
+        <p class="page-note">Ana səhifədə ilk iki kateqoriyanın ilk 3 yeməyi göstərilir. Sıranı yuxarı/aşağı düymələri ilə dəyişin.</p>
+        <div data-menu-editor></div>
+      </section>
+
+      <!-- ============ SƏHİFƏ MƏTNLƏRİ ============ -->
+      <section class="tab" data-panel="metnler">
+        <div class="page-head">
+          <h1>Səhifə mətnləri</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary" data-save="content">Yadda saxla və yayımla</button>
+          </div>
+        </div>
+        <div data-form="content"></div>
+      </section>
+
+      <!-- ============ ŞƏKİLLƏR ============ -->
+      <section class="tab" data-panel="sekiller">
+        <div class="page-head">
+          <h1>Şəkillər</h1>
+          <div class="page-actions">
+            <label class="btn btn-primary upload-label">
+              Şəkil yüklə
+              <input type="file" accept="image/*" multiple hidden data-upload>
+            </label>
+          </div>
+        </div>
+        <p class="page-note">
+          Eyni adla yüklədiyiniz fayl köhnəsini əvəz edir — beləliklə saytdakı şəkli dəyişmək üçün başqa heç nə etmək lazım deyil.
+          Maksimum 8 MB. Formatlar: JPG, PNG, WebP, AVIF, SVG.
+        </p>
+        <div data-upload-status></div>
+        <div class="media-grid" data-images></div>
+      </section>
+
+      <!-- ============ DİZAYN ============ -->
+      <section class="tab" data-panel="dizayn">
+        <div class="page-head">
+          <h1>Dizayn</h1>
+          <div class="page-actions">
+            <button class="btn btn-primary" data-save="theme">Yadda saxla və yayımla</button>
+          </div>
+        </div>
+        <p class="page-note">Rəng və şrift dəyişiklikləri bütün sayta tətbiq olunur. Yeni şrift əlavə etmək üçün <code>scripts/fetch-fonts.mjs</code> faylına baxın.</p>
+        <div data-form="theme"></div>
+
+        <div class="preview-box">
+          <h3>Önizləmə</h3>
+          <div class="preview" data-theme-preview>
+            <div class="pv-bar">Üst zolaq</div>
+            <div class="pv-body">
+              <p class="pv-label">Etiket mətni</p>
+              <p class="pv-title">Başlıq nümunəsi</p>
+              <p class="pv-text">Adi mətn belə görünəcək — qonaqlar bu şriftlə oxuyacaq.</p>
+              <span class="pv-btn">Masa ayır</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ SİSTEM ============ -->
+      <section class="tab" data-panel="sistem">
+        <div class="page-head">
+          <h1>Sistem</h1>
+          <div class="page-actions">
+            <button class="btn btn-ghost" data-rebuild>Saytı yenidən yığ</button>
+          </div>
+        </div>
+
+        <div class="sys-grid" data-system></div>
+
+        <h3 class="sys-h">Son əməliyyatın jurnalı</h3>
+        <pre class="log" data-log>—</pre>
+
+        <h3 class="sys-h">Başqa restoran üçün istifadə</h3>
+        <div class="help">
+          <p>Bu repo şablon kimi istifadə oluna bilər. Yeni restoran üçün:</p>
+          <ol>
+            <li>Reponu klonlayın və <code>npm run new-site</code> işlədin — mətnlər boş şablona qayıdır.</li>
+            <li>Bu paneldən restoran məlumatlarını, menyunu, şəkilləri və rəngləri doldurun.</li>
+            <li><code>.env</code> faylında rezervasiya sisteminin (Vilka və s.) ünvanını və admin şifrəsini təyin edin.</li>
+          </ol>
+          <p>Sayt strukturuna toxunmaq lazım gəlsə, şablonlar <code>src/pages/</code> və <code>src/partials/</code> qovluqlarındadır.</p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div class="toast" data-toast hidden></div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+
+</html>
