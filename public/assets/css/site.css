@@ -15,6 +15,11 @@
   --cream-dim: #A9A49C;
   --gold: #B99B6B;
   --gold-soft: rgba(185, 155, 107, 0.16);
+
+  /* Brend rəngi — loqodakı tünd bordo */
+  --brand: #4E0007;
+  --brand-2: #6B0A12;
+  --brand-soft: rgba(110, 15, 22, 0.35);
   --hair: rgba(250, 248, 245, 0.14);
   --hair-soft: rgba(250, 248, 245, 0.07);
 
@@ -23,6 +28,7 @@
 
   --display: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
   --body: 'Inter', system-ui, -apple-system, sans-serif;
+  --logo: 'Grenze Gotisch', 'Cormorant Garamond', serif;
 
   --space: 130px;
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -59,6 +65,8 @@ ul, ol { list-style: none; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 address { font-style: normal; }
+
+::selection { background-color: var(--brand-2); color: var(--cream); }
 
 :where(a, button, input, select, textarea):focus-visible {
   outline: 1px solid var(--gold);
@@ -162,9 +170,17 @@ em.gold { font-style: italic; color: var(--gold); }
 
 .btn:hover { background-color: var(--gold); color: var(--black); }
 
-.btn-solid { background-color: var(--gold); color: var(--black); }
+.btn-solid {
+  background-color: var(--brand);
+  border-color: var(--brand-2);
+  color: var(--cream);
+}
 
-.btn-solid:hover { background-color: var(--cream); border-color: var(--cream); }
+.btn-solid:hover {
+  background-color: var(--gold);
+  border-color: var(--gold);
+  color: var(--black);
+}
 
 .btn-text {
   font-size: 10.5px;
@@ -186,8 +202,8 @@ em.gold { font-style: italic; color: var(--gold); }
 \*-----------------------------------*/
 
 .topbar {
-  background-color: var(--black-3);
-  border-bottom: 1px solid var(--hair-soft);
+  background-color: var(--brand);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
   font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -203,9 +219,9 @@ em.gold { font-style: italic; color: var(--gold); }
   padding-block: 11px;
 }
 
-.topbar .sep { color: var(--gold); opacity: 0.6; }
+.topbar .sep { color: var(--gold); opacity: 0.8; }
 
-.topbar a:hover { color: var(--gold); }
+.topbar a:hover { color: var(--cream); }
 
 .header {
   position: sticky;
@@ -236,28 +252,28 @@ em.gold { font-style: italic; color: var(--gold); }
   flex-shrink: 0;
 }
 
-.logo-mark { width: 22px; color: var(--gold); flex-shrink: 0; }
+.logo-mark { width: 26px; color: var(--cream); flex-shrink: 0; }
 
 .logo-mark svg { width: 100%; height: auto; }
 
 .logo-title {
   display: block;
-  font-family: var(--display);
-  font-size: 23px;
-  font-weight: 400;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  line-height: 1;
+  font-family: var(--logo);
+  font-size: 31px;
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 0.88;
+  color: var(--cream);
 }
 
 .logo-sub {
   display: block;
-  font-size: 8px;
+  font-size: 8.5px;
   font-weight: 400;
-  letter-spacing: 0.5em;
+  letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--cream-dim);
-  margin-top: 5px;
+  margin-top: 3px;
 }
 
 /* naviqasiya */
@@ -267,6 +283,10 @@ em.gold { font-style: italic; color: var(--gold); }
   align-items: center;
   gap: 34px;
 }
+
+/* Bunlar yalnız mobil menyuda görünür */
+.navbar-foot,
+.nav-cta-item { display: none; }
 
 .navbar-link {
   font-size: 10.5px;
@@ -672,7 +692,9 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, transparent 15%, rgba(18, 18, 18, 0.8) 80%);
+  background:
+    radial-gradient(ellipse at center, transparent 15%, rgba(18, 18, 18, 0.82) 80%),
+    linear-gradient(to bottom, var(--brand-soft), transparent 45%, var(--brand-soft));
 }
 
 .band blockquote {
@@ -802,7 +824,10 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
 
 .package-card:first-child { border-left: 1px solid var(--hair); }
 
-.package-card.is-featured { background-color: var(--black-2); }
+.package-card.is-featured {
+  background-color: var(--black-2);
+  background-image: linear-gradient(to bottom, rgba(110, 15, 22, 0.3), transparent 55%);
+}
 
 .package-card:hover { background-color: var(--black-2); }
 
@@ -1003,7 +1028,11 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
   #REZERVASİYA FORMASI
 \*-----------------------------------*/
 
-.booking { background-color: var(--black-2); }
+.booking {
+  background-color: var(--black-2);
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(110, 15, 22, 0.28), transparent 62%);
+  border-block: 1px solid var(--hair);
+}
 
 .booking-head { text-align: center; margin-bottom: 62px; }
 
@@ -1402,12 +1431,15 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
 
   .navbar-link.active::after { bottom: -9px; }
 
+  .nav-cta-item { display: block; margin-top: 22px; }
+
   .navbar .header-cta {
     display: inline-block;
-    margin-top: 34px;
+    font-size: 12px;
   }
 
   .navbar-foot {
+    display: grid;
     position: absolute;
     bottom: 42px;
     inset-inline: 0;
@@ -1416,7 +1448,6 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--cream-dim);
-    display: grid;
     gap: 8px;
   }
 

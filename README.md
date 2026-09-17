@@ -5,8 +5,13 @@ bölməsi var və forma **heç bir xarici sayta yönləndirmir** — məlumat re
 öz serverinə düşür, oradan isə arxa planda **Vilka** sisteminə ötürülür.
 
 Dizayn: **Premium Minimal** — demək olar qara fon, süd rəngi mətn, incə qızılı
-xətlər, Cormorant Garamond + Inter tipoqrafiyası. Bütün CSS və HTML bu layihəyə
+xətlər və brendin tünd bordo rəngi (`#4E0007`). Bütün CSS və HTML bu layihəyə
 məxsusdur; xarici CSS çərçivəsi və ya ikon kitabxanası istifadə olunmur.
+
+Loqo (buğa kəlləsi + şiş) vektor SVG kimi çəkilib, "Mangal" yazısı
+Grenze Gotisch şrifti ilə verilir — beləliklə hər ölçüdə iti görünür və
+rəngi CSS-dən dəyişdirilə bilir. Loqonun orijinal faylı varsa,
+`src/partials/logo.html` içindəki SVG-ni onunla əvəz etmək kifayətdir.
 
 ---
 
@@ -333,7 +338,9 @@ Bütün rənglər və ölçülər `public/assets/css/site.css` faylının başı
 --black-2:   #181817;   /* növbələşən bölmələrin fonu */
 --cream:     #FAF8F5;   /* mətn */
 --cream-dim: #A9A49C;   /* ikinci dərəcəli mətn */
---gold:      #B99B6B;   /* vurğu rəngi */
+--gold:      #B99B6B;   /* vurğu rəngi (xətlər, etiketlər, qiymətlər) */
+--brand:     #4E0007;   /* loqodakı bordo (üst zolaq, dolu düymələr) */
+--brand-2:   #6B0A12;   /* açıq bordo (keçidlər, çalarlar) */
 --space:     130px;     /* bölmələr arası boşluq */
 ```
 

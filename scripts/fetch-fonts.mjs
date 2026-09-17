@@ -29,6 +29,8 @@ const FAMILIES = [
   'Karla:wght@400;500;700',
   'Cormorant+Garamond:wght@300;400;500;600',
   'Inter:wght@300;400;500;600',
+  'Pirata+One',
+  'Grenze+Gotisch:wght@500;600;700',
 ];
 
 const slug = (value) =>
