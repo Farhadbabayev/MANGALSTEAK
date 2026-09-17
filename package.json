@@ -8,9 +8,10 @@
     "build": "node scripts/build.mjs",
     "start": "node server/index.mjs",
     "dev": "node scripts/build.mjs && node server/index.mjs",
-    "test": "node scripts/test.mjs",
+    "test": "node scripts/test.mjs && node scripts/test-serverless.mjs",
     "new-site": "node scripts/new-site.mjs",
-    "fonts": "node scripts/fetch-fonts.mjs"
+    "fonts": "node scripts/fetch-fonts.mjs",
+    "test:api": "node scripts/test-serverless.mjs"
   },
   "engines": {
     "node": ">=18.17"
