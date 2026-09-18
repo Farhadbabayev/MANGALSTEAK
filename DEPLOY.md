@@ -43,7 +43,7 @@ Bu addımı yalnız hesab sahibi edə bilər:
 
 Build parametrlərini `vercel.json` özü təyin edir — əl ilə dəyişmək lazım deyil.
 
-### 2. GitHub token yaradın (panelin işləməsi üçün)
+### 2. GitHub token yaradın (panelin yaza bilməsi üçün)
 
 Panel dəyişikliyi repoya yazdığı üçün ona token lazımdır:
 
@@ -53,17 +53,31 @@ Panel dəyişikliyi repoya yazdığı üçün ona token lazımdır:
 3. **Permissions → Repository permissions → Contents: Read and write**
 4. Tokeni kopyalayın (bir daha göstərilmir)
 
+> **Repo və budaq avtomatik tapılır.** Vercel funksiyalara `VERCEL_GIT_REPO_OWNER`,
+> `VERCEL_GIT_REPO_SLUG` və `VERCEL_GIT_COMMIT_REF` dəyişənlərini özü verir.
+> Panel onlardan istifadə edir, ona görə həmişə **saytın yığıldığı budağa** yazır —
+> «panel bir budağa yazdı, Vercel başqasını yığdı» səhvi mümkün deyil.
+> Başqa budağa yazmaq istəsəniz `GITHUB_BRANCH` təyin edin, o üstələyir.
+
 ### 3. Mühit dəyişənləri
 
 Vercel → **Settings → Environment Variables**:
 
+**Panel üçün cəmi iki dəyişən lazımdır** — hər ikisi sirrdir, ona görə
+yalnız siz yarada bilərsiniz:
+
 | Dəyişən | Nə üçün | Vacibliyi |
 |---|---|---|
-| `ADMIN_USER` | Panelə giriş adı | mütləq |
 | `ADMIN_PASSWORD` | Panelə giriş şifrəsi | **mütləq** (boşdursa panel bağlıdır) |
-| `GITHUB_TOKEN` | Panelin dəyişikliyi yazması | panel üçün mütləq |
-| `GITHUB_REPO` | `Farhadbabayev/MANGALSTEAK` | panel üçün mütləq |
-| `GITHUB_BRANCH` | `main` | standart: main |
+| `GITHUB_TOKEN` | Panelin dəyişikliyi repoya yazması | yazma üçün mütləq |
+
+Qalanları istəyə bağlıdır:
+
+| Dəyişən | Nə üçün | Vacibliyi |
+|---|---|---|
+| `ADMIN_USER` | Panelə giriş adı | standart: `admin` |
+| `GITHUB_REPO` | `sahib/repo` | **lazım deyil** — Vercel özü tapır |
+| `GITHUB_BRANCH` | Hansı budağa yazılsın | **lazım deyil** — saytın yığıldığı budaq |
 | `SITE_URL` | `https://mangalsteakhouse.az` | tövsiyə |
 | `VILKA_MODE` | `api` və ya `webhook` | rezervasiya üçün |
 | `VILKA_API_URL` | Vilka-nın rezervasiya ünvanı | rezervasiya üçün |

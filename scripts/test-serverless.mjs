@@ -318,6 +318,41 @@ try {
   check('Token yoxdursa aydın xəta verilir', noToken.result.status === 503,
     'status ' + noToken.result.status);
 
+  /* Vercel öz dəyişənlərini verəndə repo/budaq əl ilə yazılmadan tapılmalıdır */
+  const VERCEL_ENV = {
+    GITHUB_API: GH_ENV.GITHUB_API,
+    GITHUB_TOKEN: 'saxta-token',
+    ADMIN_USER: 'admin',
+    ADMIN_PASSWORD: 'sifre',
+    VERCEL_GIT_REPO_OWNER: 'sahib',
+    VERCEL_GIT_REPO_SLUG: 'repo',
+    VERCEL_GIT_COMMIT_REF: 'yayim-budagi',
+  };
+
+  const autoCaps = await runCase('admin-config', VERCEL_ENV);
+  check('GITHUB_REPO olmadan repo tapılır',
+    autoCaps.result.body.capabilities.repo === 'sahib/repo',
+    String(autoCaps.result.body.capabilities.repo));
+  check('Budaq deployment-in budağından götürülür',
+    autoCaps.result.body.capabilities.branch === 'yayim-budagi',
+    String(autoCaps.result.body.capabilities.branch));
+  check('Mənbə «vercel» kimi işarələnir',
+    autoCaps.result.body.capabilities.repoSource === 'vercel',
+    String(autoCaps.result.body.capabilities.repoSource));
+
+  const writesBeforeAuto = ghWrites.length;
+  await runCase('admin-save', VERCEL_ENV);
+  const autoWrite = ghWrites[ghWrites.length - 1];
+  check('Yazma həmin budağa gedir',
+    ghWrites.length === writesBeforeAuto + 1 && autoWrite.body.branch === 'yayim-budagi',
+    autoWrite && autoWrite.body.branch);
+
+  /* Əl ilə yazılan dəyər Vercel-inkini üstələməlidir */
+  const overrideCaps = await runCase('admin-config', { ...VERCEL_ENV, GITHUB_BRANCH: 'main' });
+  check('Əl ilə yazılan budaq üstələyir',
+    overrideCaps.result.body.capabilities.branch === 'main',
+    String(overrideCaps.result.body.capabilities.branch));
+
   const image = await runCase('admin-image', GH_ENV);
   check('Şəkil yüklənir', image.result.status === 201, 'status ' + image.result.status);
   check('Şəkil GitHub-a yazılır',

@@ -1355,7 +1355,7 @@
     if (caps.configWrite === false) {
       $$('[data-save], [data-publish], [data-upload]').forEach((b) => { b.disabled = true; });
       const warn = el('div', 'banner bad',
-        caps.error || 'Dəyişikliyi yadda saxlamaq mümkün deyil: GITHUB_TOKEN və GITHUB_REPO təyin olunmayıb.');
+        caps.error || 'Dəyişikliyi yadda saxlamaq mümkün deyil: GITHUB_TOKEN təyin olunmayıb.');
       $('.content').prepend(warn);
     }
 
@@ -1397,7 +1397,9 @@
     if (git && caps.repo) {
       const note = $('[data-panel="sistem"] .help');
       if (note) {
-        const line = el('p', null, 'Dəyişikliklər «' + caps.repo + '» reposunun «' + caps.branch + '» budağına yazılır.');
+        const auto = caps.repoSource === 'vercel' ? ' (Vercel özü tapıb)' : '';
+        const line = el('p', null,
+          'Dəyişikliklər «' + caps.repo + '» reposunun «' + caps.branch + '» budağına yazılır' + auto + '.');
         note.prepend(line);
       }
     }

@@ -258,6 +258,7 @@ export default async function handler(req, res) {
           configWrite: gh.ok,
           repo: gh.ok ? gh.repo : null,
           branch: gh.ok ? gh.branch : null,
+          repoSource: ghConfig().source,
           error: gh.ok ? null : gh.error,
         },
       });
@@ -267,7 +268,7 @@ export default async function handler(req, res) {
       if (!ghEnabled()) {
         return res.status(503).json({
           ok: false,
-          error: 'Dəyişikliyi yadda saxlamaq üçün Vercel-də GITHUB_TOKEN və GITHUB_REPO təyin olunmalıdır.',
+          error: 'Dəyişikliyi yadda saxlamaq üçün Vercel-də GITHUB_TOKEN təyin olunmalıdır.',
         });
       }
 

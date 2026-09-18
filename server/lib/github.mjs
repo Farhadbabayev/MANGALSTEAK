@@ -7,22 +7,35 @@
  *
  * Mühit dəyişənləri:
  *   GITHUB_TOKEN   — fine-grained token, «Contents: Read and write» icazəsi ilə
- *   GITHUB_REPO    — sahib/repo   (məs. Farhadbabayev/MANGALSTEAK)
- *   GITHUB_BRANCH  — hansı budağa yazılsın (standart: main)
+ *                    (YEGANƏ məcburi dəyişən)
+ *   GITHUB_REPO    — sahib/repo. Boşdursa Vercel-in VERCEL_GIT_REPO_OWNER /
+ *                    VERCEL_GIT_REPO_SLUG dəyişənlərindən özü tapılır.
+ *   GITHUB_BRANCH  — hansı budağa yazılsın. Boşdursa VERCEL_GIT_COMMIT_REF —
+ *                    yəni bu deployment-in yığıldığı budaq. Beləliklə panel
+ *                    HƏMİŞƏ saytın yığıldığı budağa yazır; «panel bir budağa
+ *                    yazır, Vercel başqasını yığır» səhvi mümkün deyil.
  */
 
 /* Sınaq üçün başqa ünvana yönləndirmək olar */
 const API = (process.env.GITHUB_API || 'https://api.github.com').replace(/\/$/, '');
 
+const env = (key) => (process.env[key] || '').trim();
+
 export const ghConfig = () => {
-  const repo = (process.env.GITHUB_REPO || '').trim();
-  const [owner, name] = repo.split('/');
+  /* Əvvəl əl ilə yazılana baxırıq, sonra Vercel-in öz dəyişənlərinə */
+  const [setOwner, setName] = env('GITHUB_REPO').split('/');
+
+  const owner = setOwner || env('VERCEL_GIT_REPO_OWNER');
+  const name = setName || env('VERCEL_GIT_REPO_SLUG');
+  const branch = env('GITHUB_BRANCH') || env('VERCEL_GIT_COMMIT_REF') || 'main';
 
   return {
-    token: (process.env.GITHUB_TOKEN || '').trim(),
+    token: env('GITHUB_TOKEN'),
     owner: owner || '',
     name: name || '',
-    branch: (process.env.GITHUB_BRANCH || 'main').trim(),
+    branch,
+    /* Panelə göstərmək üçün: dəyər haradan gəldi? */
+    source: setOwner && setName ? 'env' : owner && name ? 'vercel' : 'none',
   };
 };
 
@@ -134,10 +147,24 @@ export const ghListDir = async (dirPath) => {
 
 /** Bağlantının işlədiyini yoxlayır */
 export const ghCheck = async () => {
-  const { owner, name, branch } = ghConfig();
+  const { token, owner, name, branch } = ghConfig();
 
   if (!ghEnabled()) {
-    return { ok: false, error: 'GITHUB_TOKEN və GITHUB_REPO təyin olunmayıb.' };
+    if (!token) {
+      return {
+        ok: false,
+        error: 'GITHUB_TOKEN təyin olunmayıb — paneldən dəyişiklik yazmaq üçün lazımdır.',
+      };
+    }
+
+    if (!owner || !name) {
+      return {
+        ok: false,
+        error: 'Repo tapılmadı. GITHUB_REPO təyin edin (məs. sahib/repo).',
+      };
+    }
+
+    return { ok: false, error: 'GitHub bağlantısı qurulmayıb.' };
   }
 
   try {

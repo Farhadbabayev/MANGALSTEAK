@@ -204,8 +204,11 @@ hara yazılmasındadır:
 | Bağlantı parametrləri | paneldən | Vercel mühit dəyişənlərindən |
 
 Panel hansı rejimdə olduğunu özü başa düşür: işləyən sahələr açıq qalır,
-işləməyənlər gizlədilir və səbəbi yazılır. Vercel üçün `GITHUB_TOKEN` və
-`GITHUB_REPO` dəyişənləri lazımdır — bax [DEPLOY.md](DEPLOY.md).
+işləməyənlər gizlədilir və səbəbi yazılır.
+
+Vercel-də cəmi **iki dəyişən** lazımdır — `ADMIN_PASSWORD` və `GITHUB_TOKEN`.
+Repo və budaq Vercel-in öz dəyişənlərindən avtomatik tapılır, ona görə panel
+həmişə saytın yığıldığı budağa yazır. Ətraflı: [DEPLOY.md](DEPLOY.md).
 
 ### Təhlükəsizlik və geri qaytarma
 
