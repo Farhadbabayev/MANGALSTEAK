@@ -250,13 +250,33 @@ const inlineAssets = (html) => {
     );
 };
 
+/**
+ * Sorğunun hansı bölməyə getdiyini müəyyən edir.
+ *
+ * Normalda Vercel «catch-all» ünvanı req.query.path-ə yığır. Nədənsə boş
+ * gəlsə (yönləndirmə fərqli qurulub, funksiya başqa yolla çağırılıb),
+ * route boş qalır — aşağıdakı ilk şərt isə boş route-u PANEL SƏHİFƏSİ
+ * kimi başa düşür və /api/admin/config sorğusuna da HTML qaytarır.
+ * Panel cavabı JSON gözlədiyi üçün tamamilə açılmır.
+ *
+ * Ona görə boş qalanda ünvanın özündən çıxarırıq.
+ */
+const resolveRoute = (req) => {
+  const query = req.query || {};
+  const segments = [].concat(query.path || []).filter((s) => s != null && s !== '');
+  if (segments.length) return segments.join('/');
+
+  const pathname = String(req.url || '').split('?')[0];
+  const match = pathname.match(/^\/(?:api\/)?admin\/?(.*)$/);
+  return match ? match[1] : '';
+};
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
   if (!requireAdmin(req, res)) return;
 
-  const segments = [].concat(req.query.path || []);
-  const route = segments.join('/');
+  const route = resolveRoute(req);
 
   try {
     /* ---------- Panelin öz faylları ---------- */

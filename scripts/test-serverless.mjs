@@ -70,10 +70,16 @@ if (process.env.SERVERLESS_CASE) {
     /* ---- admin ---- */
     const { default: admin } = await import(join(ROOT, 'api', 'admin', '[...path].js'));
 
-    const call = async (path, method, body, headers) => {
+    const call = async (path, method, body, headers, url) => {
       const res = fakeRes();
       await admin(
-        { method: method || 'GET', headers: headers || auth('admin', 'sifre'), query: { path }, body },
+        {
+          method: method || 'GET',
+          headers: headers || auth('admin', 'sifre'),
+          query: path === null ? {} : { path },
+          url: url || ('/api/admin/' + [].concat(path || []).join('/')),
+          body,
+        },
         res
       );
       return res.captured;
@@ -105,6 +111,10 @@ if (process.env.SERVERLESS_CASE) {
     if (which === 'admin-image-bad') {
       return call(['images'], 'POST', { name: 'zerer.exe', data: 'data:image/png;base64,AAAA' });
     }
+
+    /* Vercel catch-all-ı doldurmasa nə olur? Ünvandan tanınmalıdır. */
+    if (which === 'admin-config-noquery') return call(null, 'GET', null, null, '/api/admin/config');
+    if (which === 'admin-page-noquery') return call(null, 'GET', null, null, '/admin');
 
     if (which === 'admin-integration') return call(['integration'], 'GET');
     if (which === 'admin-integration-write') return call(['integration'], 'POST', { mode: 'off' });
@@ -423,6 +433,29 @@ try {
     typeof offline.result.body.capabilities.error === 'string' &&
     offline.result.body.capabilities.error.length > 10,
     String(offline.result.body.capabilities.error));
+
+  /* ---------------------------------------------------------------- *
+   *  Ünvanın tanınması.
+   *
+   *  req.query.path boş gələndə route boş qalır və handler HƏR sorğuya
+   *  panel səhifəsini qaytarırdı — /api/admin/config-a da. Panel JSON
+   *  gözlədiyi üçün heç açılmırdı. İndi ünvanın özündən tanınır.
+   * ---------------------------------------------------------------- */
+
+  const noQuery = await runCase('admin-config-noquery', GH_ENV);
+  check('Catch-all boş gəlsə ünvandan tanınır',
+    noQuery.result.status === 200 && noQuery.result.body && noQuery.result.body.ok === true,
+    typeof noQuery.result.body === 'string'
+      ? 'HTML qaytardı: ' + noQuery.result.body.slice(0, 60)
+      : 'status ' + noQuery.result.status);
+  check('Konfiqurasiya JSON kimi gəlir — HTML deyil',
+    Boolean(noQuery.result.body && noQuery.result.body.site));
+
+  const pageNoQuery = await runCase('admin-page-noquery', GH_ENV);
+  check('/admin hələ də panel səhifəsini verir',
+    pageNoQuery.result.status === 200 &&
+    typeof pageNoQuery.result.body === 'string' &&
+    pageNoQuery.result.body.includes('<!DOCTYPE html>'));
 
   const expired = await runCase('admin-config', { ...GH_ENV, GITHUB_TOKEN: 'bitmis-token' });
   check('Token bitəndə də panel açılır',
