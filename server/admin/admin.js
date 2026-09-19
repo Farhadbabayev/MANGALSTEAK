@@ -60,12 +60,39 @@
 
   const fmtSize = (bytes) => (bytes > 1048576 ? (bytes / 1048576).toFixed(1) + ' MB' : Math.round(bytes / 1024) + ' KB');
 
+  /** Düyməni hadisəyə qoşur. Düymə yoxdursa səssizcə keçir — bir eksik
+   *  seleksiya bütün panelin qoşulmasını dayandırmasın. */
+  const on = (selector, event, handler) => {
+    const node = $(selector);
+    if (!node) { console.warn('[admin] tapılmadı:', selector); return null; }
+    node.addEventListener(event, handler);
+    return node;
+  };
+
+  /** Bir addımın xətası qalan addımları dayandırmasın. */
+  const safeSync = (label, fn) => {
+    try { return fn(); } catch (err) {
+      console.error('[admin] ' + label, err);
+      toast(label + ': ' + err.message, 'bad');
+      return null;
+    }
+  };
+
+  const safe = async (label, fn) => {
+    try { return await fn(); } catch (err) {
+      console.error('[admin] ' + label, err);
+      toast(label + ': ' + err.message, 'bad');
+      return null;
+    }
+  };
+
   /* ================================================================ *
    *  Vəziyyət
    * ================================================================ */
 
   const state = { site: null, content: null, theme: null, images: [], fonts: [], reservations: [],
-    integration: null, siteUrl: '', caps: { mode: 'server', build: true, journal: true, integrationWrite: true, imageWrite: true, configWrite: true } };
+    integration: null, siteUrl: '', ready: false, blocked: null,
+    caps: { mode: 'server', build: true, journal: true, integrationWrite: true, imageWrite: true, configWrite: true } };
   const dirty = new Set();
 
   const markDirty = (name) => {
@@ -81,6 +108,71 @@
   window.addEventListener('beforeunload', (event) => {
     if (dirty.size) { event.preventDefault(); event.returnValue = ''; }
   });
+
+  /* ================================================================ *
+   *  Daimi xəbərdarlıqlar
+   *
+   *  Toast 4–9 saniyəyə itir; panel işləməyəndə səbəb ekranda qalmalıdır.
+   * ================================================================ */
+
+  /** Yuxarıda, bağlanmayan zolaq. «key» eyni zolağın təkrarlanmasının qarşısını alır. */
+  const banner = (key, kind, title, lines, action) => {
+    const host = $('.content');
+    if (!host) return null;
+
+    const existing = $('[data-banner="' + key + '"]');
+    if (existing) existing.remove();
+
+    const box = el('div', 'banner ' + kind + ' banner-block');
+    box.setAttribute('data-banner', key);
+    box.appendChild(el('strong', null, title));
+
+    (lines || []).forEach((line) => {
+      if (Array.isArray(line)) {
+        const ol = el('ol');
+        line.forEach((step) => ol.appendChild(el('li', null, step)));
+        box.appendChild(ol);
+      } else {
+        box.appendChild(el('p', null, line));
+      }
+    });
+
+    if (action) {
+      const btn = el('button', 'btn btn-sm', action.label);
+      btn.type = 'button';
+      btn.addEventListener('click', action.run);
+      box.appendChild(btn);
+    }
+
+    host.prepend(box);
+    return box;
+  };
+
+  const dropBanner = (key) => {
+    const existing = $('[data-banner="' + key + '"]');
+    if (existing) existing.remove();
+  };
+
+  const showBanner = (key) => {
+    const box = $('[data-banner="' + key + '"]');
+    if (box && box.scrollIntoView) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  /** Yazma icazəsi yoxdursa səbəbi göstərir. true = əməliyyat dayandırıldı. */
+  const denyWrite = () => {
+    if (!state.blocked) return false;
+    toast(state.blocked, 'bad');
+    showBanner('write');
+    return true;
+  };
+
+  /** Konfiqurasiya yüklənməyibsə redaktə əməliyyatlarının mənası yoxdur. */
+  const requireReady = () => {
+    if (state.ready) return true;
+    toast('Konfiqurasiya yüklənməyib — yuxarıdakı «Yenidən cəhd et» düyməsinə basın.', 'bad');
+    showBanner('load');
+    return false;
+  };
 
   /* ================================================================ *
    *  Sahə sxemləri
@@ -727,6 +819,7 @@
 
   const renderForm = (selector, schema, configName) => {
     const host = $(selector);
+    if (!host || !state[configName]) return;
     host.innerHTML = '';
     schema.forEach((group, index) => host.appendChild(buildGroup(group, configName, index > 0)));
   };
@@ -745,8 +838,11 @@
 
   const renderMenu = () => {
     const host = $('[data-menu-editor]');
+    if (!host || !state.content) return;
     host.innerHTML = '';
 
+    if (!state.content.menu || typeof state.content.menu !== 'object') state.content.menu = {};
+    if (!Array.isArray(state.content.menu.categories)) state.content.menu.categories = [];
     const cats = state.content.menu.categories;
 
     cats.forEach((cat, ci) => {
@@ -859,6 +955,7 @@
 
   const renderImages = () => {
     const host = $('[data-images]');
+    if (!host) return;
     host.innerHTML = '';
 
     if (!state.images.length) {
@@ -918,7 +1015,10 @@
     });
 
   const handleUpload = async (files) => {
+    if (denyWrite()) return;
+
     const status = $('[data-upload-status]');
+    if (!status) return;
     status.innerHTML = '';
 
     for (const file of files) {
@@ -985,14 +1085,23 @@
    *  Yadda saxlama və yayım
    * ================================================================ */
 
+  const setLog = (text) => {
+    const box = $('[data-log]');
+    if (box) box.textContent = text;
+  };
+
   const withBusy = async (button, label, fn) => {
+    if (!button) return fn();
     const original = button.textContent;
+    const wasDisabled = button.disabled;
     button.disabled = true;
     button.textContent = label;
-    try { await fn(); } finally { button.disabled = false; button.textContent = original; }
+    try { await fn(); } finally { button.disabled = wasDisabled; button.textContent = original; }
   };
 
   const saveConfig = async (name, button) => {
+    if (!requireReady() || denyWrite()) return;
+
     await withBusy(button, 'Yadda saxlanılır…', async () => {
       try {
         const result = await api('/api/admin/config', {
@@ -1000,7 +1109,7 @@
           body: JSON.stringify({ name, data: state[name] }),
         });
         clearDirty(name);
-        $('[data-log]').textContent = result.log || '—';
+        setLog(result.log || '—');
         toast(
           result.deploy === 'queued'
             ? 'Yadda saxlanıldı. Sayt 1–2 dəqiqəyə yenilənəcək.'
@@ -1009,13 +1118,15 @@
         );
         if (name === 'site') refreshBrand();
       } catch (err) {
-        $('[data-log]').textContent = (err.payload && err.payload.log) || err.message;
+        setLog((err.payload && err.payload.log) || err.message);
         toast(err.message, 'bad');
       }
     });
   };
 
   const publish = async (button) => {
+    if (!requireReady() || denyWrite()) return;
+
     const pending = Array.from(dirty);
     await withBusy(button, 'Yayımlanır…', async () => {
       try {
@@ -1024,7 +1135,7 @@
           clearDirty(name);
         }
         const result = await api('/api/admin/build', { method: 'POST' });
-        $('[data-log]').textContent = result.log || '—';
+        setLog(result.log || '—');
 
         if (state.caps.mode === 'git') {
           toast(pending.length
@@ -1036,7 +1147,7 @@
 
         refreshBrand();
       } catch (err) {
-        $('[data-log]').textContent = (err.payload && err.payload.log) || err.message;
+        setLog((err.payload && err.payload.log) || err.message);
         toast(err.message, 'bad');
       }
     });
@@ -1057,6 +1168,7 @@
   const intInput = (name) => $('[data-int="' + name + '"]');
 
   const fillIntegration = (settings) => {
+    if (!settings || typeof settings !== 'object') return;
     state.integration = settings;
 
     INT_FIELDS.forEach((name) => {
@@ -1108,6 +1220,7 @@
 
   const showIntLog = (text) => {
     const box = $('[data-int-log]');
+    if (!box) return;
     box.hidden = false;
     box.textContent = text;
   };
@@ -1142,6 +1255,7 @@
 
   const renderReservations = () => {
     const tbody = $('[data-res-rows]');
+    if (!tbody) return;
     const areas = AREA_LABELS();
 
     const search = ($('[data-filter="search"]').value || '').trim().toLowerCase();
@@ -1323,7 +1437,7 @@
       ['Telegram bildirişi', meta && meta.telegram ? 'aktiv' : 'sönülü'],
       ['Jurnaldakı qeyd', String(state.reservations.length)],
       ['Şəkil sayı', String(state.images.length)],
-      ['Menyu yeməkləri', String((state.content.menu.categories || []).reduce((n, c) => n + (c.items || []).length, 0))],
+      ['Menyu yeməkləri', String((get(state.content, 'menu.categories') || []).reduce((n, c) => n + (c.items || []).length, 0))],
     ];
 
     host.innerHTML = '';
@@ -1350,12 +1464,46 @@
       $('.brand-sub').textContent = 'Sayt idarəetməsi · Vercel';
     }
 
-    /* Yazma icazəsi yoxdursa */
+    /* Yazma icazəsi yoxdursa.
+     *
+     *  Düymələr «disabled» EDİLMİR: sönmüş düymə basılanda heç nə demir və
+     *  panel tamamilə xarab görünür. Onun əvəzinə düymə basıla bilən qalır,
+     *  səbəbi isə həm daimi zolaqda, həm də hər basışda göstərilir. */
     if (caps.configWrite === false) {
-      $$('[data-save], [data-publish], [data-upload]').forEach((b) => { b.disabled = true; });
-      const warn = el('div', 'banner bad',
-        caps.error || 'Dəyişikliyi yadda saxlamaq mümkün deyil: GITHUB_TOKEN təyin olunmayıb.');
-      $('.content').prepend(warn);
+      state.blocked = caps.error ||
+        'Dəyişikliyi yadda saxlamaq mümkün deyil: GITHUB_TOKEN təyin olunmayıb.';
+
+      $$('[data-save], [data-publish]').forEach((b) => {
+        b.classList.add('is-blocked');
+        b.title = state.blocked;
+      });
+
+      /* Şəkil yükləmə <label> içindəki <input type=file>-dır:
+         fayl pəncərəsi boş yerə açılmasın deyə basış burada tutulur. */
+      const uploadLabel = $('.upload-label');
+      if (uploadLabel) {
+        uploadLabel.classList.add('is-blocked');
+        uploadLabel.title = state.blocked;
+        uploadLabel.addEventListener('click', (event) => {
+          if (state.blocked) { event.preventDefault(); denyWrite(); }
+        });
+      }
+
+      banner('write', 'bad',
+        'Panel yalnız oxuma rejimindədir — dəyişikliklər yadda saxlanmır.',
+        [
+          state.blocked,
+          'Açmaq üçün Vercel-də iki mühit dəyişəni lazımdır:',
+          [
+            'Vercel → bu layihə → Settings → Environment Variables.',
+            'GITHUB_TOKEN — GitHub-da «fine-grained» token yaradın, bu repoya «Contents: Read and write» icazəsi verin.',
+            'GITHUB_REPO — sahib/repo şəklində (Vercel özü tapa bilmirsə).',
+            'Deployments → son deployment → Redeploy.',
+          ],
+        ]);
+    } else {
+      state.blocked = null;
+      dropBanner('write');
     }
 
     /* Yığma düyməsi */
@@ -1424,76 +1572,58 @@
    *  Başlanğıc
    * ================================================================ */
 
-  const init = async () => {
-    initTabs();
-
-    try {
-      const data = await api('/api/admin/config');
-      state.site = data.site;
-      state.content = data.content;
-      state.theme = data.theme;
-      state.images = data.images || [];
-      state.fonts = data.fonts || [];
-      state.siteUrl = data.site_url || '';
-      if (data.capabilities) state.caps = data.capabilities;
-    } catch (err) {
-      toast('Konfiqurasiya yüklənmədi: ' + err.message, 'bad');
-      return;
-    }
-
-    refreshBrand();
-    applyCapabilities();
-    renderForm('[data-form="site"]', SITE_SCHEMA, 'site');
-    renderForm('[data-form="content"]', CONTENT_SCHEMA, 'content');
-    renderForm('[data-form="theme"]', THEME_SCHEMA, 'theme');
-    renderMenu();
-    renderImages();
-    updatePreview();
-    await loadReservations();
-
+  /** Bütün düymələr DƏRHAL qoşulur.
+   *
+   *  Əvvəllər hamısı məlumat yükləndikdən SONRA qoşulurdu: bir sorğu
+   *  uğursuz olan kimi funksiya yarıda dayanır, düymələr isə normal
+   *  görünüb heç nəyə cavab vermirdi — «panel işləmir» səbəbi budur.
+   *  İndi qoşulma yüklənmədən asılı deyil. */
+  const wireActions = () => {
     $$('[data-save]').forEach((button) => {
       button.addEventListener('click', () => saveConfig(button.dataset.save, button));
     });
 
-    $('[data-publish]').addEventListener('click', (event) => publish(event.currentTarget));
+    on('[data-publish]', 'click', (event) => publish(event.currentTarget));
 
-    $('[data-rebuild]').addEventListener('click', async (event) => {
+    on('[data-rebuild]', 'click', async (event) => {
+      if (denyWrite()) return;
       await withBusy(event.currentTarget, 'Yığılır…', async () => {
         try {
           const result = await api('/api/admin/build', { method: 'POST' });
-          $('[data-log]').textContent = result.log || '—';
+          setLog(result.log || '—');
           toast('Sayt yenidən yığıldı.', 'ok');
         } catch (err) {
-          $('[data-log]').textContent = (err.payload && err.payload.log) || err.message;
+          setLog((err.payload && err.payload.log) || err.message);
           toast(err.message, 'bad');
         }
       });
     });
 
-    $('[data-add-category]').addEventListener('click', () => {
+    on('[data-add-category]', 'click', () => {
+      if (!requireReady()) return;
       const name = prompt('Yeni kateqoriyanın adı:');
       if (!name) return;
+      if (!state.content.menu || typeof state.content.menu !== 'object') state.content.menu = {};
+      if (!Array.isArray(state.content.menu.categories)) state.content.menu.categories = [];
       state.content.menu.categories.push({ id: slugify(name), name, subtitle: '', items: [] });
       markDirty('content');
       renderMenu();
     });
 
-    $('[data-upload]').addEventListener('change', (event) => {
+    on('[data-upload]', 'change', (event) => {
       const files = Array.prototype.slice.call(event.target.files || []);
       event.target.value = '';
       if (files.length) handleUpload(files);
     });
 
-    await loadIntegration();
-
-    $('[data-refresh-res]').addEventListener('click', async (event) => {
+    on('[data-refresh-res]', 'click', async (event) => {
       await withBusy(event.currentTarget, 'Yenilənir…', async () => {
-        await loadReservations();
-        await loadIntegration();
+        await safe('Jurnal', loadReservations);
+        await safe('Bağlantı', loadIntegration);
       });
     });
 
-    $('[data-save-integration]').addEventListener('click', async (event) => {
+    on('[data-save-integration]', 'click', async (event) => {
       await withBusy(event.currentTarget, 'Saxlanılır…', async () => {
         try {
           const result = await api('/api/admin/integration', {
@@ -1502,14 +1632,14 @@
           });
           fillIntegration(result.settings);
           toast('Bağlantı yadda saxlanıldı.', 'ok');
-          await loadReservations();
+          await safe('Jurnal', loadReservations);
         } catch (err) {
           toast(err.message, 'bad');
         }
       });
     });
 
-    $('[data-int-preview]').addEventListener('click', async (event) => {
+    on('[data-int-preview]', 'click', async (event) => {
       await withBusy(event.currentTarget, 'Hazırlanır…', async () => {
         try {
           const result = await api('/api/admin/integration/preview');
@@ -1522,7 +1652,7 @@
       });
     });
 
-    $('[data-int-test]').addEventListener('click', async (event) => {
+    on('[data-int-test]', 'click', async (event) => {
       if (!confirm('Sınaq rezervasiyası göndərilsin?\n\nTətbiqdə real qeyd yarana bilər — sonra silin.')) return;
 
       await withBusy(event.currentTarget, 'Göndərilir…', async () => {
@@ -1542,14 +1672,82 @@
       input.addEventListener('change', renderReservations);
     });
 
-    $('[data-filter-reset]').addEventListener('click', () => {
+    on('[data-filter-reset]', 'click', () => {
       $$('[data-filter]').forEach((input) => { input.value = ''; });
       renderReservations();
     });
-
-    setInterval(loadReservations, 60000);
   };
 
-  init();
+  /** Məlumatın yüklənməsi. Hər addım ayrıca qorunur — biri düşsə
+   *  qalanları və düymələr işləməyə davam edir. */
+  const loadAll = async () => {
+    dropBanner('load');
+
+    let data;
+    try {
+      data = await api('/api/admin/config');
+    } catch (err) {
+      state.ready = false;
+      toast('Konfiqurasiya yüklənmədi: ' + err.message, 'bad');
+      banner('load', 'bad',
+        'Konfiqurasiya yüklənmədi — redaktə bölmələri boşdur.',
+        [
+          err.message,
+          'Səbəb adətən GITHUB_TOKEN-in bitməsi və ya repoya icazəsinin olmamasıdır. ' +
+          'Vercel → Settings → Environment Variables bölməsini yoxlayın.',
+        ],
+        { label: 'Yenidən cəhd et', run: () => { loadAll(); } });
+
+      /* Konfiqurasiya gəlməsə də rezervasiya bölməsi işləyə bilər */
+      await safe('Bağlantı', loadIntegration);
+      await safe('Jurnal', loadReservations);
+      return;
+    }
+
+    state.site = data.site;
+    state.content = data.content;
+    state.theme = data.theme;
+    state.images = data.images || [];
+    state.fonts = data.fonts || [];
+    state.siteUrl = data.site_url || '';
+    if (data.capabilities) state.caps = data.capabilities;
+    state.ready = true;
+
+    safeSync('Başlıq', refreshBrand);
+    safeSync('Rejim', applyCapabilities);
+    safeSync('Restoran məlumatları', () => renderForm('[data-form="site"]', SITE_SCHEMA, 'site'));
+    safeSync('Səhifə mətnləri', () => renderForm('[data-form="content"]', CONTENT_SCHEMA, 'content'));
+    safeSync('Dizayn', () => renderForm('[data-form="theme"]', THEME_SCHEMA, 'theme'));
+    safeSync('Menyu', renderMenu);
+    safeSync('Şəkillər', renderImages);
+    safeSync('Önizləmə', updatePreview);
+
+    await safe('Bağlantı', loadIntegration);
+    await safe('Jurnal', loadReservations);
+  };
+
+  const init = async () => {
+    /* Sıra vacibdir: əvvəl idarəetmə, sonra məlumat. */
+    initTabs();
+    wireActions();
+
+    await loadAll();
+
+    setInterval(() => { safe('Jurnal', loadReservations); }, 60000);
+  };
+
+  /* Başlanğıcda tutulmayan xəta panelin səssizcə ölməsinə səbəb olmamalıdır */
+  const start = () => {
+    init().catch((err) => {
+      console.error('[admin] başlanğıc xətası', err);
+      toast('Panel başlamadı: ' + err.message, 'bad');
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', start);
+  } else {
+    start();
+  }
 
 })();

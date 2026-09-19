@@ -44,20 +44,36 @@ export const ghEnabled = () => {
   return Boolean(token && owner && name);
 };
 
+/** Texniki xətanı panelin sahibinin anlayacağı dilə çevirir */
+const explain = (status, message) => {
+  if (status === 401) return 'GITHUB_TOKEN yanlışdır və ya vaxtı bitib — yenisini yaradın.';
+  if (status === 403) return 'GITHUB_TOKEN-in bu repoya icazəsi yoxdur («Contents: Read and write» lazımdır).';
+  if (status === 404) return 'Repo tapılmadı — GITHUB_REPO dəyərini (sahib/repo) və token-in bu repoya icazəsini yoxlayın.';
+  return 'GitHub: ' + message;
+};
+
 const request = async (method, path, body) => {
   const { token } = ghConfig();
 
-  const response = await fetch(API + path, {
-    method,
-    headers: {
-      Authorization: 'Bearer ' + token,
-      Accept: 'application/vnd.github+json',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'User-Agent': 'restaurant-site-admin',
-      ...(body ? { 'Content-Type': 'application/json' } : {}),
-    },
-    ...(body ? { body: JSON.stringify(body) } : {}),
-  });
+  let response;
+  try {
+    response = await fetch(API + path, {
+      method,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        Accept: 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+        'User-Agent': 'restaurant-site-admin',
+        ...(body ? { 'Content-Type': 'application/json' } : {}),
+      },
+      ...(body ? { body: JSON.stringify(body) } : {}),
+    });
+  } catch (err) {
+    /* Şəbəkə xətası: «fetch failed» heç nə izah etmir */
+    const wrapped = new Error('GitHub-a qoşulmaq alınmadı (' + ((err && err.message) || 'şəbəkə xətası') + ').');
+    wrapped.status = 0;
+    throw wrapped;
+  }
 
   const text = await response.text();
   let payload = null;
@@ -69,7 +85,7 @@ const request = async (method, path, body) => {
 
   if (!response.ok) {
     const message = (payload && payload.message) || ('HTTP ' + response.status);
-    const error = new Error('GitHub: ' + message);
+    const error = new Error(explain(response.status, message));
     error.status = response.status;
     throw error;
   }

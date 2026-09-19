@@ -169,6 +169,11 @@ const github = createServer((req, res) => {
       res.end(JSON.stringify(payload));
     };
 
+    /* Vaxtı bitmiş token — panelin buna necə davrandığı yoxlanılır */
+    if (req.headers.authorization === 'Bearer bitmis-token') {
+      return json(401, { message: 'Bad credentials' });
+    }
+
     /* repo məlumatı */
     if (/^\/repos\/[^/]+\/[^/]+$/.test(path)) {
       return json(200, { permissions: { push: true, admin: true }, private: false });
@@ -392,6 +397,40 @@ try {
   const build = await runCase('admin-build', GH_ENV);
   check('Yığma düyməsi izahla cavab verir',
     build.result.status === 200 && /Vercel/.test(build.result.body.log || ''));
+
+  /* ---------------------------------------------------------------- *
+   *  GitHub əlçatmaz olanda panel AÇILMALIDIR.
+   *
+   *  Əvvəl bu hal 500 qaytarırdı: panel boş açılır, heç bir düymə
+   *  cavab vermirdi. İndi bundle-dakı nüsxə göstərilir, yazma isə
+   *  bağlanır və səbəb «error» sahəsində izah olunur.
+   * ---------------------------------------------------------------- */
+
+  console.log('\n  GITHUB DÜŞƏNDƏ PANEL\n');
+
+  const offline = await runCase('admin-config', { ...GH_ENV, GITHUB_API: 'http://127.0.0.1:1' });
+  check('GitHub əlçatmaz olsa da panel açılır',
+    offline.result.status === 200 && offline.result.body.ok === true,
+    'status ' + offline.result.status);
+  check('Konfiqurasiya bundle-dan göstərilir',
+    Boolean(offline.result.body.site && offline.result.body.content && offline.result.body.theme));
+  check('Məlumatın köhnə ola biləcəyi bildirilir',
+    offline.result.body.capabilities.stale === true);
+  check('Yazma bağlanır — səhv dəyişiklik itməsin',
+    offline.result.body.capabilities.configWrite === false &&
+    offline.result.body.capabilities.imageWrite === false);
+  check('Səbəb izah olunur',
+    typeof offline.result.body.capabilities.error === 'string' &&
+    offline.result.body.capabilities.error.length > 10,
+    String(offline.result.body.capabilities.error));
+
+  const expired = await runCase('admin-config', { ...GH_ENV, GITHUB_TOKEN: 'bitmis-token' });
+  check('Token bitəndə də panel açılır',
+    expired.result.status === 200 && expired.result.body.ok === true,
+    'status ' + expired.result.status);
+  check('Token-in bitdiyi aydın deyilir',
+    /GITHUB_TOKEN/.test(expired.result.body.capabilities.error || ''),
+    String(expired.result.body.capabilities.error));
 
 } catch (err) {
   failed++;

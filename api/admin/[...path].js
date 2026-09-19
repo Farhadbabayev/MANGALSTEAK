@@ -100,12 +100,25 @@ const REQUIRED_KEYS = {
   theme: ['colors', 'fonts', 'layout', 'logo'],
 };
 
-const readConfig = async (name) => {
+/**
+ * Konfiqurasiyanı oxuyur.
+ *
+ * GitHub sorğusu uğursuz olsa (token bitib, icazə yoxdur, API əlçatmazdır)
+ * ƏVVƏLLƏR xəta yuxarı qalxır və /api/admin/config 500 qaytarırdı — panel
+ * isə tamamilə boş və cavabsız açılırdı. İndi bundle ilə gələn nüsxə oxunur,
+ * səbəb isə «warn» vasitəsilə panelə bildirilir.
+ */
+const readConfig = async (name, warn) => {
   const file = CONFIG_FILES[name];
 
   if (ghEnabled()) {
-    const remote = await ghGetJson(file);
-    if (remote) return remote;
+    try {
+      const remote = await ghGetJson(file);
+      if (remote) return remote;
+    } catch (err) {
+      console.error('[admin] GitHub oxunmadı:', file, err.message);
+      if (warn) warn(err.message);
+    }
   }
 
   const local = readLocal(file);
@@ -113,15 +126,20 @@ const readConfig = async (name) => {
   return JSON.parse(local.toString('utf8'));
 };
 
-const listImages = async () => {
+const listImages = async (warn) => {
   const dir = 'public/assets/images';
 
   if (ghEnabled()) {
-    const files = await ghListDir(dir);
-    return files
-      .filter((f) => /\.(jpe?g|png|webp|svg|avif)$/i.test(f.name))
-      .map((f) => ({ name: f.name, size: f.size, modified: null }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+    try {
+      const files = await ghListDir(dir);
+      return files
+        .filter((f) => /\.(jpe?g|png|webp|svg|avif)$/i.test(f.name))
+        .map((f) => ({ name: f.name, size: f.size, modified: null }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+    } catch (err) {
+      console.error('[admin] şəkil siyahısı alınmadı:', err.message);
+      if (warn) warn(err.message);
+    }
   }
 
   return [];
@@ -131,8 +149,12 @@ const listFonts = async () => {
   let raw = null;
 
   if (ghEnabled()) {
-    const file = await ghGetFile('public/assets/css/fonts.css');
-    if (file) raw = file.buffer.toString('utf8');
+    try {
+      const file = await ghGetFile('public/assets/css/fonts.css');
+      if (file) raw = file.buffer.toString('utf8');
+    } catch (err) {
+      console.error('[admin] şrift siyahısı alınmadı:', err.message);
+    }
   }
 
   if (!raw) {
@@ -256,14 +278,20 @@ export default async function handler(req, res) {
     /* ---------- Konfiqurasiya ---------- */
 
     if (route === 'config' && req.method === 'GET') {
+      /* GitHub-dan oxumaq alınmasa panel yıxılmır — səbəb toplanıb geri verilir */
+      const warnings = [];
+      const warn = (message) => { if (!warnings.includes(message)) warnings.push(message); };
+
       const [site, content, theme, images, fonts, gh] = await Promise.all([
-        readConfig('site'),
-        readConfig('content'),
-        readConfig('theme'),
-        listImages(),
+        readConfig('site', warn),
+        readConfig('content', warn),
+        readConfig('theme', warn),
+        listImages(warn),
         listFonts(),
         ghCheck(),
       ]);
+
+      const writable = gh.ok && warnings.length === 0;
 
       return res.status(200).json({
         ok: true,
@@ -278,12 +306,19 @@ export default async function handler(req, res) {
           build: false,
           journal: false,
           integrationWrite: false,
-          imageWrite: gh.ok,
-          configWrite: gh.ok,
+          imageWrite: writable,
+          configWrite: writable,
           repo: gh.ok ? gh.repo : null,
           branch: gh.ok ? gh.branch : null,
           repoSource: ghConfig().source,
-          error: gh.ok ? null : gh.error,
+          /* Göstərilən mətn: əvvəl bağlantı xətası, sonra oxuma xətası */
+          error: gh.ok
+            ? (warnings.length
+              ? 'GitHub-dan oxumaq alınmadı: ' + warnings[0] +
+                ' — hazırda bu deployment ilə gələn nüsxə göstərilir.'
+              : null)
+            : gh.error,
+          stale: warnings.length > 0,
         },
       });
     }

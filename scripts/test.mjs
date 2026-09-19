@@ -206,6 +206,37 @@ const run = async () => {
   const adminPage = await fetch(BASE + '/admin', { headers: adminAuth });
   check('Admin səhifəsi açılır', adminPage.status === 200, 'status ' + adminPage.status);
 
+  /* Panelin düymələri məlumat yüklənməsindən ASILI OLMAMALIDIR.
+     Əks halda bir uğursuz sorğu bütün düymələri cavabsız qoyur. */
+  const panelJs = await (await fetch(BASE + '/admin/admin.js', { headers: adminAuth })).text();
+
+  const initBody = (panelJs.match(/const init = async \(\) => \{([\s\S]*?)\n  \};/) || [])[1] || '';
+  check('Panel skripti verilir', panelJs.length > 1000);
+  check('Düymələr məlumatdan əvvəl qoşulur',
+    initBody.indexOf('wireActions()') !== -1 &&
+    initBody.indexOf('wireActions()') < initBody.indexOf('loadAll()'),
+    initBody.replace(/\s+/g, ' ').slice(0, 120));
+
+  const wireBody = (panelJs.match(/const wireActions = \(\) => \{([\s\S]*?)\n  \};/) || [])[1] || '';
+  check('Əsas düymələr wireActions daxilindədir',
+    ['[data-save]', '[data-publish]', '[data-rebuild]', '[data-upload]',
+      '[data-add-category]', '[data-refresh-res]', '[data-save-integration]',
+      '[data-int-preview]', '[data-int-test]', '[data-filter-reset]']
+      .every((sel) => wireBody.includes(sel)));
+  /* wireActions özü sinxrondur: içindəki «await»-lər yalnız basış
+     hadisələrinin içindədir, qoşulma axınını dayandıra bilmir. */
+  check('wireActions sinxrondur — sorğu onu yarıda kəsə bilməz',
+    /const wireActions = \(\) => \{/.test(panelJs) &&
+    !/const wireActions = async/.test(panelJs));
+  check('init düymələri qoşana qədər heç nə gözləmir',
+    !/\bawait\b/.test(initBody.slice(0, initBody.indexOf('wireActions()'))),
+    initBody.slice(0, initBody.indexOf('wireActions()')).replace(/\s+/g, ' '));
+
+  /* İcazə olmayanda düymə «disabled» edilməməlidir: basılanda səbəb deyilir */
+  check('İcazəsiz düymələr sönülü deyil, izahlıdır',
+    /\$\$\('\[data-save\], \[data-publish\]'\)\.forEach\(\(b\) => \{\s*b\.classList\.add\('is-blocked'\)/.test(panelJs),
+    'applyCapabilities hələ də disabled istifadə edir');
+
   console.log('\n  BAĞLANTI PARAMETRLƏRİ\n');
 
   const intRes = await fetch(BASE + '/api/admin/integration', { headers: adminAuth });
