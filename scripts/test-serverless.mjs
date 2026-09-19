@@ -184,6 +184,13 @@ const github = createServer((req, res) => {
       return json(401, { message: 'Bad credentials' });
     }
 
+    /* «Contents: Read» ilə yaradılmış token: oxuyur, yaza bilmir.
+       GitHub repo məlumatında push:true göstərir (bu, HESABIN icazəsidir),
+       yazmada isə 403 verir — panelin ən çox rastlaşdığı hal. */
+    if (req.headers.authorization === 'Bearer yalniz-oxuma' && req.method !== 'GET') {
+      return json(403, { message: 'Resource not accessible by personal access token' });
+    }
+
     /* repo məlumatı */
     if (/^\/repos\/[^/]+\/[^/]+$/.test(path)) {
       return json(200, { permissions: { push: true, admin: true }, private: false });
@@ -456,6 +463,27 @@ try {
     pageNoQuery.result.status === 200 &&
     typeof pageNoQuery.result.body === 'string' &&
     pageNoQuery.result.body.includes('<!DOCTYPE html>'));
+
+  /* ---------------------------------------------------------------- *
+   *  «Contents: Read» token — panel açılır, amma yazmır.
+   * ---------------------------------------------------------------- */
+
+  const roSave = await runCase('admin-save', { ...GH_ENV, GITHUB_TOKEN: 'yalniz-oxuma' });
+  check('Yalnız oxuma token-lə yazma rədd olunur', roSave.result.status === 500,
+    'status ' + roSave.result.status);
+  check('Panel izahı maşın oxuyan kodla gəlir',
+    (roSave.result.body || {}).code === 'gh-no-write',
+    String((roSave.result.body || {}).code));
+  check('İzah «Read and write»-ı göstərir',
+    /Read and write/.test((roSave.result.body || {}).error || ''),
+    String((roSave.result.body || {}).error).slice(0, 120));
+  check('GitHub-un öz mesajı itmir',
+    /Resource not accessible/.test((roSave.result.body || {}).error || ''),
+    String((roSave.result.body || {}).error).slice(0, 160));
+
+  const roConfig = await runCase('admin-config', { ...GH_ENV, GITHUB_TOKEN: 'yalniz-oxuma' });
+  check('Yalnız oxuma token-lə panel yenə açılır',
+    roConfig.result.status === 200 && roConfig.result.body.ok === true);
 
   const expired = await runCase('admin-config', { ...GH_ENV, GITHUB_TOKEN: 'bitmis-token' });
   check('Token bitəndə də panel açılır',

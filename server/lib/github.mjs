@@ -44,13 +44,39 @@ export const ghEnabled = () => {
   return Boolean(token && owner && name);
 };
 
-/** Texniki xətanı panelin sahibinin anlayacağı dilə çevirir */
+/**
+ * Texniki xətanı panelin sahibinin anlayacağı dilə çevirir.
+ *
+ * GitHub-un öz mətni HƏMİŞƏ sonda saxlanılır: izah yanlış olsa belə,
+ * əsl səbəb gözdən itməsin (məs. «Resource not accessible by personal
+ * access token» — token icazəsi, «protected branch» — budaq qorunması).
+ */
 const explain = (status, message) => {
-  if (status === 401) return 'GITHUB_TOKEN yanlışdır və ya vaxtı bitib — yenisini yaradın.';
-  if (status === 403) return 'GITHUB_TOKEN-in bu repoya icazəsi yoxdur («Contents: Read and write» lazımdır).';
-  if (status === 404) return 'Repo tapılmadı — GITHUB_REPO dəyərini (sahib/repo) və token-in bu repoya icazəsini yoxlayın.';
+  const raw = message ? ' (GitHub: ' + message + ')' : '';
+
+  if (status === 401) {
+    return 'GITHUB_TOKEN yanlışdır və ya vaxtı bitib — yenisini yaradın.' + raw;
+  }
+
+  if (status === 403) {
+    return 'Token oxuya bilir, amma yaza bilmir. GitHub → Settings → Developer settings → ' +
+      'Personal access tokens → Fine-grained tokens → həmin token → Repository permissions → ' +
+      'Contents: «Read and write» seçin. Token dəyişmir, Vercel-də heç nə etmək lazım deyil.' + raw;
+  }
+
+  if (status === 404) {
+    return 'Repo tapılmadı — GITHUB_REPO dəyərini (sahib/repo) və token-in bu repoya icazəsini yoxlayın.' + raw;
+  }
+
   return 'GitHub: ' + message;
 };
+
+/** Paneldə hansı izahı göstərməyi bilmək üçün maşın oxuyan kod */
+const codeFor = (status) =>
+  status === 401 ? 'gh-unauthorized'
+    : status === 403 ? 'gh-no-write'
+      : status === 404 ? 'gh-not-found'
+        : 'gh-error';
 
 const request = async (method, path, body) => {
   const { token } = ghConfig();
@@ -87,6 +113,7 @@ const request = async (method, path, body) => {
     const message = (payload && payload.message) || ('HTTP ' + response.status);
     const error = new Error(explain(response.status, message));
     error.status = response.status;
+    error.code = codeFor(response.status);
     throw error;
   }
 
@@ -185,14 +212,20 @@ export const ghCheck = async () => {
 
   try {
     const repo = await request('GET', '/repos/' + owner + '/' + name);
-    const canWrite = Boolean(repo.permissions && (repo.permissions.push || repo.permissions.admin));
 
-    if (!canWrite) {
-      return { ok: false, error: 'Token-in bu repoda yazma icazəsi yoxdur.' };
+    /* Diqqət: repo.permissions token-in deyil, HESABIN repoya girişini
+       göstərir. «Contents: Read» ilə yaradılmış token də burada push:true
+       görünür — ona görə bu yoxlama yazmanı TƏSDİQLƏMİR, yalnız repoya
+       çatdığımızı bildirir. Yazma icazəsi ilk yazmada üzə çıxır və
+       oradakı 403 izahlı mesaj verir. */
+    const reachable = Boolean(repo.permissions && (repo.permissions.push || repo.permissions.admin));
+
+    if (!reachable) {
+      return { ok: false, error: 'Bu hesabın həmin repoda yazma icazəsi yoxdur.', code: 'gh-no-write' };
     }
 
     return { ok: true, repo: owner + '/' + name, branch, private: Boolean(repo.private) };
   } catch (err) {
-    return { ok: false, error: err.message };
+    return { ok: false, error: err.message, code: err.code || 'gh-error' };
   }
 };

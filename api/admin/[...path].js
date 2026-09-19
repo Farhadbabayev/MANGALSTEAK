@@ -504,7 +504,12 @@ export default async function handler(req, res) {
     return res.status(404).json({ ok: false, error: 'Tapılmadı.' });
   } catch (err) {
     console.error('[admin]', err);
-    return res.status(500).json({ ok: false, error: String((err && err.message) || err) });
+    return res.status(500).json({
+      ok: false,
+      error: String((err && err.message) || err),
+      /* Panel bu koda baxıb düzgün izahı göstərir */
+      code: (err && err.code) || null,
+    });
   }
 }
 

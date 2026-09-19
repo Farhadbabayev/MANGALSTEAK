@@ -55,6 +55,7 @@
       const error = new Error(message);
       error.payload = body;
       error.status = response.status;
+      error.code = (body && body.code) || null;
       throw error;
     }
 
@@ -180,6 +181,31 @@
   const showBanner = (key) => {
     const box = $('[data-banner="' + key + '"]');
     if (box && box.scrollIntoView) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  /** Token oxuya bilir, amma yaza bilmir — bu, ilk yazmada üzə çıxır.
+   *  Keçici mesaj azdır: səbəb və həll addımları ekranda qalmalıdır. */
+  const reportWriteError = (err) => {
+    if (err.code !== 'gh-no-write' && err.code !== 'gh-unauthorized') return;
+
+    state.blocked = err.message;
+
+    banner('write', 'bad',
+      err.code === 'gh-unauthorized'
+        ? 'GITHUB_TOKEN yanlışdır və ya vaxtı bitib.'
+        : 'Token-in yazma icazəsi yoxdur — oxuya bilir, saxlaya bilmir.',
+      [
+        err.message,
+        err.code === 'gh-unauthorized'
+          ? 'Yeni token yaradıb Vercel-dəki GITHUB_TOKEN dəyərini yeniləyin, sonra Redeploy edin.'
+          : 'Düzəltmək üçün yeni token yaratmaq lazım deyil — mövcudunun icazəsini dəyişmək kifayətdir:',
+        err.code === 'gh-unauthorized' ? [] : [
+          'GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens.',
+          'Həmin tokeni açın → Permissions → Repository permissions → Contents → «Read and write».',
+          'Save / Update edin.',
+          'Bu səhifəyə qayıdıb yenidən cəhd edin — token dəyişmədiyi üçün Vercel-də heç nə etmək lazım deyil.',
+        ],
+      ].filter((line) => !Array.isArray(line) || line.length));
   };
 
   /** Yazma icazəsi yoxdursa səbəbi göstərir. true = əməliyyat dayandırıldı. */
@@ -1060,8 +1086,9 @@
           'ok'
         );
       } catch (err) {
-        const banner = el('div', 'banner bad', file.name + ': ' + err.message);
-        status.appendChild(banner);
+        const line = el('div', 'banner bad', file.name + ': ' + err.message);
+        status.appendChild(line);
+        reportWriteError(err);
       }
     }
 
@@ -1144,6 +1171,7 @@
       } catch (err) {
         setLog((err.payload && err.payload.log) || err.message);
         toast(err.message, 'bad');
+        reportWriteError(err);
       }
     });
   };
@@ -1173,6 +1201,7 @@
       } catch (err) {
         setLog((err.payload && err.payload.log) || err.message);
         toast(err.message, 'bad');
+        reportWriteError(err);
       }
     });
   };
