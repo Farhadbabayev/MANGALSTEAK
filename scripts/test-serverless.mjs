@@ -286,6 +286,19 @@ try {
     page.result.status === 200 && String(page.result.body).includes('data-panel'),
     'status ' + page.result.status);
 
+  /**
+   * Panel Basic Auth arxasındadır: ayrıca <link>/<script> sorğuları brauzerdə
+   * giriş məlumatı olmadan gedib 401 ala bilir və panel üslubsuz açılır.
+   * Ona görə CSS və JS səhifənin içində gəlməlidir.
+   */
+  const pageBody = String(page.result.body);
+  check('Panelin üslubu və skripti səhifənin içindədir',
+    pageBody.includes('<style>') &&
+    pageBody.includes('<script>') &&
+    !pageBody.includes('href="/admin/admin.css"') &&
+    !pageBody.includes('src="/admin/admin.js"'),
+    (pageBody.length / 1024).toFixed(1) + ' KB');
+
   const cfg = await runCase('admin-config', GH_ENV);
   check('Konfiqurasiya oxunur', cfg.result.status === 200 && cfg.result.body.ok === true);
   check('Üç konfiqurasiya da gəlir',

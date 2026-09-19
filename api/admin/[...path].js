@@ -204,6 +204,30 @@ const readBody = async (req) => {
 
 const MIME = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8' };
 
+/**
+ * Panelin CSS və JS-i səhifənin içinə yerləşdirilir.
+ *
+ * Panel Basic Auth arxasındadır. Ayrıca <link> və <script> sorğuları
+ * brauzerdə giriş məlumatı olmadan gedib 401 ala bilir — o zaman brauzer
+ * ikinci dəfə şifrə soruşmur, sadəcə səssizcə buraxır və panel üslubsuz,
+ * işləməz açılır. Tək cavab bu ehtimalı tamamilə aradan qaldırır.
+ *
+ * /admin/admin.css və /admin/admin.js ünvanları öz yerində qalır.
+ */
+const inlineAssets = (html) => {
+  const css = readLocal('server/admin/admin.css');
+  const js = readLocal('server/admin/admin.js');
+
+  /* Əvəzləyici funksiyadır: fayldakı «$&» kimi ardıcıllıqlar olduğu kimi qalsın */
+  return html
+    .replace('<link rel="stylesheet" href="/admin/admin.css">', () =>
+      css ? '<style>\n' + css.toString('utf8').replace(/<\/style/gi, '<\\/style') + '\n</style>' : ''
+    )
+    .replace('<script src="/admin/admin.js"></script>', () =>
+      js ? '<script>\n' + js.toString('utf8').replace(/<\/script/gi, '<\\/script') + '\n</script>' : ''
+    );
+};
+
 export default async function handler(req, res) {
   res.setHeader('Cache-Control', 'no-store');
 
@@ -219,7 +243,7 @@ export default async function handler(req, res) {
       const html = readLocal('server/admin/index.html');
       if (!html) return res.status(500).send('Panel faylları tapılmadı.');
       res.setHeader('Content-Type', MIME['.html']);
-      return res.status(200).send(html.toString('utf8'));
+      return res.status(200).send(inlineAssets(html.toString('utf8')));
     }
 
     if (route === 'admin.css' || route === 'admin.js') {
