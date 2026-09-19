@@ -363,10 +363,7 @@
       data-reservation data-rez-panel>
 
       <div class="rez-modal-head">
-        <div>
-          <p class="label">Onlayn rezervasiya</p>
-          <h2 class="title-1" id="rez-modal-basliq">Masanızı ayırın</h2>
-        </div>
+        <h2 id="rez-modal-basliq">Masanızı ayırın</h2>
 
         <button type="button" class="rez-modal-close" data-rez-close aria-label="Pəncərəni bağla">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -480,21 +477,13 @@
               </select>
             </div>
 
-            <div class="field full">
+            <div class="field">
               <label for="rezm-note">Qeyd</label>
-              <textarea id="rezm-note" name="note" data-field="note" maxlength="500"
-                placeholder="Uşaq kreslosu, doğum günü tortu, pəncərə kənarı…"></textarea>
+              <input type="text" id="rezm-note" name="note" data-field="note" maxlength="500"
+                placeholder="Uşaq kreslosu, tort…">
             </div>
 
           </div>
-
-          <p class="form-hint">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-              <rect x="4" y="10" width="16" height="11" rx="1.5"/>
-              <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
-            </svg>
-            Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
-          </p>
 
           <div class="form-status" data-form-status role="status" aria-live="polite"></div>
 
@@ -506,6 +495,7 @@
 
           <div class="form-actions">
             <button type="submit" class="btn btn-solid" data-submit-btn>Masanı ayır</button>
+            <p class="rez-modal-note">Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.</p>
           </div>
 
         </form>
@@ -520,10 +510,7 @@
 
           <h2 class="title-1">Rezervasiya qəbul olundu</h2>
 
-          <p class="lede" style="margin-inline:auto">
-            Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü —
-            heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
-          </p>
+          <p class="rez-modal-note">Heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.</p>
 
           <div class="success-code">
             <span class="label">Rezervasiya kodunuz</span>
@@ -532,9 +519,9 @@
 
           <ul class="success-list" data-success-summary></ul>
 
-          <p class="dim" style="font-size:14.5px">
+          <p class="rez-modal-note">
             Dəyişiklik və ya ləğv üçün:
-            <a href="tel:+994120000000" style="color:var(--gold)">+994 12 000 00 00</a>
+            <a href="tel:+994120000000">+994 12 000 00 00</a>
           </p>
 
           <div class="form-actions">
@@ -543,11 +530,6 @@
 
         </div>
 
-      </div>
-
-      <div class="rez-modal-foot">
-        <span>Telefonla: <a href="tel:+994120000000">+994 12 000 00 00</a></span>
-        <span>Hər gün 11:00 – 24:00</span>
       </div>
 
     </div>
