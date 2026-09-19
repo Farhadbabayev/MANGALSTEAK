@@ -8,6 +8,7 @@
  */
 
 import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -410,6 +411,75 @@ const render = (template, data) => {
   return { html, missing: [...missing] };
 };
 
+/* ------------------------------------------------------------------ *
+ *  theme.css — rəng, şrift və ölçü dəyişənləri
+ * ------------------------------------------------------------------ */
+
+const fontStack = (name, fallback) => `'${name}', ${fallback}`;
+
+const c = theme.colors || {};
+const f = theme.fonts || {};
+const l = theme.layout || {};
+
+const themeCss = `/*-----------------------------------*\\
+  #theme.css
+  Admin panelin «Dizayn» bölməsindən yaradılır — əl ilə redaktə etməyin.
+  (Mənbə: theme.config.json)
+\\*-----------------------------------*/
+
+:root {
+  --black: ${c.black || '#121212'};
+  --black-2: ${c.black2 || '#181817'};
+  --black-3: ${c.black3 || '#0D0D0D'};
+  --cream: ${c.cream || '#FAF8F5'};
+  --cream-dim: ${c.creamDim || '#A9A49C'};
+  --gold: ${c.gold || '#B99B6B'};
+  --brand: ${c.brand || '#4E0007'};
+  --brand-2: ${c.brand2 || '#6B0A12'};
+
+  --display: ${fontStack(f.display || 'Cormorant Garamond', "Garamond, 'Times New Roman', serif")};
+  --body: ${fontStack(f.body || 'Inter', 'system-ui, -apple-system, sans-serif')};
+  --logo: ${fontStack(f.logo || 'Grenze Gotisch', "'Cormorant Garamond', serif")};
+
+  --space: ${Number(l.sectionSpace) || 130}px;
+}
+
+.logo-title { font-size: ${Number(l.logoSize) || 31}px; }
+.logo-mark { width: ${Number(l.markSize) || 26}px; }
+.logo-img { max-height: ${Math.round((Number(l.logoSize) || 31) * 1.6)}px; width: auto; }
+`;
+
+writeFileSync(join(OUT, 'assets', 'css', 'theme.css'), themeCss, 'utf8');
+
+console.log('  ✓ public/assets/css/theme.css');
+
+/* ------------------------------------------------------------------ *
+ *  Fayl versiyaları
+ * ------------------------------------------------------------------ */
+
+/**
+ * Hər CSS/JS ünvanına məzmunundan çıxarılan qısa açar əlavə olunur:
+ *   ./assets/css/site.css  ->  ./assets/css/site.css?v=8f3c1a92
+ *
+ * Fayl dəyişəndə ünvan da dəyişir — beləcə brauzer (və CDN) köhnə
+ * nüsxəni saxlamır, yenilik dərhal görünür.
+ */
+
+const shortHash = (text) => createHash('sha1').update(text).digest('hex').slice(0, 8);
+
+const assetVersions = { 'css/theme.css': shortHash(themeCss) };
+
+for (const rel of ['css/site.css', 'css/fonts.css', 'js/script.js', 'js/reservation.js']) {
+  const file = join(OUT, 'assets', ...rel.split('/'));
+  if (existsSync(file)) assetVersions[rel] = shortHash(readFileSync(file, 'utf8'));
+}
+
+const withVersions = (html) =>
+  html.replace(/\.\/assets\/(css|js)\/([\w.-]+\.(?:css|js))/g, (match, dir, file) => {
+    const version = assetVersions[`${dir}/${file}`];
+    return version ? `${match}?v=${version}` : match;
+  });
+
 let failed = false;
 
 for (const page of pages) {
@@ -453,53 +523,12 @@ for (const page of pages) {
     console.error(`  ✗ ${page.file}: tapılmayan dəyər(lər): ${missing.join(', ')}`);
   }
 
-  writeFileSync(join(OUT, page.file), html, 'utf8');
-  console.log(`  ✓ public/${page.file}  (${(html.length / 1024).toFixed(1)} KB)`);
+  const versioned = withVersions(html);
+
+  writeFileSync(join(OUT, page.file), versioned, 'utf8');
+  console.log(`  ✓ public/${page.file}  (${(versioned.length / 1024).toFixed(1)} KB)`);
 }
 
-/* ------------------------------------------------------------------ *
- *  theme.css — rəng, şrift və ölçü dəyişənləri
- * ------------------------------------------------------------------ */
-
-const fontStack = (name, fallback) => `'${name}', ${fallback}`;
-
-const c = theme.colors || {};
-const f = theme.fonts || {};
-const l = theme.layout || {};
-
-writeFileSync(
-  join(OUT, 'assets', 'css', 'theme.css'),
-  `/*-----------------------------------*\\
-  #theme.css
-  Admin panelin «Dizayn» bölməsindən yaradılır — əl ilə redaktə etməyin.
-  (Mənbə: theme.config.json)
-\\*-----------------------------------*/
-
-:root {
-  --black: ${c.black || '#121212'};
-  --black-2: ${c.black2 || '#181817'};
-  --black-3: ${c.black3 || '#0D0D0D'};
-  --cream: ${c.cream || '#FAF8F5'};
-  --cream-dim: ${c.creamDim || '#A9A49C'};
-  --gold: ${c.gold || '#B99B6B'};
-  --brand: ${c.brand || '#4E0007'};
-  --brand-2: ${c.brand2 || '#6B0A12'};
-
-  --display: ${fontStack(f.display || 'Cormorant Garamond', "Garamond, 'Times New Roman', serif")};
-  --body: ${fontStack(f.body || 'Inter', 'system-ui, -apple-system, sans-serif')};
-  --logo: ${fontStack(f.logo || 'Grenze Gotisch', "'Cormorant Garamond', serif")};
-
-  --space: ${Number(l.sectionSpace) || 130}px;
-}
-
-.logo-title { font-size: ${Number(l.logoSize) || 31}px; }
-.logo-mark { width: ${Number(l.markSize) || 26}px; }
-.logo-img { max-height: ${Math.round((Number(l.logoSize) || 31) * 1.6)}px; width: auto; }
-`,
-  'utf8'
-);
-
-console.log('  ✓ public/assets/css/theme.css');
 
 /* ------------------------------------------------------------------ *
  *  admin-info.html — Vercel kimi statik hostinqdə /admin üçün izah
