@@ -5,6 +5,9 @@
  *
  * Forma heç bir xarici sayta yönləndirmir: məlumat öz API-mıza (POST /api/reservations)
  * göndərilir, server isə onu restoranın rezervasiya sisteminə (Vilka) ötürür.
+ *
+ * Səhifədə birdən çox forma ola bilər (səhifədəki bölmə + üzən düymə ilə
+ * açılan pəncərə), ona görə hər «[data-reservation]» sahəsi ayrıca qurulur.
  */
 
 (function () {
@@ -18,102 +21,8 @@
   const NEWSLETTER_URL = API_BASE + '/api/newsletter';
   const MAX_DAYS_AHEAD = 90;
 
-  const form = document.querySelector('[data-reservation-form]');
-  if (!form) return;
-
-  const statusBox = form.querySelector('[data-form-status]');
-  const submitBtn = form.querySelector('[data-submit-btn]');
-  const successBox = document.querySelector('[data-form-success]');
-  const successCode = document.querySelector('[data-success-code]');
-  const successSummary = document.querySelector('[data-success-summary]');
-  const newReservationBtn = document.querySelector('[data-new-reservation]');
-
-  const dateInput = form.querySelector('[data-field="date"]');
-  const timeSelect = form.querySelector('[data-field="time"]');
-
   const pad = (n) => String(n).padStart(2, '0');
   const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-
-
-  /* ---------------------------------------------------------------- *
-   *  Tarix sahəsinin hüdudları
-   * ---------------------------------------------------------------- */
-
-  const today = new Date();
-  const maxDate = new Date();
-  maxDate.setDate(maxDate.getDate() + MAX_DAYS_AHEAD);
-
-  if (dateInput) {
-    dateInput.min = toISO(today);
-    dateInput.max = toISO(maxDate);
-    if (!dateInput.value) dateInput.value = toISO(today);
-  }
-
-  /* Bu gün üçün keçmiş saatları söndürürük */
-  const refreshTimeSlots = function () {
-    if (!dateInput || !timeSelect) return;
-
-    const isToday = dateInput.value === toISO(new Date());
-    const now = new Date();
-    const nowMinutes = now.getHours() * 60 + now.getMinutes() + 45; // ən azı 45 dəq əvvəl
-
-    let firstAvailable = null;
-
-    Array.prototype.forEach.call(timeSelect.options, function (opt) {
-      if (!opt.value) return;
-      const [h, m] = opt.value.split(':').map(Number);
-      const past = isToday && (h * 60 + m) < nowMinutes;
-      opt.disabled = past;
-      if (!past && firstAvailable === null) firstAvailable = opt.value;
-    });
-
-    const current = timeSelect.selectedOptions[0];
-    if (current && current.disabled) timeSelect.value = firstAvailable || '';
-  };
-
-  if (dateInput) dateInput.addEventListener('change', refreshTimeSlots);
-  refreshTimeSlots();
-
-
-  /* ---------------------------------------------------------------- *
-   *  Vəziyyət mesajları
-   * ---------------------------------------------------------------- */
-
-  const showStatus = function (message, type) {
-    if (!statusBox) return;
-    statusBox.textContent = message;
-    statusBox.classList.remove('is-error', 'is-info');
-    statusBox.classList.add('is-visible', type === 'error' ? 'is-error' : 'is-info');
-  };
-
-  const clearStatus = function () {
-    if (!statusBox) return;
-    statusBox.textContent = '';
-    statusBox.classList.remove('is-visible', 'is-error', 'is-info');
-  };
-
-  const markInvalid = function (field, invalid) {
-    const el = form.querySelector(`[data-field="${field}"]`);
-    if (!el) return null;
-    el.classList.toggle('is-invalid', invalid);
-    if (invalid) el.setAttribute('aria-invalid', 'true');
-    else el.removeAttribute('aria-invalid');
-    return el;
-  };
-
-  const clearInvalid = function () {
-    form.querySelectorAll('.is-invalid').forEach(function (el) {
-      el.classList.remove('is-invalid');
-      el.removeAttribute('aria-invalid');
-    });
-  };
-
-  form.addEventListener('input', function (event) {
-    if (event.target.classList.contains('is-invalid')) {
-      event.target.classList.remove('is-invalid');
-      event.target.removeAttribute('aria-invalid');
-    }
-  });
 
 
   /* ---------------------------------------------------------------- *
@@ -133,18 +42,9 @@
     return '+994' + digits;
   };
 
-  const phoneInput = form.querySelector('[data-field="phone"]');
-  if (phoneInput) {
-    phoneInput.addEventListener('blur', function () {
-      const normalized = normalizePhone(phoneInput.value);
-      if (normalized) {
-        phoneInput.value = normalized.replace(
-          /^\+994(\d{2})(\d{3})(\d{2})(\d{2})$/,
-          '+994 $1 $2 $3 $4'
-        );
-      }
-    });
-  }
+  const prettyPhone = function (value) {
+    return String(value || '').replace(/^\+994(\d{2})(\d{3})(\d{2})(\d{2})$/, '+994 $1 $2 $3 $4');
+  };
 
 
   /* ---------------------------------------------------------------- *
@@ -200,147 +100,272 @@
 
 
   /* ---------------------------------------------------------------- *
-   *  Uğur paneli
+   *  Bir rezervasiya sahəsinin qurulması
    * ---------------------------------------------------------------- */
 
-  const labelOf = function (field) {
-    const el = form.querySelector(`[data-field="${field}"]`);
-    if (!el || el.tagName !== 'SELECT') return '';
-    const opt = el.selectedOptions[0];
-    return opt ? opt.textContent.trim() : '';
-  };
+  const initReservation = function (root) {
+    const form = root.querySelector('[data-reservation-form]');
+    if (!form) return;
 
-  const prettyPhone = function (value) {
-    return String(value || '').replace(/^\+994(\d{2})(\d{3})(\d{2})(\d{2})$/, '+994 $1 $2 $3 $4');
-  };
+    const statusBox = form.querySelector('[data-form-status]');
+    const submitBtn = form.querySelector('[data-submit-btn]');
+    const successBox = root.querySelector('[data-form-success]');
+    const successCode = root.querySelector('[data-success-code]');
+    const successSummary = root.querySelector('[data-success-summary]');
+    const newReservationBtn = root.querySelector('[data-new-reservation]');
 
-  const showSuccess = function (code, data) {
-    if (!successBox) return;
+    const dateInput = form.querySelector('[data-field="date"]');
+    const timeSelect = form.querySelector('[data-field="time"]');
 
-    form.hidden = true;
-    successBox.hidden = false;
+    /* Pəncərənin öz sürüşən gövdəsi var — səhifədəki bölmədə isə yoxdur */
+    const scrollHost = root.querySelector('[data-rez-scroll]');
 
-    if (successCode) successCode.textContent = code;
-
-    if (successSummary) {
-      const rows = [
-        ['Ad', data.name],
-        ['Telefon', prettyPhone(data.phone)],
-        ['Tarix', data.date.split('-').reverse().join('.')],
-        ['Saat', data.time],
-        ['Nəfər', labelOf('guests') || data.guests],
-        ['Zona', labelOf('area')],
-      ].filter(function (row) { return row[1]; });
-
-      successSummary.innerHTML = rows
-        .map(function (row) {
-          const value = String(row[1]).replace(/[<>&]/g, '');
-          return `<li><span>${row[0]}</span><span>${value}</span></li>`;
-        })
-        .join('');
-    }
-
-    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-
-  if (newReservationBtn) {
-    newReservationBtn.addEventListener('click', function () {
-      successBox.hidden = true;
-      form.hidden = false;
-      form.reset();
-      if (dateInput) dateInput.value = toISO(new Date());
-      refreshTimeSlots();
-      clearStatus();
-      clearInvalid();
-      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-  }
-
-
-  /* ---------------------------------------------------------------- *
-   *  Göndərmə
-   * ---------------------------------------------------------------- */
-
-  const setLoading = function (loading) {
-    if (!submitBtn) return;
-    submitBtn.classList.toggle('is-loading', loading);
-    submitBtn.disabled = loading;
-  };
-
-  form.addEventListener('submit', async function (event) {
-    event.preventDefault();
-    clearStatus();
-    clearInvalid();
-
-    const fd = new FormData(form);
-    const data = {
-      name: (fd.get('name') || '').toString().trim(),
-      phone: (fd.get('phone') || '').toString().trim(),
-      guests: (fd.get('guests') || '').toString(),
-      date: (fd.get('date') || '').toString(),
-      time: (fd.get('time') || '').toString(),
-      area: (fd.get('area') || '').toString(),
-      occasion: (fd.get('occasion') || '').toString(),
-      note: (fd.get('note') || '').toString().trim(),
-      website: (fd.get('website') || '').toString(),
-      source: window.location.pathname.replace(/^\//, '') || 'index.html',
+    const bringIntoView = function (el) {
+      if (scrollHost) scrollHost.scrollTo({ top: 0, behavior: 'smooth' });
+      else el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
-    const error = validate(data);
-    if (error) {
-      const el = markInvalid(error.field, true);
-      showStatus(error.message, 'error');
-      if (el) el.focus({ preventScroll: false });
-      return;
+
+    /* -------------------------------------------------------------- *
+     *  Tarix sahəsinin hüdudları
+     * -------------------------------------------------------------- */
+
+    if (dateInput) {
+      const maxDate = new Date();
+      maxDate.setDate(maxDate.getDate() + MAX_DAYS_AHEAD);
+
+      dateInput.min = toISO(new Date());
+      dateInput.max = toISO(maxDate);
+      if (!dateInput.value) dateInput.value = toISO(new Date());
     }
 
-    data.phone = normalizePhone(data.phone);
+    /* Bu gün üçün keçmiş saatları söndürürük */
+    const refreshTimeSlots = function () {
+      if (!dateInput || !timeSelect) return;
 
-    setLoading(true);
-    showStatus('Rezervasiya göndərilir…', 'info');
+      const isToday = dateInput.value === toISO(new Date());
+      const now = new Date();
+      const nowMinutes = now.getHours() * 60 + now.getMinutes() + 45; // ən azı 45 dəq əvvəl
 
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(function () { controller.abort(); }, 20000);
+      let firstAvailable = null;
 
-      const response = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        signal: controller.signal,
+      Array.prototype.forEach.call(timeSelect.options, function (opt) {
+        if (!opt.value) return;
+        const [h, m] = opt.value.split(':').map(Number);
+        const past = isToday && (h * 60 + m) < nowMinutes;
+        opt.disabled = past;
+        if (!past && firstAvailable === null) firstAvailable = opt.value;
       });
 
-      clearTimeout(timeout);
+      const current = timeSelect.selectedOptions[0];
+      if (current && current.disabled) timeSelect.value = firstAvailable || '';
+    };
 
-      let payload = null;
-      try { payload = await response.json(); } catch (_) { /* boş cavab */ }
+    if (dateInput) dateInput.addEventListener('change', refreshTimeSlots);
+    refreshTimeSlots();
 
-      if (response.ok && payload && payload.ok) {
+    /**
+     * Pəncərə açılanda saat siyahısı yenidən hesablanır —
+     * səhifə uzun müddət açıq qalsa belə keçmiş saat təklif olunmur.
+     */
+    root.addEventListener('reservation:refresh', refreshTimeSlots);
+
+
+    /* -------------------------------------------------------------- *
+     *  Vəziyyət mesajları
+     * -------------------------------------------------------------- */
+
+    const showStatus = function (message, type) {
+      if (!statusBox) return;
+      statusBox.textContent = message;
+      statusBox.classList.remove('is-error', 'is-info');
+      statusBox.classList.add('is-visible', type === 'error' ? 'is-error' : 'is-info');
+    };
+
+    const clearStatus = function () {
+      if (!statusBox) return;
+      statusBox.textContent = '';
+      statusBox.classList.remove('is-visible', 'is-error', 'is-info');
+    };
+
+    const markInvalid = function (field, invalid) {
+      const el = form.querySelector(`[data-field="${field}"]`);
+      if (!el) return null;
+      el.classList.toggle('is-invalid', invalid);
+      if (invalid) el.setAttribute('aria-invalid', 'true');
+      else el.removeAttribute('aria-invalid');
+      return el;
+    };
+
+    const clearInvalid = function () {
+      form.querySelectorAll('.is-invalid').forEach(function (el) {
+        el.classList.remove('is-invalid');
+        el.removeAttribute('aria-invalid');
+      });
+    };
+
+    form.addEventListener('input', function (event) {
+      if (event.target.classList.contains('is-invalid')) {
+        event.target.classList.remove('is-invalid');
+        event.target.removeAttribute('aria-invalid');
+      }
+    });
+
+
+    /* -------------------------------------------------------------- *
+     *  Telefon nömrəsinin səliqəyə salınması
+     * -------------------------------------------------------------- */
+
+    const phoneInput = form.querySelector('[data-field="phone"]');
+    if (phoneInput) {
+      phoneInput.addEventListener('blur', function () {
+        const normalized = normalizePhone(phoneInput.value);
+        if (normalized) phoneInput.value = prettyPhone(normalized);
+      });
+    }
+
+
+    /* -------------------------------------------------------------- *
+     *  Uğur paneli
+     * -------------------------------------------------------------- */
+
+    const labelOf = function (field) {
+      const el = form.querySelector(`[data-field="${field}"]`);
+      if (!el || el.tagName !== 'SELECT') return '';
+      const opt = el.selectedOptions[0];
+      return opt ? opt.textContent.trim() : '';
+    };
+
+    const showSuccess = function (code, data) {
+      if (!successBox) return;
+
+      form.hidden = true;
+      successBox.hidden = false;
+
+      if (successCode) successCode.textContent = code;
+
+      if (successSummary) {
+        const rows = [
+          ['Ad', data.name],
+          ['Telefon', prettyPhone(data.phone)],
+          ['Tarix', data.date.split('-').reverse().join('.')],
+          ['Saat', data.time],
+          ['Nəfər', labelOf('guests') || data.guests],
+          ['Zona', labelOf('area')],
+        ].filter(function (row) { return row[1]; });
+
+        successSummary.innerHTML = rows
+          .map(function (row) {
+            const value = String(row[1]).replace(/[<>&]/g, '');
+            return `<li><span>${row[0]}</span><span>${value}</span></li>`;
+          })
+          .join('');
+      }
+
+      bringIntoView(successBox);
+    };
+
+    if (newReservationBtn) {
+      newReservationBtn.addEventListener('click', function () {
+        successBox.hidden = true;
+        form.hidden = false;
+        form.reset();
+        if (dateInput) dateInput.value = toISO(new Date());
+        refreshTimeSlots();
         clearStatus();
-        showSuccess(payload.code || '—', data);
+        clearInvalid();
+        bringIntoView(form);
+      });
+    }
+
+
+    /* -------------------------------------------------------------- *
+     *  Göndərmə
+     * -------------------------------------------------------------- */
+
+    const setLoading = function (loading) {
+      if (!submitBtn) return;
+      submitBtn.classList.toggle('is-loading', loading);
+      submitBtn.disabled = loading;
+    };
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      clearStatus();
+      clearInvalid();
+
+      const fd = new FormData(form);
+      const data = {
+        name: (fd.get('name') || '').toString().trim(),
+        phone: (fd.get('phone') || '').toString().trim(),
+        guests: (fd.get('guests') || '').toString(),
+        date: (fd.get('date') || '').toString(),
+        time: (fd.get('time') || '').toString(),
+        area: (fd.get('area') || '').toString(),
+        occasion: (fd.get('occasion') || '').toString(),
+        note: (fd.get('note') || '').toString().trim(),
+        website: (fd.get('website') || '').toString(),
+        source: window.location.pathname.replace(/^\//, '') || 'index.html',
+      };
+
+      const error = validate(data);
+      if (error) {
+        const el = markInvalid(error.field, true);
+        showStatus(error.message, 'error');
+        if (el) el.focus({ preventScroll: false });
         return;
       }
 
-      if (payload && payload.field) markInvalid(payload.field, true);
+      data.phone = normalizePhone(data.phone);
 
-      showStatus(
-        (payload && payload.error) ||
-        'Rezervasiyanı qeyd edə bilmədik. Zəhmət olmasa bir az sonra yenidən yoxlayın və ya bizə zəng edin.',
-        'error'
-      );
+      setLoading(true);
+      showStatus('Rezervasiya göndərilir…', 'info');
 
-    } catch (err) {
-      const offline = err && err.name === 'AbortError';
-      showStatus(
-        offline
-          ? 'Server cavab vermədi. Zəhmət olmasa telefonla əlaqə saxlayın.'
-          : 'Bağlantı xətası oldu. İnternet bağlantınızı yoxlayın və ya bizə zəng edin.',
-        'error'
-      );
-    } finally {
-      setLoading(false);
-    }
-  });
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(function () { controller.abort(); }, 20000);
+
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeout);
+
+        let payload = null;
+        try { payload = await response.json(); } catch (_) { /* boş cavab */ }
+
+        if (response.ok && payload && payload.ok) {
+          clearStatus();
+          showSuccess(payload.code || '—', data);
+          return;
+        }
+
+        if (payload && payload.field) markInvalid(payload.field, true);
+
+        showStatus(
+          (payload && payload.error) ||
+          'Rezervasiyanı qeyd edə bilmədik. Zəhmət olmasa bir az sonra yenidən yoxlayın və ya bizə zəng edin.',
+          'error'
+        );
+
+      } catch (err) {
+        const offline = err && err.name === 'AbortError';
+        showStatus(
+          offline
+            ? 'Server cavab vermədi. Zəhmət olmasa telefonla əlaqə saxlayın.'
+            : 'Bağlantı xətası oldu. İnternet bağlantınızı yoxlayın və ya bizə zəng edin.',
+          'error'
+        );
+      } finally {
+        setLoading(false);
+      }
+    });
+  };
+
+  document.querySelectorAll('[data-reservation]').forEach(initReservation);
 
 
   /* ---------------------------------------------------------------- *

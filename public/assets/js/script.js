@@ -173,4 +173,107 @@
     }
   }
 
+
+  /* ---------------------------------------------------------------- *
+   *  Rezervasiya pəncərəsi (sağ aşağıdakı üzən düymə)
+   * ---------------------------------------------------------------- */
+
+  const rezModal = document.querySelector('[data-rez-modal]');
+  const rezPanel = rezModal && rezModal.querySelector('[data-rez-panel]');
+  const rezOpeners = document.querySelectorAll('[data-rez-open]');
+
+  if (rezModal && rezPanel && rezOpeners.length) {
+
+    const FOCUSABLE =
+      'a[href], button:not([disabled]), input:not([disabled]), ' +
+      'select:not([disabled]), textarea:not([disabled])';
+
+    /* Görünən və klaviatura ilə gəzilə bilən elementlər */
+    const focusables = function () {
+      return Array.prototype.filter.call(
+        rezPanel.querySelectorAll(FOCUSABLE),
+        function (el) { return el.tabIndex !== -1 && el.offsetWidth + el.offsetHeight > 0; }
+      );
+    };
+
+    const isOpen = function () { return document.body.classList.contains('rez-open'); };
+
+    let lastFocused = null;
+
+    const openRez = function () {
+      if (isOpen()) return;
+
+      lastFocused = document.activeElement;
+      setNav(false);
+      document.body.classList.add('rez-open');
+
+      rezOpeners.forEach(function (btn) { btn.setAttribute('aria-expanded', 'true'); });
+
+      /* Saat siyahısı yenidən hesablansın — keçmiş saatlar təklif olunmasın */
+      rezPanel.dispatchEvent(new CustomEvent('reservation:refresh'));
+
+      /* Toxunma ekranlarında klaviatura özbaşına açılmasın deyə bağlama düyməsi seçilir */
+      const pointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const nameInput = rezPanel.querySelector('[data-field="name"]');
+      const items = focusables();
+
+      window.setTimeout(function () {
+        if (pointer && nameInput && nameInput.offsetParent !== null) nameInput.focus();
+        else if (items.length) items[0].focus();
+      }, 80);
+    };
+
+    const closeRez = function () {
+      if (!isOpen()) return;
+
+      document.body.classList.remove('rez-open');
+      rezOpeners.forEach(function (btn) { btn.setAttribute('aria-expanded', 'false'); });
+
+      if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+      lastFocused = null;
+    };
+
+    rezOpeners.forEach(function (btn) {
+      btn.setAttribute('aria-haspopup', 'dialog');
+      btn.setAttribute('aria-expanded', 'false');
+
+      btn.addEventListener('click', function (event) {
+        event.preventDefault();
+        openRez();
+      });
+    });
+
+    /* Bağlama düyməsi və arxa fon */
+    rezModal.addEventListener('click', function (event) {
+      if (event.target.closest('[data-rez-close]')) closeRez();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (!isOpen()) return;
+
+      if (event.key === 'Escape') {
+        closeRez();
+        return;
+      }
+
+      if (event.key !== 'Tab') return;
+
+      /* Fokus pəncərənin içində qalsın */
+      const items = focusables();
+      if (!items.length) return;
+
+      const first = items[0];
+      const last = items[items.length - 1];
+      const inside = rezPanel.contains(document.activeElement);
+
+      if (event.shiftKey && (!inside || document.activeElement === first)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (!inside || document.activeElement === last)) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  }
+
 })();

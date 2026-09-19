@@ -58,7 +58,8 @@ body {
   overflow-x: hidden;
 }
 
-body.nav-open { overflow: hidden; }
+body.nav-open,
+body.rez-open { overflow: hidden; }
 
 img, svg, iframe { display: block; max-width: 100%; }
 ul, ol { list-style: none; }
@@ -1353,9 +1354,143 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
 
 .float-whatsapp { left: 28px; }
 
-.float-top { right: 28px; opacity: 0; pointer-events: none; }
+/* «Yuxarı qayıt» üzən rezervasiya düyməsinin üstündə dayanır */
+.float-top { right: 28px; bottom: 90px; opacity: 0; pointer-events: none; }
 
 .float-top.show { opacity: 1; pointer-events: auto; }
+
+/* Masa rezerv etmək — sağ aşağı künc */
+
+.float-reserve {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 31;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 24px;
+  border: 1px solid var(--gold);
+  background-color: var(--brand);
+  color: var(--cream);
+  font-family: var(--body);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);
+  transition: background-color 320ms var(--ease), border-color 320ms var(--ease), color 320ms var(--ease);
+}
+
+.float-reserve svg { width: 17px; flex-shrink: 0; }
+
+.float-reserve:hover {
+  background-color: var(--gold);
+  border-color: var(--gold);
+  color: var(--black);
+}
+
+/* Mobil menyu açıqkən üzən düymələr yolu kəsməsin */
+body.nav-open .float-reserve,
+body.nav-open .float-btn { opacity: 0; pointer-events: none; }
+
+/*-----------------------------------*\
+  #REZERVASİYA PƏNCƏRƏSİ
+\*-----------------------------------*/
+
+.rez-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 320ms var(--ease), visibility 320ms;
+}
+
+body.rez-open .rez-modal { opacity: 1; visibility: visible; }
+
+.rez-modal-veil {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(8, 8, 8, 0.78);
+  backdrop-filter: blur(6px);
+}
+
+.rez-modal-panel {
+  position: relative;
+  width: min(760px, 100%);
+  max-height: min(88vh, 940px);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--black-2);
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(110, 15, 22, 0.3), transparent 62%);
+  border: 1px solid var(--hair);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6);
+  transform: translateY(24px);
+  transition: transform 380ms var(--ease);
+}
+
+body.rez-open .rez-modal-panel { transform: none; }
+
+.rez-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 30px 34px 22px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.rez-modal-head .label { display: block; margin-bottom: 8px; }
+
+.rez-modal-head h2 { font-size: clamp(26px, 3vw, 34px); }
+
+.rez-modal-close {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--hair);
+  color: var(--cream-dim);
+  transition: border-color 260ms var(--ease), color 260ms var(--ease);
+}
+
+.rez-modal-close svg { width: 16px; }
+
+.rez-modal-close:hover { border-color: var(--gold); color: var(--gold); }
+
+.rez-modal-body {
+  padding: 30px 34px 34px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.rez-modal-body .fields { gap: 24px 30px; }
+.rez-modal-body .form-hint { margin-top: 26px; }
+.rez-modal-body .form-status { margin-top: 20px; }
+.rez-modal-body .form-actions { margin-top: 30px; }
+.rez-modal-body .success-mark { margin-bottom: 22px; }
+.rez-modal-body .success-code { margin-block: 24px; }
+.rez-modal-body .success-list { margin-bottom: 26px; }
+
+.rez-modal-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 26px;
+  padding: 16px 34px;
+  border-top: 1px solid var(--hair);
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+}
+
+.rez-modal-foot a { color: var(--gold); }
 
 /*-----------------------------------*\
   #ANİMASİYA (görünəndə üzə çıxma)
@@ -1490,7 +1625,33 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
 
   .float-btn { width: 42px; height: 42px; bottom: 20px; }
   .float-whatsapp { left: 18px; }
-  .float-top { right: 18px; }
+  .float-top { right: 18px; bottom: 68px; }
+
+  .float-reserve {
+    right: 18px;
+    bottom: 18px;
+    padding: 12px 18px;
+    gap: 8px;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+  }
+
+  .float-reserve svg { width: 15px; }
+
+  /* Kiçik ekranda pəncərə aşağıdan qalxan panelə çevrilir */
+  .rez-modal { padding: 0; place-items: end stretch; }
+
+  .rez-modal-panel {
+    width: 100%;
+    max-height: 92vh;
+    border-inline: 0;
+    border-bottom: 0;
+  }
+
+  .rez-modal-head { padding: 24px 22px 18px; }
+  .rez-modal-body { padding: 24px 22px 28px; }
+  .rez-modal-body .fields { gap: 22px; }
+  .rez-modal-foot { padding: 14px 22px; }
 
   .booking-contact { gap: 26px 40px; }
 }
@@ -1501,6 +1662,10 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
   .grid-hair > li, .package-card, .step, .contact-card { padding-inline: 24px; }
   .menu-item h3 { font-size: 22px; }
   .success-code strong { font-size: 27px; }
+  .float-reserve { padding: 11px 14px; gap: 7px; letter-spacing: 0.14em; }
+  .rez-modal-head { padding: 20px 18px 16px; }
+  .rez-modal-body { padding: 22px 18px 26px; }
+  .rez-modal-foot { padding: 13px 18px; font-size: 9.5px; letter-spacing: 0.14em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
