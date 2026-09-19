@@ -50,19 +50,29 @@
     let body = null;
     try { body = text ? JSON.parse(text) : null; } catch (_) { /* JSON deyil */ }
 
+    const looksHtml = () => /^\s*<(!doctype|html)/i.test(text);
+
     if (!response.ok || (body && body.ok === false)) {
-      const message = (body && body.error) || ('HTTP ' + response.status);
+      /* Cavab bizim API-dən gəlmirsə «HTTP 404» heç nə izah etmir —
+         ünvanın ümumiyyətlə funksiyaya çatmadığını bilmək lazımdır. */
+      const message = (body && body.error) ||
+        (body === null
+          ? path + ' üçün server ' + (looksHtml() ? 'HTML səhifə' : 'JSON olmayan cavab') +
+            ' qaytardı (HTTP ' + response.status + '). Sorğu API-yə çatmır.'
+          : 'HTTP ' + response.status);
+
       const error = new Error(message);
       error.payload = body;
       error.status = response.status;
       error.code = (body && body.code) || null;
+      error.notJson = body === null;
+      error.raw = body === null ? text.slice(0, 300) : null;
       throw error;
     }
 
     if (body === null) {
-      const looksHtml = /^\s*<(!doctype|html)/i.test(text);
       const error = new Error(
-        path + ' JSON əvəzinə ' + (looksHtml ? 'HTML səhifə' : 'naməlum cavab') +
+        path + ' JSON əvəzinə ' + (looksHtml() ? 'HTML səhifə' : 'naməlum cavab') +
         ' qaytardı (HTTP ' + response.status + '). Sorğu API-yə çatmır.');
       error.status = response.status;
       error.notJson = true;
@@ -1041,7 +1051,7 @@
       del.addEventListener('click', async () => {
         if (!confirm(image.name + ' silinsin?')) return;
         try {
-          const result = await api('/api/admin/images/delete', { method: 'POST', body: JSON.stringify({ name: image.name }) });
+          const result = await api('/api/admin/images?action=delete', { method: 'POST', body: JSON.stringify({ name: image.name }) });
           state.images = result.images;
           renderImages();
           toast('Silindi.', 'ok');
@@ -1695,7 +1705,7 @@
     on('[data-int-preview]', 'click', async (event) => {
       await withBusy(event.currentTarget, 'Hazırlanır…', async () => {
         try {
-          const result = await api('/api/admin/integration/preview');
+          const result = await api('/api/admin/integration?action=preview');
           showIntLog(
             result.preview.method + ' ' + result.preview.url + '\n\n' +
             JSON.stringify(result.preview.headers, null, 2) + '\n\n' +
@@ -1710,7 +1720,7 @@
 
       await withBusy(event.currentTarget, 'Göndərilir…', async () => {
         try {
-          const result = await api('/api/admin/integration/test', { method: 'POST' });
+          const result = await api('/api/admin/integration?action=test', { method: 'POST' });
           showIntLog('Uğurlu. Tətbiqdəki nömrə: ' + (result.reference || '(qaytarılmadı)'));
           toast('Sınaq göndərişi uğurlu oldu.', 'ok');
         } catch (err) {

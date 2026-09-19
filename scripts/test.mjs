@@ -239,6 +239,12 @@ const run = async () => {
     /if \(body === null\) \{/.test(panelJs) &&
     /notJson = true/.test(panelJs),
     'api() hələ də null qaytara bilir');
+  check('Panel alt əməliyyatları tək seqmentli ünvanla çağırır',
+    panelJs.includes("'/api/admin/images?action=delete'") &&
+    panelJs.includes("'/api/admin/integration?action=preview'") &&
+    panelJs.includes("'/api/admin/integration?action=test'") &&
+    !/'\/api\/admin\/(images|integration)\/[a-z]+'/.test(panelJs),
+    'panel hələ də çox seqmentli ünvan çağırır');
   check('Konfiqurasiyanın tamlığı yoxlanılır',
     /!data \|\| !data\.site \|\| !data\.content \|\| !data\.theme/.test(panelJs));
 
@@ -287,6 +293,20 @@ const run = async () => {
     JSON.stringify(savedIntBody).slice(0, 160));
   check('Mənbə artıq panel olur', savedIntBody.settings.source === 'panel');
   check('Açar boş göndərildikdə silinmir', savedIntBody.settings.apiKeySet === true);
+
+  /* Panel alt əməliyyatları «?action=» ilə çağırır — öz serveri də tanımalıdır */
+  const previewAction = await fetch(BASE + '/api/admin/integration?action=preview', { headers: adminAuth });
+  const previewActionBody = await previewAction.json();
+  check('«?action=preview» öz serverində də tanınır',
+    previewAction.status === 200 && Boolean(previewActionBody.preview),
+    'status ' + previewAction.status);
+
+  const deleteAction = await fetch(BASE + '/api/admin/images?action=delete', {
+    method: 'POST',
+    headers: { ...adminAuth, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: 'olmayan-fayl.png' }),
+  });
+  check('«?action=delete» 404 vermir', deleteAction.status !== 404, 'status ' + deleteAction.status);
 
   const previewRes = await fetch(BASE + '/api/admin/integration/preview', { headers: adminAuth });
   const previewBody = await previewRes.json();

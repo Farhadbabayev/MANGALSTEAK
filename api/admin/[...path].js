@@ -264,11 +264,34 @@ const inlineAssets = (html) => {
 const resolveRoute = (req) => {
   const query = req.query || {};
   const segments = [].concat(query.path || []).filter((s) => s != null && s !== '');
-  if (segments.length) return segments.join('/');
 
-  const pathname = String(req.url || '').split('?')[0];
-  const match = pathname.match(/^\/(?:api\/)?admin\/?(.*)$/);
-  return match ? match[1] : '';
+  let route = segments.join('/');
+
+  if (!route) {
+    const pathname = String(req.url || '').split('?')[0];
+    const match = pathname.match(/^\/(?:api\/)?admin\/?(.*)$/);
+    route = match ? match[1] : '';
+  }
+
+  /* Alt əməliyyatlar «?action=» ilə də gələ bilər:
+     /api/admin/images?action=delete  ≡  /api/admin/images/delete
+     Panel məhz bu formadan istifadə edir, çünki çox seqmentli ünvan
+     bəzi quruluşlarda funksiyaya çatmır və Vercel-in 404-ü qayıdır.
+
+     «action» HƏM req.query-dən, HƏM də ünvanın özündən oxunur. Yalnız
+     req.query-yə güvənmək olmaz: o doldurulmasa silmə sorğusu «images»
+     marşrutuna, yəni YÜKLƏMƏ handler-inə düşərdi — 404-dən də pisi. */
+  const fromQuery = String(query.action || '');
+  const fromUrl = (String(req.url || '').split('?')[1] || '')
+    .split('&')
+    .map((pair) => pair.split('='))
+    .filter((pair) => pair[0] === 'action')
+    .map((pair) => decodeURIComponent(pair[1] || ''))[0] || '';
+
+  const action = (fromQuery || fromUrl).replace(/[^a-z-]/gi, '');
+  if (action && route && route.indexOf('/') === -1) route = route + '/' + action;
+
+  return route;
 };
 
 export default async function handler(req, res) {

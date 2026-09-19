@@ -70,13 +70,15 @@ if (process.env.SERVERLESS_CASE) {
     /* ---- admin ---- */
     const { default: admin } = await import(join(ROOT, 'api', 'admin', '[...path].js'));
 
-    const call = async (path, method, body, headers, url) => {
+    const call = async (path, method, body, headers, url, action) => {
       const res = fakeRes();
+      const query = path === null ? {} : { path };
+      if (action) query.action = action;
       await admin(
         {
           method: method || 'GET',
           headers: headers || auth('admin', 'sifre'),
-          query: path === null ? {} : { path },
+          query,
           url: url || ('/api/admin/' + [].concat(path || []).join('/')),
           body,
         },
@@ -115,6 +117,18 @@ if (process.env.SERVERLESS_CASE) {
     /* Vercel catch-all-ı doldurmasa nə olur? Ünvandan tanınmalıdır. */
     if (which === 'admin-config-noquery') return call(null, 'GET', null, null, '/api/admin/config');
     if (which === 'admin-page-noquery') return call(null, 'GET', null, null, '/admin');
+
+    /* Alt əməliyyatlar «?action=» ilə — çox seqmentli ünvana ehtiyac qalmasın */
+    if (which === 'admin-preview-action') {
+      return call(['integration'], 'GET', null, null, '/api/admin/integration?action=preview', 'preview');
+    }
+    if (which === 'admin-image-delete-action') {
+      return call(['images'], 'POST', { name: 'silinecek-fayl.png' }, null,
+        '/api/admin/images?action=delete', 'delete');
+    }
+    if (which === 'admin-image-delete-nested') {
+      return call(['images', 'delete'], 'POST', { name: 'silinecek-fayl.png' });
+    }
 
     if (which === 'admin-integration') return call(['integration'], 'GET');
     if (which === 'admin-integration-write') return call(['integration'], 'POST', { mode: 'off' });
@@ -484,6 +498,31 @@ try {
   const roConfig = await runCase('admin-config', { ...GH_ENV, GITHUB_TOKEN: 'yalniz-oxuma' });
   check('Yalnız oxuma token-lə panel yenə açılır',
     roConfig.result.status === 200 && roConfig.result.body.ok === true);
+
+  /* ---------------------------------------------------------------- *
+   *  Alt əməliyyatlar tək seqmentli ünvanla.
+   *
+   *  /api/admin/images/delete kimi iki seqmentli ünvan bəzi quruluşlarda
+   *  funksiyaya çatmır və Vercel öz 404-ünü qaytarır. Panel artıq
+   *  /api/admin/images?action=delete çağırır — hər ikisi işləməlidir.
+   * ---------------------------------------------------------------- */
+
+  console.log('\n  ALT ƏMƏLİYYATLAR\n');
+
+  const prevAction = await runCase('admin-preview-action', { ...GH_ENV, VILKA_MODE: 'off' });
+  check('«?action=preview» tanınır',
+    prevAction.result.status === 200 && Boolean((prevAction.result.body || {}).preview),
+    'status ' + prevAction.result.status + ' ' + JSON.stringify(prevAction.result.body).slice(0, 90));
+
+  const delAction = await runCase('admin-image-delete-action', GH_ENV);
+  check('«?action=delete» tanınır — 404 deyil',
+    delAction.result.status !== 404,
+    'status ' + delAction.result.status);
+
+  const delNested = await runCase('admin-image-delete-nested', GH_ENV);
+  check('Köhnə «images/delete» ünvanı da işləyir',
+    delNested.result.status !== 404,
+    'status ' + delNested.result.status);
 
   const expired = await runCase('admin-config', { ...GH_ENV, GITHUB_TOKEN: 'bitmis-token' });
   check('Token bitəndə də panel açılır',

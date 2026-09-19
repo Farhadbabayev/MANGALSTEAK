@@ -314,7 +314,11 @@ const csvEscape = (value) => '"' + String(value ?? '').replace(/"/g, '""') + '"'
 const handleAdminApi = async (req, res, url) => {
   if (!requireAdmin(req, res)) return;
 
-  const path = url.pathname;
+  /* Alt əməliyyat «?action=» ilə də gələ bilər — serverless variantı ilə
+     eyni qayda, ki panel hər iki quruluşda eyni ünvanı çağıra bilsin. */
+  const action = (url.searchParams.get('action') || '').replace(/[^a-z-]/gi, '');
+  const base = url.pathname.replace(/\/+$/, '');
+  const path = action && base.split('/').length === 4 ? base + '/' + action : base;
 
   if (path === '/api/admin/reservations' && req.method === 'GET') {
     const all = await listReservations();
