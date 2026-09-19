@@ -1224,32 +1224,12 @@ body.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-8px) rotate
   padding-top: 3px;
 }
 
-.booking-contact {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 30px 62px;
-  margin-top: 70px;
-  padding-top: 44px;
-  border-top: 1px solid var(--hair);
-  text-align: center;
-}
-
-.booking-contact dt {
-  font-size: 9.5px;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: var(--cream-dim);
-  margin-bottom: 8px;
-}
-
-.booking-contact dd { font-family: var(--display); font-size: 22px; }
-
 /*-----------------------------------*\
   #FOOTER
 \*-----------------------------------*/
 
-.footer { background-color: var(--black-3); padding-block: 86px 34px; }
+/* Alt boşluq üzən rezervasiya düyməsinin hündürlüyünə görə saxlanılır */
+.footer { background-color: var(--black-3); padding-block: 86px 96px; }
 
 .footer-grid {
   display: grid;
@@ -1623,6 +1603,8 @@ body.rez-open .rez-modal-panel { transform: none; }
 
   .menu-nav { gap: 10px 20px; }
 
+  .footer { padding-bottom: 78px; }
+
   .float-btn { width: 42px; height: 42px; bottom: 20px; }
   .float-whatsapp { left: 18px; }
   .float-top { right: 18px; bottom: 68px; }
@@ -1652,8 +1634,6 @@ body.rez-open .rez-modal-panel { transform: none; }
   .rez-modal-body { padding: 24px 22px 28px; }
   .rez-modal-body .fields { gap: 22px; }
   .rez-modal-foot { padding: 14px 22px; }
-
-  .booking-contact { gap: 26px 40px; }
 }
 
 @media (max-width: 560px) {
