@@ -213,9 +213,10 @@ const run = async () => {
   const initBody = (panelJs.match(/const init = async \(\) => \{([\s\S]*?)\n  \};/) || [])[1] || '';
   check('Panel skripti verilir', panelJs.length > 1000);
   check('Düymələr məlumatdan əvvəl qoşulur',
-    initBody.indexOf('wireActions()') !== -1 &&
-    initBody.indexOf('wireActions()') < initBody.indexOf('loadAll()'),
-    initBody.replace(/\s+/g, ' ').slice(0, 120));
+    initBody.indexOf('wireActions') !== -1 &&
+    initBody.indexOf('loadAll') !== -1 &&
+    initBody.indexOf('wireActions') < initBody.indexOf('loadAll'),
+    initBody.replace(/\s+/g, ' ').slice(0, 160));
 
   const wireBody = (panelJs.match(/const wireActions = \(\) => \{([\s\S]*?)\n  \};/) || [])[1] || '';
   check('Əsas düymələr wireActions daxilindədir',
@@ -229,8 +230,17 @@ const run = async () => {
     /const wireActions = \(\) => \{/.test(panelJs) &&
     !/const wireActions = async/.test(panelJs));
   check('init düymələri qoşana qədər heç nə gözləmir',
-    !/\bawait\b/.test(initBody.slice(0, initBody.indexOf('wireActions()'))),
-    initBody.slice(0, initBody.indexOf('wireActions()')).replace(/\s+/g, ' '));
+    !/\bawait\b/.test(initBody.slice(0, initBody.indexOf('wireActions'))),
+    initBody.slice(0, initBody.indexOf('wireActions')).replace(/\s+/g, ' '));
+
+  /* Cavab JSON deyilsə api() səssizcə null qaytarmamalıdır — məhz bu
+     «null.site» oxunuşu paneli tamamilə dayandırırdı. */
+  check('api() JSON olmayan cavabı xəta kimi qaytarır',
+    /if \(body === null\) \{/.test(panelJs) &&
+    /notJson = true/.test(panelJs),
+    'api() hələ də null qaytara bilir');
+  check('Konfiqurasiyanın tamlığı yoxlanılır',
+    /!data \|\| !data\.site \|\| !data\.content \|\| !data\.theme/.test(panelJs));
 
   /* İcazə olmayanda düymə «disabled» edilməməlidir: basılanda səbəb deyilir */
   check('İcazəsiz düymələr sönülü deyil, izahlıdır',

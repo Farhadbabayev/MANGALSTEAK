@@ -35,16 +35,40 @@
     cur[last] = value;
   };
 
+  /**
+   * Panelin bütün sorğuları. Cavab HƏMİŞƏ JSON olmalıdır.
+   *
+   * Əvvəl JSON gəlmədikdə səssizcə «null» qaytarırdı: çağıran tərəf
+   * «null.site» oxuyub anlaşılmaz TypeError alırdı. 2xx gəlib JSON
+   * gəlmirsə, demək sorğu ümumiyyətlə API-yə çatmayıb (yönləndirmə
+   * səhvdir, qarşıda giriş səhifəsi var və s.) — bunu açıq deyirik.
+   */
   const api = async (path, options) => {
     const response = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options));
+
+    const text = await response.text();
     let body = null;
-    try { body = await response.json(); } catch (_) { /* boş cavab */ }
+    try { body = text ? JSON.parse(text) : null; } catch (_) { /* JSON deyil */ }
+
     if (!response.ok || (body && body.ok === false)) {
       const message = (body && body.error) || ('HTTP ' + response.status);
       const error = new Error(message);
       error.payload = body;
+      error.status = response.status;
       throw error;
     }
+
+    if (body === null) {
+      const looksHtml = /^\s*<(!doctype|html)/i.test(text);
+      const error = new Error(
+        path + ' JSON əvəzinə ' + (looksHtml ? 'HTML səhifə' : 'naməlum cavab') +
+        ' qaytardı (HTTP ' + response.status + '). Sorğu API-yə çatmır.');
+      error.status = response.status;
+      error.notJson = true;
+      error.raw = text.slice(0, 300);
+      throw error;
+    }
+
     return body;
   };
 
@@ -1686,16 +1710,28 @@
     let data;
     try {
       data = await api('/api/admin/config');
+      if (!data || !data.site || !data.content || !data.theme) {
+        throw new Error('Server konfiqurasiyanı tam qaytarmadı.');
+      }
     } catch (err) {
       state.ready = false;
       toast('Konfiqurasiya yüklənmədi: ' + err.message, 'bad');
+      if (err.notJson) console.error('[admin] cavabın başlanğıcı:', err.raw);
+
+      /* İzah səbəbə uyğun olmalıdır: routing problemini GITHUB_TOKEN-in
+         üstünə yıxmaq adamı saatlarla yanlış yerdə axtarışa salır. */
+      const hint = err.notJson
+        ? ['Bu, panelin öz xətası deyil — sorğu ümumiyyətlə API-yə çatmır.',
+          'Yoxlamaq üçün brauzerdə birbaşa açın: ' + location.origin + '/api/admin/config',
+          'JSON əvəzinə səhifə görünürsə, Vercel-də yönləndirmə və ya funksiya problemi var.']
+        : (err.status === 401 || err.status === 403)
+          ? ['Panelə girişiniz düşüb. Səhifəni yeniləyin və şifrəni yenidən daxil edin.']
+          : ['Səbəb adətən GITHUB_TOKEN-in bitməsi və ya repoya icazəsinin olmamasıdır. ' +
+            'Vercel → Settings → Environment Variables bölməsini yoxlayın.'];
+
       banner('load', 'bad',
         'Konfiqurasiya yüklənmədi — redaktə bölmələri boşdur.',
-        [
-          err.message,
-          'Səbəb adətən GITHUB_TOKEN-in bitməsi və ya repoya icazəsinin olmamasıdır. ' +
-          'Vercel → Settings → Environment Variables bölməsini yoxlayın.',
-        ],
+        [err.message].concat(hint),
         { label: 'Yenidən cəhd et', run: () => { loadAll(); } });
 
       /* Konfiqurasiya gəlməsə də rezervasiya bölməsi işləyə bilər */
@@ -1727,20 +1763,26 @@
   };
 
   const init = async () => {
-    /* Sıra vacibdir: əvvəl idarəetmə, sonra məlumat. */
-    initTabs();
-    wireActions();
+    /* Sıra vacibdir: əvvəl idarəetmə, sonra məlumat.
+       Hər addım ayrıca qorunur — biri düşsə panel bütövlükdə ölməsin. */
+    safeSync('Bölmələr', initTabs);
+    safeSync('Düymələr', wireActions);
 
-    await loadAll();
+    await safe('Yükləmə', loadAll);
 
     setInterval(() => { safe('Jurnal', loadReservations); }, 60000);
   };
 
-  /* Başlanğıcda tutulmayan xəta panelin səssizcə ölməsinə səbəb olmamalıdır */
+  /* Son çarə. Buraya düşmək artıq gözlənilmir, amma düşsə səbəb
+     ekranda qalmalıdır — toast 9 saniyəyə itir və heç nə izah etmir. */
   const start = () => {
     init().catch((err) => {
       console.error('[admin] başlanğıc xətası', err);
       toast('Panel başlamadı: ' + err.message, 'bad');
+      banner('start', 'bad', 'Panel başlamadı.', [
+        err.message,
+        'Brauzerin konsolunda (F12 → Console) ətraflı məlumat var.',
+      ], { label: 'Yenidən cəhd et', run: () => { dropBanner('start'); loadAll(); } });
     });
   };
 
