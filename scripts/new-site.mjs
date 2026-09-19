@@ -75,7 +75,6 @@ const site = {
     mapLink: 'https://maps.google.com/?q=Baku',
   },
   hours: {
-    topbar: 'Hər gün: 10:00 – 23:00',
     short: 'Hər gün 10:00 – 23:00',
     lunchTitle: 'Nahar saatları',
     lunchValue: 'Bazar ertəsi – Bazar<br> 10:00 – 16:00',

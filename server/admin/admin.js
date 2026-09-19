@@ -122,7 +122,6 @@
     {
       title: 'İş saatları',
       fields: [
-        f('hours.topbar', 'Üst zolaqda'),
         f('hours.short', 'Qısa yazılış'),
         f('hours.lunchTitle', 'Nahar başlığı'),
         f('hours.lunchValue', 'Nahar saatları', 'html'),

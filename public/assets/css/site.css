@@ -199,30 +199,8 @@ em.gold { font-style: italic; color: var(--gold); }
 .btn[disabled] { opacity: 0.55; pointer-events: none; }
 
 /*-----------------------------------*\
-  #ÜST ZOLAQ & BAŞLIQ
+  #BAŞLIQ
 \*-----------------------------------*/
-
-.topbar {
-  background-color: var(--brand);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.35);
-  font-size: 10.5px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--cream-dim);
-}
-
-.topbar .wrap {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 8px 26px;
-  padding-block: 11px;
-}
-
-.topbar .sep { color: var(--gold); opacity: 0.8; }
-
-.topbar a:hover { color: var(--cream); }
 
 .header {
   position: sticky;
@@ -1694,7 +1672,6 @@ body.rez-open .rez-modal-panel { transform: none; }
 
 @media (max-width: 560px) {
   .wrap, .narrow { width: calc(100% - 32px); }
-  .topbar .wrap { gap: 6px 16px; font-size: 9.5px; }
   .grid-hair > li, .package-card, .step, .contact-card { padding-inline: 24px; }
   .menu-item h3 { font-size: 22px; }
   .success-code strong { font-size: 27px; }

@@ -487,7 +487,6 @@ for (const page of pages) {
 
   const raw = [
     partials.head,
-    partials.topbar,
     partials.header,
     '\n  <main>\n',
     body,
