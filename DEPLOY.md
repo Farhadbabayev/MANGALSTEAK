@@ -83,7 +83,7 @@ Qalanları istəyə bağlıdır:
 | `VILKA_API_URL` | Vilka-nın rezervasiya ünvanı | rezervasiya üçün |
 | `VILKA_API_KEY` | Vilka açarı | rezervasiya üçün |
 | `VILKA_RESTAURANT_ID` | Filial kodu | tələb olunursa |
-| `VILKA_FIELD_MAP` | Sahə uyğunluğu, JSON | lazım olsa |
+| `VILKA_FIELD_MAP` | Sahə uyğunluğu, JSON | **mütləq** — aşağıya baxın |
 | `VILKA_EXTRA_FIELDS` | Əlavə sabit sahələr, JSON | lazım olsa |
 | `TELEGRAM_BOT_TOKEN` | Ehtiyat kanal | **çox tövsiyə olunur** |
 | `TELEGRAM_CHAT_ID` | Telegram qrupunun ID-si | **çox tövsiyə olunur** |
@@ -96,6 +96,27 @@ Qalanları istəyə bağlıdır:
 > **Lazım olmayan dəyişəni boş əlavə etməyin — sadəcə əlavə etməyin.**
 > Boş dəyər «təyin olunmayıb» sayılır və standart dəyər işə düşür, amma
 > siyahını təmiz saxlamaq sonradan nəyin həqiqətən qoşulduğunu göstərir.
+
+#### Sahə uyğunluğu (`VILKA_FIELD_MAP`)
+
+Sayt sahələri öz adları ilə göndərir, Vilka isə başqa adlar gözləyir.
+Uyğunluq verilməsə sorğu rədd olunur. Hazırkı API üçün:
+
+```json
+{"name":"guest_name","phone":"guest_phone","guests":"party_size","external_id":"external_ref"}
+```
+
+| Sayt göndərir | Vilka gözləyir |
+|---|---|
+| `name` | `guest_name` |
+| `phone` | `guest_phone` (`+994…` formatında) |
+| `guests` | `party_size` (rəqəm) |
+| `external_id` | `external_ref` (rezervasiya kodumuz) |
+| `date`, `time` | eyni adla gedir |
+
+Bundan əlavə `datetime`, `area`, `occasion`, `comment`, `source`,
+`created_at` da göndərilir. API artıq sahələri qəbul etmirsə, sınaq
+sorğusu `400` qaytaracaq və cavabda hansı sahənin artıq olduğu yazılacaq.
 
 #### Rezervasiya işləmirsə
 

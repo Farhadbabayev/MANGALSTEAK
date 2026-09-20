@@ -355,6 +355,47 @@ try {
     brokenHeader.result.status === 201 && vilkaHits.length === brokenBefore + 1,
     'status ' + brokenHeader.result.status);
 
+  /* ---------------------------------------------------------------- *
+   *  VILKA MÜQAVİLƏSİ
+   *
+   *  API bu adları və tipləri gözləyir:
+   *    guest_name / guest_phone / party_size (RƏQƏM) / date / time /
+   *    external_ref
+   *  VILKA_FIELD_MAP olmadan sayt «name», «phone», «guests» göndərir
+   *  və sorğu rədd olunur.
+   * ---------------------------------------------------------------- */
+
+  const mapBefore = vilkaHits.length;
+  await runCase('reservation-ok', {
+    VILKA_MODE: 'api',
+    VILKA_API_URL: 'http://127.0.0.1:' + VILKA_PORT + '/r/mangal-zugulba/reservations',
+    VILKA_API_KEY: 'vk_live_sinaq',
+    VILKA_FIELD_MAP:
+      '{"name":"guest_name","phone":"guest_phone","guests":"party_size","external_id":"external_ref"}',
+    TELEGRAM_BOT_TOKEN: '', TELEGRAM_CHAT_ID: '',
+  });
+
+  const sent = vilkaHits.length === mapBefore + 1
+    ? JSON.parse(vilkaHits[vilkaHits.length - 1].body)
+    : {};
+
+  check('Vilka-nın gözlədiyi adlar göndərilir',
+    typeof sent.guest_name === 'string' &&
+    typeof sent.guest_phone === 'string' &&
+    typeof sent.external_ref === 'string',
+    Object.keys(sent).join(', '));
+  check('party_size mətn deyil, RƏQƏM göndərilir',
+    typeof sent.party_size === 'number',
+    typeof sent.party_size + ': ' + JSON.stringify(sent.party_size));
+  check('Telefon beynəlxalq formatdadır',
+    /^\+994\d{9}$/.test(sent.guest_phone || ''), String(sent.guest_phone));
+  check('Tarix və saat olduğu kimi gedir',
+    /^\d{4}-\d{2}-\d{2}$/.test(sent.date || '') && /^\d{2}:\d{2}$/.test(sent.time || ''),
+    sent.date + ' ' + sent.time);
+  check('Köhnə adlar artıq göndərilmir',
+    !('name' in sent) && !('phone' in sent) && !('guests' in sent),
+    Object.keys(sent).join(', '));
+
   /* Əl ilə yazılan başlıq isə olduğu kimi qalmalıdır */
   const customBefore = vilkaHits.length;
   await runCase('reservation-ok', {
