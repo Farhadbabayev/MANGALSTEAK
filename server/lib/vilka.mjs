@@ -49,6 +49,23 @@ export const buildPayload = (reservation, settings) => {
   return { ...mapped, ...(vilka.extraFields || {}) };
 };
 
+/* HTTP başlıq adında icazə verilən simvollar (RFC 7230 «token») */
+const HEADER_NAME = /^[A-Za-z0-9!#$%&'*+\-.^_`|~]+$/;
+
+/**
+ * Başlığın adı boş və ya yanlış olsa, fetch BÜTÜN göndərməni dağıdır:
+ * «Headers.append: "" is an invalid header name». Rezervasiya isə müştəriyə
+ * «onlayn rezervasiya işləmir» kimi qayıdır. Bir parametr səhvi buna
+ * gətirib çıxarmamalıdır — ona görə standart başlığa qayıdırıq.
+ */
+const authHeaderName = (raw) => {
+  const name = String(raw || '').trim();
+  return HEADER_NAME.test(name) ? name : 'Authorization';
+};
+
+/* 0 və ya pozuq dəyər sorğunu elə ilk anda kəsərdi */
+const timeoutOf = (value) => Math.min(Math.max(Number(value) || 15000, 2000), 60000);
+
 const timeoutSignal = (ms) => {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
@@ -92,10 +109,10 @@ export const deliverOnce = async (reservation) => {
 
   if (vilka.apiKey) {
     const scheme = vilka.authScheme;
-    headers[vilka.authHeader] = scheme ? scheme + ' ' + vilka.apiKey : vilka.apiKey;
+    headers[authHeaderName(vilka.authHeader)] = scheme ? scheme + ' ' + vilka.apiKey : vilka.apiKey;
   }
 
-  const { signal, done } = timeoutSignal(vilka.timeoutMs);
+  const { signal, done } = timeoutSignal(timeoutOf(vilka.timeoutMs));
 
   try {
     const response = await fetch(url, {
@@ -168,7 +185,8 @@ export const previewPayload = () => {
 
   if (vilka.apiKey) {
     const scheme = vilka.authScheme;
-    headers[vilka.authHeader] = (scheme ? scheme + ' ' : '') + '••••' + String(vilka.apiKey).slice(-4);
+    headers[authHeaderName(vilka.authHeader)] =
+      (scheme ? scheme + ' ' : '') + '••••' + String(vilka.apiKey).slice(-4);
   }
 
   return {

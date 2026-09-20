@@ -32,13 +32,32 @@ if (existsSync(envPath)) {
       value = value.slice(1, -1);
     }
 
-    if (!(key in process.env)) process.env[key] = value;
+    /* Boş dəyər «yoxdur» sayılır — .env faylındakı dəyər onu üstələyir */
+    if (!(key in process.env) || process.env[key] === '') process.env[key] = value;
   }
 }
 
-const str = (key, fallback = '') => (process.env[key] ?? fallback).toString().trim();
+/**
+ * DİQQƏT: BOŞ dəyər «təyin olunmayıb» sayılır.
+ *
+ * Vercel-də açarlar adətən bu şablondan köçürülür və bir çoxunun dəyəri
+ * boş qalır. O zaman process.env[key] «undefined» deyil, '' olur — əvvəl
+ * «??» bunu real dəyər kimi qəbul edirdi və standart dəyərlər səssizcə
+ * itirdi. Nəticə: VILKA_AUTH_HEADER boş qalanda başlığın adı da '' olurdu,
+ * fetch isə «Headers.append: "" is an invalid header name» ilə dağılırdı —
+ * müştəri «onlayn rezervasiya işləmir» görürdü. VILKA_TIMEOUT_MS boş
+ * qalanda isə Number('') = 0, yəni sorğu elə ilk anda kəsilirdi.
+ */
+const str = (key, fallback = '') => {
+  const raw = process.env[key];
+  const value = raw === undefined || raw === null ? '' : String(raw).trim();
+  return value === '' ? fallback : value;
+};
+
 const num = (key, fallback) => {
-  const value = Number(process.env[key]);
+  const raw = str(key);
+  if (!raw) return fallback;
+  const value = Number(raw);
   return Number.isFinite(value) ? value : fallback;
 };
 const json = (key, fallback) => {
@@ -51,6 +70,13 @@ const json = (key, fallback) => {
     return fallback;
   }
 };
+
+/**
+ * Açar sxemi. Bəzi API-lər açarı sxemsiz, olduğu kimi gözləyir
+ * (məs. X-Api-Key). Boş dəyər artıq «təyin olunmayıb» saydığı üçün
+ * bunu ayrıca sözlə bildirmək lazımdır: VILKA_AUTH_SCHEME=none
+ */
+const authScheme = str('VILKA_AUTH_SCHEME', 'Bearer');
 
 export const config = {
   port: num('PORT', 3000),
@@ -67,7 +93,7 @@ export const config = {
     apiUrl: str('VILKA_API_URL'),
     apiKey: str('VILKA_API_KEY'),
     authHeader: str('VILKA_AUTH_HEADER', 'Authorization'),
-    authScheme: str('VILKA_AUTH_SCHEME', 'Bearer'),
+    authScheme: authScheme.toLowerCase() === 'none' ? '' : authScheme,
     restaurantId: str('VILKA_RESTAURANT_ID'),
     fieldMap: json('VILKA_FIELD_MAP', {}),
     extraFields: json('VILKA_EXTRA_FIELDS', {}),

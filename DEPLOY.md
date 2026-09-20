@@ -83,7 +83,7 @@ Qalanları istəyə bağlıdır:
 | `VILKA_API_URL` | Vilka-nın rezervasiya ünvanı | rezervasiya üçün |
 | `VILKA_API_KEY` | Vilka açarı | rezervasiya üçün |
 | `VILKA_RESTAURANT_ID` | Filial kodu | tələb olunursa |
-| `VILKA_FIELD_MAP` | Sahə uyğunluğu, JSON | lazım olsa |
+| `VILKA_FIELD_MAP` | Sahə uyğunluğu, JSON | **mütləq** — aşağıya baxın |
 | `VILKA_EXTRA_FIELDS` | Əlavə sabit sahələr, JSON | lazım olsa |
 | `TELEGRAM_BOT_TOKEN` | Ehtiyat kanal | **çox tövsiyə olunur** |
 | `TELEGRAM_CHAT_ID` | Telegram qrupunun ID-si | **çox tövsiyə olunur** |
@@ -92,6 +92,48 @@ Qalanları istəyə bağlıdır:
 > (Vilka və ya Telegram) təyin olunmayıbsa, forma müştəriyə «qəbul olundu»
 > demir — telefonla əlaqə saxlamağı təklif edir və sorğu Vercel-in
 > jurnalına yazılır. **Ən azı Telegram-ı qoşun.**
+
+> **Lazım olmayan dəyişəni boş əlavə etməyin — sadəcə əlavə etməyin.**
+> Boş dəyər «təyin olunmayıb» sayılır və standart dəyər işə düşür, amma
+> siyahını təmiz saxlamaq sonradan nəyin həqiqətən qoşulduğunu göstərir.
+
+#### Sahə uyğunluğu (`VILKA_FIELD_MAP`)
+
+Sayt sahələri öz adları ilə göndərir, Vilka isə başqa adlar gözləyir.
+Uyğunluq verilməsə sorğu rədd olunur. Hazırkı API üçün:
+
+```json
+{"name":"guest_name","phone":"guest_phone","guests":"party_size","external_id":"external_ref"}
+```
+
+| Sayt göndərir | Vilka gözləyir |
+|---|---|
+| `name` | `guest_name` |
+| `phone` | `guest_phone` (`+994…` formatında) |
+| `guests` | `party_size` (rəqəm) |
+| `external_id` | `external_ref` (rezervasiya kodumuz) |
+| `date`, `time` | eyni adla gedir |
+
+Bundan əlavə `datetime`, `area`, `occasion`, `comment`, `source`,
+`created_at` da göndərilir. API artıq sahələri qəbul etmirsə, sınaq
+sorğusu `400` qaytaracaq və cavabda hansı sahənin artıq olduğu yazılacaq.
+
+#### Rezervasiya işləmirsə
+
+Müştəri «Onlayn rezervasiya hazırda işləmir» görürsə, səbəb Vercel-in
+jurnalındadır: **Deployments → son deployment → Runtime Logs**, sətir
+`[rezervasiya] ÇATDIRILMADI` ilə başlayır və sonunda əsl səbəb yazılır.
+
+| Jurnalda görünən | Nə deməkdir |
+|---|---|
+| `vilka: skipped` | `VILKA_MODE` `api`/`webhook` deyil |
+| `vilka: failed (HTTP 401 …)` | Açar və ya sxem yanlışdır — `VILKA_AUTH_SCHEME` (`none` da ola bilər) |
+| `vilka: failed (HTTP 404 …)` | `VILKA_API_URL` yanlış ünvandır |
+| `vilka: failed (Vaxt bitdi)` | Vilka cavab vermir |
+| `telegram: sönülü` | `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` yoxdur |
+
+Panelin **Rezervasiya sistemi → Sınaq göndərişi** düyməsi eyni cavabı
+dərhal göstərir — müştərini gözlətmədən yoxlamaq üçün.
 
 ### 4. Domen
 

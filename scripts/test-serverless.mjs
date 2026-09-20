@@ -163,7 +163,12 @@ const vilka = createServer((req, res) => {
   let body = '';
   req.on('data', (c) => { body += c; });
   req.on('end', () => {
-    vilkaHits.push({ path: req.url, auth: req.headers.authorization || null, body });
+    vilkaHits.push({
+      path: req.url,
+      auth: req.headers.authorization || null,
+      apiKey: req.headers['x-api-key'] || null,
+      body,
+    });
     res.writeHead(201, { 'Content-Type': 'application/json' });
     res.end(JSON.stringify({ id: 'VLK-SRV-' + vilkaHits.length }));
   });
@@ -305,6 +310,108 @@ try {
   check('Sorğu tətbiqə çatdı', vilkaHits.length === before + 1);
   check('Açar göndərilir', vilkaHits[vilkaHits.length - 1].auth === 'Bearer serverless-acar');
   check('Sahə uyğunluğu işləyir', vilkaHits[vilkaHits.length - 1].body.includes('guest_name'));
+
+  /* ---------------------------------------------------------------- *
+   *  BOŞ MÜHİT DƏYİŞƏNLƏRİ
+   *
+   *  Vercel-də açarlar .env.example-dan köçürülür və bir çoxunun dəyəri
+   *  boş qalır. Əvvəl boş dəyər standart dəyəri üstələyirdi:
+   *    VILKA_AUTH_HEADER='' -> başlığın adı '' -> fetch dağılırdı
+   *    («Headers.append: "" is an invalid header name»)
+   *    VILKA_TIMEOUT_MS=''  -> Number('') = 0 -> sorğu ilk anda kəsilirdi
+   *  Nəticədə hər rezervasiya 503 alırdı: «onlayn rezervasiya işləmir».
+   * ---------------------------------------------------------------- */
+
+  const emptyBefore = vilkaHits.length;
+  const empty = await runCase('reservation-ok', {
+    VILKA_MODE: 'api',
+    VILKA_API_URL: 'http://127.0.0.1:' + VILKA_PORT + '/reservations',
+    VILKA_API_KEY: 'serverless-acar',
+    VILKA_AUTH_HEADER: '',
+    VILKA_AUTH_SCHEME: '',
+    VILKA_TIMEOUT_MS: '',
+    VILKA_FIELD_MAP: '',
+    TELEGRAM_BOT_TOKEN: '', TELEGRAM_CHAT_ID: '',
+  });
+  check('Boş mühit dəyişənləri rezervasiyanı dağıtmır', empty.result.status === 201,
+    'status ' + empty.result.status + ' ' + JSON.stringify(empty.result.body));
+  check('Boş VILKA_AUTH_HEADER standart başlığa qayıdır',
+    vilkaHits.length === emptyBefore + 1 &&
+    vilkaHits[vilkaHits.length - 1].auth === 'Bearer serverless-acar',
+    vilkaHits.length > emptyBefore
+      ? 'auth: ' + String(vilkaHits[vilkaHits.length - 1].auth)
+      : 'sorğu ümumiyyətlə getmədi');
+
+  /* Yanlış yazılmış başlıq adı da göndərməni dağıtmamalıdır */
+  const brokenBefore = vilkaHits.length;
+  const brokenHeader = await runCase('reservation-ok', {
+    VILKA_MODE: 'api',
+    VILKA_API_URL: 'http://127.0.0.1:' + VILKA_PORT + '/reservations',
+    VILKA_API_KEY: 'serverless-acar',
+    VILKA_AUTH_HEADER: 'Authorization: ',
+    TELEGRAM_BOT_TOKEN: '', TELEGRAM_CHAT_ID: '',
+  });
+  check('Pozuq başlıq adı göndərməni dağıtmır',
+    brokenHeader.result.status === 201 && vilkaHits.length === brokenBefore + 1,
+    'status ' + brokenHeader.result.status);
+
+  /* ---------------------------------------------------------------- *
+   *  VILKA MÜQAVİLƏSİ
+   *
+   *  API bu adları və tipləri gözləyir:
+   *    guest_name / guest_phone / party_size (RƏQƏM) / date / time /
+   *    external_ref
+   *  VILKA_FIELD_MAP olmadan sayt «name», «phone», «guests» göndərir
+   *  və sorğu rədd olunur.
+   * ---------------------------------------------------------------- */
+
+  const mapBefore = vilkaHits.length;
+  await runCase('reservation-ok', {
+    VILKA_MODE: 'api',
+    VILKA_API_URL: 'http://127.0.0.1:' + VILKA_PORT + '/r/mangal-zugulba/reservations',
+    VILKA_API_KEY: 'vk_live_sinaq',
+    VILKA_FIELD_MAP:
+      '{"name":"guest_name","phone":"guest_phone","guests":"party_size","external_id":"external_ref"}',
+    TELEGRAM_BOT_TOKEN: '', TELEGRAM_CHAT_ID: '',
+  });
+
+  const sent = vilkaHits.length === mapBefore + 1
+    ? JSON.parse(vilkaHits[vilkaHits.length - 1].body)
+    : {};
+
+  check('Vilka-nın gözlədiyi adlar göndərilir',
+    typeof sent.guest_name === 'string' &&
+    typeof sent.guest_phone === 'string' &&
+    typeof sent.external_ref === 'string',
+    Object.keys(sent).join(', '));
+  check('party_size mətn deyil, RƏQƏM göndərilir',
+    typeof sent.party_size === 'number',
+    typeof sent.party_size + ': ' + JSON.stringify(sent.party_size));
+  check('Telefon beynəlxalq formatdadır',
+    /^\+994\d{9}$/.test(sent.guest_phone || ''), String(sent.guest_phone));
+  check('Tarix və saat olduğu kimi gedir',
+    /^\d{4}-\d{2}-\d{2}$/.test(sent.date || '') && /^\d{2}:\d{2}$/.test(sent.time || ''),
+    sent.date + ' ' + sent.time);
+  check('Köhnə adlar artıq göndərilmir',
+    !('name' in sent) && !('phone' in sent) && !('guests' in sent),
+    Object.keys(sent).join(', '));
+
+  /* Əl ilə yazılan başlıq isə olduğu kimi qalmalıdır */
+  const customBefore = vilkaHits.length;
+  await runCase('reservation-ok', {
+    VILKA_MODE: 'api',
+    VILKA_API_URL: 'http://127.0.0.1:' + VILKA_PORT + '/reservations',
+    VILKA_API_KEY: 'serverless-acar',
+    VILKA_AUTH_HEADER: 'X-Api-Key',
+    VILKA_AUTH_SCHEME: 'Token',
+    TELEGRAM_BOT_TOKEN: '', TELEGRAM_CHAT_ID: '',
+  });
+  check('Təyin olunmuş başlıq dəyişdirilmir',
+    vilkaHits.length === customBefore + 1 &&
+    vilkaHits[vilkaHits.length - 1].apiKey === 'Token serverless-acar',
+    vilkaHits.length > customBefore
+      ? 'x-api-key: ' + String(vilkaHits[vilkaHits.length - 1].apiKey)
+      : 'sorğu ümumiyyətlə getmədi');
 
   console.log('\n  PANEL (GitHub üzərindən)\n');
 
