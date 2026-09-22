@@ -19,36 +19,36 @@
             <li>
               {{icons.map-pin}}
               <div>
-                <h3>Ünvan</h3>
+                <h3>{{t.contact.address}}</h3>
                 <address>{{contact.addressFull}}</address>
-                <a href="{{contact.mapLink}}" target="_blank" rel="noopener" class="btn-text">Xəritədə aç {{icons.arrow-right}}</a>
+                <a href="{{contact.mapLink}}" target="_blank" rel="noopener" class="btn-text">{{t.contact.openMap}} {{icons.arrow-right}}</a>
               </div>
             </li>
 
             <li>
               {{icons.phone}}
               <div>
-                <h3>Telefon</h3>
-                <p>Rezervasiya: {{contact.phone}}<br>Mobil: {{contact.mobile}}</p>
-                <a href="tel:{{contact.phoneHref}}" class="btn-text">Zəng et {{icons.arrow-right}}</a>
+                <h3>{{t.contact.phone}}</h3>
+                <p>{{t.contact.reservation}} {{contact.phone}}<br>{{t.contact.mobile}} {{contact.mobile}}</p>
+                <a href="tel:{{contact.phoneHref}}" class="btn-text">{{t.contact.call}} {{icons.arrow-right}}</a>
               </div>
             </li>
 
             <li>
               {{icons.envelope-simple}}
               <div>
-                <h3>E-mail</h3>
-                <p>{{contact.email}}<br>Tədbir və banket sorğuları üçün</p>
-                <a href="mailto:{{contact.email}}" class="btn-text">Məktub yaz {{icons.arrow-right}}</a>
+                <h3>{{t.contact.email}}</h3>
+                <p>{{contact.email}}<br>{{t.contact.emailNote}}</p>
+                <a href="mailto:{{contact.email}}" class="btn-text">{{t.contact.write}} {{icons.arrow-right}}</a>
               </div>
             </li>
 
             <li>
               {{icons.clock}}
               <div>
-                <h3>İş saatları</h3>
+                <h3>{{t.contact.hours}}</h3>
                 <p>{{hours.lunchValue}}<br>{{hours.dinnerValue}}</p>
-                <a href="rezervasiya.html" class="btn-text" data-rez-open>Masa ayır {{icons.arrow-right}}</a>
+                <a href="rezervasiya.html" class="btn-text" data-rez-open>{{t.common.reserve}} {{icons.arrow-right}}</a>
               </div>
             </li>
 
@@ -64,5 +64,5 @@
 
       <div class="map-frame">
         <iframe src="{{contact.mapEmbed}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-          title="{{site.name}} xəritədə" allowfullscreen></iframe>
+          title="{{site.name}} {{t.common.onMap}}" allowfullscreen></iframe>
       </div>

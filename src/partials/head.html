@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{site.lang}}">
+<html lang="{{lang.code}}">
 
 <head>
   <meta charset="UTF-8">
@@ -7,14 +7,14 @@
 
   <title>{{page.title}}</title>
   <meta name="description" content="{{page.description}}">
-  <link rel="canonical" href="{{site.url}}/{{page.file}}">
-
+{{page.robots}}  <link rel="canonical" href="{{site.url}}/{{page.path}}">
+{{page.alternates}}
   <meta property="og:type" content="website">
-  <meta property="og:locale" content="{{site.locale}}">
+  <meta property="og:locale" content="{{lang.locale}}">
   <meta property="og:site_name" content="{{site.name}}">
   <meta property="og:title" content="{{page.title}}">
   <meta property="og:description" content="{{page.description}}">
-  <meta property="og:url" content="{{site.url}}/{{page.file}}">
+  <meta property="og:url" content="{{site.url}}/{{page.path}}">
   <meta property="og:image" content="{{site.url}}/assets/images/hero-slider-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#121212">
@@ -32,7 +32,7 @@
   <link rel="stylesheet" href="./assets/css/fonts.css">
   <link rel="stylesheet" href="./assets/css/site.css">
   <link rel="stylesheet" href="./assets/css/theme.css">
-
+{{page.extraCss}}
 {{page.preload}}
   <script type="application/ld+json">
   {
@@ -44,14 +44,14 @@
     "telephone": "{{contact.phone}}",
     "email": "{{contact.email}}",
     "priceRange": "20-95 AZN",
-    "servesCuisine": ["Steak House", "Azərbaycan mətbəxi", "Mangal"],
+    "servesCuisine": ["Steak House", "{{t.meta.cuisine}}", "Mangal"],
     "address": {
       "@type": "PostalAddress",
       "streetAddress": "{{contact.addressShort}}",
-      "addressLocality": "Bakı",
+      "addressLocality": "{{t.meta.city}}",
       "addressCountry": "AZ"
     },
-    "acceptsReservations": "{{site.url}}/rezervasiya.html"
+    "acceptsReservations": "{{site.url}}/{{lang.prefix}}rezervasiya.html"
   }
   </script>
 </head>

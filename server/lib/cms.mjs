@@ -10,11 +10,13 @@ import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, unlinkS
 import { join, basename, extname } from 'node:path';
 import { execFile } from 'node:child_process';
 import { ROOT } from './config.mjs';
+import { MENU_DIR, MAX_PDF_BYTES, menuFileName, checkSlot, parsePdf, menuMatrix } from './menus.mjs';
 
 const CONFIG_FILES = {
   site: 'site.config.json',
   content: 'content.config.json',
   theme: 'theme.config.json',
+  i18n: 'i18n.config.json',
 };
 
 /** Hər konfiqurasiyada mütləq olmalı olan açarlar (səhv yazılışdan qoruyur) */
@@ -22,6 +24,7 @@ const REQUIRED_KEYS = {
   site: ['site', 'contact', 'hours', 'social', 'reservation', 'footer'],
   content: ['hero', 'menu', 'gallery', 'pages'],
   theme: ['colors', 'fonts', 'layout', 'logo'],
+  i18n: [],
 };
 
 const IMAGE_DIR = join(ROOT, 'public', 'assets', 'images');
@@ -40,19 +43,25 @@ const configPath = (name) => {
   return join(ROOT, file);
 };
 
-export const readConfig = (name) => JSON.parse(readFileSync(configPath(name), 'utf8'));
+export const readConfig = (name) => {
+  const path = configPath(name);
+  /* Tərcümə faylı hələ yoxdursa boş sayılır */
+  if (name === 'i18n' && !existsSync(path)) return {};
+  return JSON.parse(readFileSync(path, 'utf8'));
+};
 
 export const readAllConfigs = () => ({
   site: readConfig('site'),
   content: readConfig('content'),
   theme: readConfig('theme'),
+  i18n: readConfig('i18n'),
 });
 
 const backup = (name) => {
   if (!existsSync(BACKUP_DIR)) mkdirSync(BACKUP_DIR, { recursive: true });
   const stamp = new Date().toISOString().replace(/[:.]/g, '-');
   const target = join(BACKUP_DIR, `${name}-${stamp}.json`);
-  writeFileSync(target, readFileSync(configPath(name)));
+  writeFileSync(target, existsSync(configPath(name)) ? readFileSync(configPath(name)) : '{}\n');
 
   /* Son 30 nüsxəni saxlayırıq */
   const old = readdirSync(BACKUP_DIR)
@@ -89,7 +98,7 @@ export const saveConfig = async (name, data) => {
   }
 
   const path = configPath(name);
-  const previous = readFileSync(path, 'utf8');
+  const previous = existsSync(path) ? readFileSync(path, 'utf8') : '{}\n';
   const backupPath = backup(name);
 
   writeJson(path, data);
@@ -168,6 +177,7 @@ export const listImages = () => {
 export const imageUsage = (name) => {
   const used = [];
   for (const key of Object.keys(CONFIG_FILES)) {
+    if (!existsSync(configPath(key))) continue;
     const raw = readFileSync(configPath(key), 'utf8');
     if (raw.includes('"' + name + '"')) used.push(CONFIG_FILES[key]);
   }
@@ -233,4 +243,46 @@ export const listFonts = () => {
   const names = new Set();
   for (const match of raw.matchAll(/font-family:\s*'([^']+)'/g)) names.add(match[1]);
   return [...names].sort();
+};
+
+/* ------------------------------------------------------------------ *
+ *  Zalların PDF menyuları
+ * ------------------------------------------------------------------ */
+
+const MENU_PATH = join(ROOT, ...MENU_DIR.split('/'));
+
+const menuFiles = () => {
+  if (!existsSync(MENU_PATH)) return [];
+  return readdirSync(MENU_PATH)
+    .filter((f) => f.endsWith('.pdf'))
+    .map((f) => ({ name: f, size: statSync(join(MENU_PATH, f)).size }));
+};
+
+export const listMenus = () => menuMatrix(readConfig('site'), readConfig('content'), menuFiles());
+
+/** PDF-i yazır və saytı yenidən yığır — düymələr dərhal görünsün */
+export const saveMenu = async (hall, lang, dataUrl) => {
+  const invalid = checkSlot(hall, lang, readConfig('site'), readConfig('content'));
+  if (invalid) return { ok: false, error: invalid };
+
+  const pdf = parsePdf(dataUrl, MAX_PDF_BYTES);
+  if (!pdf.ok) return pdf;
+
+  if (!existsSync(MENU_PATH)) mkdirSync(MENU_PATH, { recursive: true });
+  writeFileSync(join(MENU_PATH, menuFileName(hall, lang)), pdf.buffer);
+
+  const build = await runBuild();
+  return { ok: true, name: menuFileName(hall, lang), size: pdf.buffer.length, log: build.log, menus: listMenus() };
+};
+
+export const deleteMenu = async (hall, lang) => {
+  const invalid = checkSlot(hall, lang, readConfig('site'), readConfig('content'));
+  if (invalid) return { ok: false, error: invalid };
+
+  const path = join(MENU_PATH, menuFileName(hall, lang));
+  if (!existsSync(path)) return { ok: false, error: 'Menyu tapılmadı.' };
+
+  unlinkSync(path);
+  const build = await runBuild();
+  return { ok: true, log: build.log, menus: listMenus() };
 };

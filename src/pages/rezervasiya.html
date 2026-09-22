@@ -8,7 +8,7 @@
         <div class="wrap steps-grid">
 
           <div class="section-intro reveal">
-            <h2 class="display-2" id="steps-title">Necə işləyir?</h2>
+            <h2 class="display-2" id="steps-title">{{t.reservationPage.how}}</h2>
             <p class="lede">{{pages.rezervasiya.lead}}</p>
           </div>
 
@@ -31,7 +31,7 @@
         <div class="wrap rules-grid reveal">
 
           <div>
-            <h2 class="display-2" id="rules-title">Rezervasiya qaydaları</h2>
+            <h2 class="display-2" id="rules-title">{{t.reservationPage.rules}}</h2>
 
             <ul class="rules-list">
               {{blocks.ruleItems}}
@@ -39,7 +39,7 @@
           </div>
 
           <div class="call-card">
-            <p class="dim">Qrup sifarişləri üçün</p>
+            <p class="dim">{{t.reservationPage.group}}</p>
             <a href="tel:{{contact.phoneHref}}" class="call-number">{{contact.phone}}</a>
             <p class="dim small">{{hours.short}}</p>
           </div>
@@ -54,5 +54,5 @@
 
       <div class="map-frame">
         <iframe src="{{contact.mapEmbed}}" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-          title="{{site.name}} xəritədə" allowfullscreen></iframe>
+          title="{{site.name}} {{t.common.onMap}}" allowfullscreen></iframe>
       </div>

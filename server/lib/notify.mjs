@@ -6,15 +6,19 @@
  * gözdən qaçmır.
  */
 
-import { config } from './config.mjs';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { config, ROOT } from './config.mjs';
 
-const areaLabels = {
-  salon: 'Əsas salon',
-  terrace: 'Yay terrası',
-  'mangal-zone': 'Mangal zonası',
-  vip: 'VIP otaq',
-  any: 'Fərqi yoxdur',
-};
+/* Zal adları site.config.json-dan (admin → Rezervasiya zonaları) oxunur */
+const areaLabels = (() => {
+  try {
+    const rules = JSON.parse(readFileSync(join(ROOT, 'site.config.json'), 'utf8')).reservation || {};
+    return Object.fromEntries((rules.areas || []).map((a) => [a.value, a.label]));
+  } catch (_) {
+    return {};
+  }
+})();
 
 const deliveryLabels = {
   sent: 'Vilka-ya göndərildi',
@@ -52,6 +56,7 @@ export const notifyReservation = async (reservation) => {
 
   if (reservation.occasion) lines.push('🎉 ' + escapeHtml(reservation.occasion));
   if (reservation.note) lines.push('📝 ' + escapeHtml(reservation.note));
+  if (reservation.lang && reservation.lang !== 'az') lines.push('🌐 Dil: ' + escapeHtml(reservation.lang.toUpperCase()));
 
   lines.push('');
   lines.push('Status: ' + escapeHtml(deliveryLabels[delivery.status] || delivery.status || '—'));

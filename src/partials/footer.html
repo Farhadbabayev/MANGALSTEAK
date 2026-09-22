@@ -4,8 +4,8 @@
     <div class="wrap">
 
       <div class="footer-top">
-        <p class="footer-call">Masanız közün yanında hazırdır.</p>
-        <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>Masa ayır</a>
+        <p class="footer-call">{{t.footer.call}}</p>
+        <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>{{t.common.reserve}}</a>
       </div>
 
       <div class="footer-grid">
@@ -17,27 +17,28 @@
         </div>
 
         <div>
-          <h2 class="footer-h">Səhifələr</h2>
+          <h2 class="footer-h">{{t.footer.pages}}</h2>
           <ul>
-            <li><a href="menyu.html">Menyu</a></li>
-            <li><a href="haqqimizda.html">Haqqımızda</a></li>
-            <li><a href="qalereya.html">Qalereya</a></li>
-            <li><a href="tedbirler.html">Tədbirlər</a></li>
-            <li><a href="rezervasiya.html">Rezervasiya</a></li>
-            <li><a href="elaqe.html">Əlaqə</a></li>
+            <li><a href="menyu.html">{{t.nav.menu}}</a></li>
+            <li><a href="zallar.html">{{t.nav.halls}}</a></li>
+            <li><a href="haqqimizda.html">{{t.nav.about}}</a></li>
+            <li><a href="qalereya.html">{{t.nav.gallery}}</a></li>
+            <li><a href="tedbirler.html">{{t.nav.events}}</a></li>
+            <li><a href="rezervasiya.html">{{t.nav.reservation}}</a></li>
+            <li><a href="elaqe.html">{{t.nav.contact}}</a></li>
           </ul>
         </div>
 
         <div>
-          <h2 class="footer-h">Əlaqə</h2>
+          <h2 class="footer-h">{{t.footer.contact}}</h2>
           <ul>
             <li><a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a></li>
             <li><a href="mailto:{{contact.email}}">{{contact.email}}</a></li>
             <li>{{hours.short}}</li>
-            <li><a href="{{contact.mapLink}}" target="_blank" rel="noopener">Xəritədə bax</a></li>
+            <li><a href="{{contact.mapLink}}" target="_blank" rel="noopener">{{t.footer.viewMap}}</a></li>
           </ul>
 
-          <ul class="social" aria-label="Sosial şəbəkələr">
+          <ul class="social" aria-label="{{t.footer.social}}">
             <li><a href="{{social.instagram}}" target="_blank" rel="noopener" aria-label="Instagram">{{icons.instagram-logo}}</a></li>
             <li><a href="{{social.facebook}}" target="_blank" rel="noopener" aria-label="Facebook">{{icons.facebook-logo}}</a></li>
             <li><a href="{{social.tiktok}}" target="_blank" rel="noopener" aria-label="TikTok">{{icons.tiktok-logo}}</a></li>
@@ -49,10 +50,10 @@
           <p>{{footer.newsletterText}}</p>
 
           <form class="newsletter" data-newsletter-form>
-            <label class="sr-only" for="newsletter-email">E-mail ünvanınız</label>
-            <input type="email" id="newsletter-email" name="email_address" placeholder="E-mail ünvanınız"
+            <label class="sr-only" for="newsletter-email">{{t.footer.email}}</label>
+            <input type="email" id="newsletter-email" name="email_address" placeholder="{{t.footer.email}}"
               autocomplete="email" required>
-            <button type="submit">Abunə ol</button>
+            <button type="submit">{{t.footer.subscribe}}</button>
           </form>
 
           <p class="newsletter-status" data-newsletter-status role="status" aria-live="polite"></p>
@@ -61,7 +62,7 @@
       </div>
 
       <div class="footer-bottom">
-        <span>&copy; {{footer.copyrightYear}} {{site.name}}. Bütün hüquqlar qorunur.</span>
+        <span>&copy; {{footer.copyrightYear}} {{site.name}}. {{t.footer.rights}}</span>
       </div>
 
     </div>

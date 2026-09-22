@@ -42,13 +42,68 @@ yalnız Node-un öz modulları istifadə olunur (`npm install` lazım deyil).
 | Fayl | Səhifə | Rezervasiya forması |
 |---|---|---|
 | `index.html` | Ana səhifə | ✅ |
-| `menyu.html` | Menyu (7 bölmə) | ✅ |
+| `menyu.html` | Menyu: zalların PDF menyuları + 7 bölmə | ✅ |
+| `zallar.html` | Zallar: Steak, Ocakbaşı, Milli — hər birinin şəkilləri və menyusu | ✅ |
 | `haqqimizda.html` | Haqqımızda | ✅ |
 | `qalereya.html` | Qalereya | ✅ |
 | `tedbirler.html` | Tədbirlər və banket | ✅ |
 | `rezervasiya.html` | Rezervasiya (əsas səhifə) | ✅ |
 | `elaqe.html` | Əlaqə + xəritə | ✅ |
 | `404.html` | Səhifə tapılmadı | — |
+
+Hər səhifə üç dildə yığılır: Azərbaycan dili kökdə (`/menyu.html`),
+rus və ingilis dili öz qovluğunda (`/ru/menyu.html`, `/en/menyu.html`).
+
+---
+
+## 2.1. Dillər, zallar və PDF menyular
+
+### Üç dil (AZ · RU · EN)
+
+Başlıqda dil seçimi var (telefonda — açılan menyunun altında). Dil dəyişəndə
+qonaq **eyni səhifənin** digər dildəki nüsxəsinə keçir: menyu səhifəsində
+dili dəyişən müştəri dərhal həmin dildəki menyunu görür.
+
+| Nə | Harada |
+|---|---|
+| Dillərin siyahısı | `site.config.json` → `site.languages` (birinci — əsas dil) |
+| Menyu, zallar, səhifə mətnləri, ünvan, saatlar | admin → **Tərcümələr** (`i18n.config.json`) |
+| Düymələr, forma, xəta mesajları | `src/i18n/az.json`, `ru.json`, `en.json` |
+
+Tərcümə faylında yalnız mətnlər saxlanılır — şəkil, qiymət, telefon həmişə
+əsas bölmələrdən gəlir. Tərcüməsi olmayan (boş) xana saytda Azərbaycan dilində
+görünür, ona görə yeni yemək əlavə edəndə sayt heç vaxt «sınmır».
+
+Rus səhifələri üçün kiril hərfləri ayrıca şriftlə gəlir
+(`public/assets/css/fonts-cyrillic.css`, yalnız `/ru/`-da yüklənir).
+Rezervasiya Vilka-ya düşəndə qeyddə `Dil: RU` / `Dil: EN` yazılır ki, heyət
+geri zəngdə hansı dildə danışacağını bilsin.
+
+### Zallar
+
+Admin → **Zallar və PDF menyular**: hər zalın adı, təsviri, tutumu, şəkilləri
+(birinci şəkil böyük göstərilir) və menyusu. Şəkillər əvvəlcə **Şəkillər**
+bölməsinə yüklənir, sonra zalda seçilir. Saytda şəkilə basanda böyüyür
+(oxlar / sürüşdürmə ilə yalnız həmin zalın şəkilləri arasında keçilir).
+
+Zalın **kodu** (`steak`, `ocakbasi`, `milli`) rezervasiya zonasının kodu ilə
+eynidir — «Bu zalda masa ayır» düyməsi formada həmin zalı özü seçir.
+
+### PDF menyular — hər zal × hər dil
+
+Zalın kartında hər dil üçün ayrıca yer var: **PDF yüklə / Əvəz et / Bax / Sil**.
+Fayl `public/assets/menus/<zal>-<dil>.pdf` adı ilə saxlanılır
+(məs. `steak-az.pdf`, `ocakbasi-ru.pdf`, `milli-en.pdf`).
+
+- Saytda: «Menyunu aç» (brauzerdə açılır) və «PDF yüklə» düymələri.
+- O dildə PDF hələ yoxdursa: «tezliklə» yazısı və digər dillərdə olan menyulara keçid.
+- Faylı əvəz edəndə ünvan dəyişir (`?v=...`) — qonaq köhnə menyunu görmür.
+
+**Ölçü:** yerli serverdə 20 MB-a qədər. **Vercel-də 3 MB-a qədər** — Vercel
+sorğu gövdəsini ~4.5 MB ilə məhdudlaşdırır. Daha böyük PDF-i sıxın
+(«Reduced size PDF» və ya ilovepdf.com/compress_pdf) və ya GitHub-da
+`public/assets/menus/` qovluğuna eyni adla birbaşa yükləyin
+(Add file → Upload files) — Vercel saytı özü yeniləyəcək.
 
 ---
 

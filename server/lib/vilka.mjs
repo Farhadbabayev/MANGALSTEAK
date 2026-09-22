@@ -56,6 +56,7 @@ const vilkaNote = (reservation) => {
     parts.push('Səbəb: ' + (labels.occasions[reservation.occasion] || reservation.occasion));
   }
   if (reservation.note) parts.push(reservation.note);
+  if (reservation.lang && reservation.lang !== 'az') parts.push('Dil: ' + reservation.lang.toUpperCase());
   parts.push('Sayt kodu: ' + reservation.code);
   return parts.join(' · ');
 };

@@ -110,6 +110,29 @@ if (process.env.SERVERLESS_CASE) {
       });
     }
 
+    if (which === 'admin-menu') {
+      return call(['menus'], 'POST', {
+        hall: 'steak',
+        lang: 'az',
+        data: 'data:application/pdf;base64,' + Buffer.from('%PDF-1.4\n%%EOF\n').toString('base64'),
+      });
+    }
+
+    if (which === 'admin-menu-notpdf') {
+      return call(['menus'], 'POST', { hall: 'steak', lang: 'az', data: 'data:application/pdf;base64,AAAA' });
+    }
+
+    if (which === 'admin-menu-badhall') {
+      return call(['menus'], 'POST', {
+        hall: '../../api', lang: 'az',
+        data: 'data:application/pdf;base64,' + Buffer.from('%PDF-1.4\n').toString('base64'),
+      });
+    }
+
+    if (which === 'admin-menu-delete') {
+      return call(['menus'], 'POST', { hall: 'steak', lang: 'az' }, null, '/api/admin/menus?action=delete', 'delete');
+    }
+
     if (which === 'admin-image-bad') {
       return call(['images'], 'POST', { name: 'zerer.exe', data: 'data:image/png;base64,AAAA' });
     }
@@ -227,6 +250,16 @@ const github = createServer((req, res) => {
           { type: 'file', name: 'hero-slider-1.jpg', size: 133000, sha: 'aaa' },
           { type: 'file', name: 'about-banner.jpg', size: 87000, sha: 'bbb' },
         ]);
+      }
+
+      /* Menyu qovluğu: steak-az.pdf 1 MB-dan böyükdür */
+      if (filePath === 'public/assets/menus') {
+        return json(200, [{ type: 'file', name: 'steak-az.pdf', size: 2500000, sha: 'big-sha' }]);
+      }
+
+      /* GitHub 1 MB-dan böyük faylda «content»-i boş qaytarır, sha isə var */
+      if (filePath === 'public/assets/menus/steak-az.pdf') {
+        return json(200, { content: '', encoding: 'none', size: 2500000, sha: 'big-sha' });
       }
 
       const file = ghFile(filePath);
@@ -512,6 +545,33 @@ try {
   check('Şəkil GitHub-a yazılır',
     ghWrites[ghWrites.length - 1].path === 'public/assets/images/yoxlama-sekil.png',
     ghWrites[ghWrites.length - 1].path);
+
+  console.log('\n  ZALLARIN PDF MENYULARI\n');
+
+  const cfgMenus = await runCase('admin-config', GH_ENV);
+  check('Panel menyu cədvəlini alır (zal × dil)',
+    cfgMenus.result.body.menus && cfgMenus.result.body.menus.steak &&
+      cfgMenus.result.body.menus.steak.az && cfgMenus.result.body.menus.steak.ru === null,
+    JSON.stringify(cfgMenus.result.body.menus));
+  check('Panel tərcümə faylını alır', cfgMenus.result.body.i18n && typeof cfgMenus.result.body.i18n.ru === 'object');
+
+  const menuUp = await runCase('admin-menu', GH_ENV);
+  const menuWrite = ghWrites[ghWrites.length - 1];
+  check('PDF menyu GitHub-a yazılır', menuUp.result.status === 200 &&
+    menuWrite.path === 'public/assets/menus/steak-az.pdf', menuWrite && menuWrite.path);
+  check('1 MB-dan böyük faylın üstünə yazanda sha ötürülür', menuWrite.body && menuWrite.body.sha === 'big-sha',
+    JSON.stringify(menuWrite.body && menuWrite.body.sha));
+
+  const menuNotPdf = await runCase('admin-menu-notpdf', GH_ENV);
+  check('PDF olmayan fayl rədd olunur (Vercel)', menuNotPdf.result.status === 400);
+
+  const menuBadHall = await runCase('admin-menu-badhall', GH_ENV);
+  check('Olmayan zal rədd olunur (Vercel)', menuBadHall.result.status === 400);
+
+  const menuDel = await runCase('admin-menu-delete', GH_ENV);
+  check('PDF menyu GitHub-dan silinir', menuDel.result.status === 200 &&
+    ghWrites[ghWrites.length - 1].deleted === true &&
+    ghWrites[ghWrites.length - 1].path === 'public/assets/menus/steak-az.pdf');
 
   const badImage = await runCase('admin-image-bad', GH_ENV);
   check('Yanlış format rədd olunur', badImage.result.status === 400);

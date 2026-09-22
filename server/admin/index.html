@@ -35,7 +35,9 @@
       </button>
       <button class="nav-item" data-tab="melumat"><span class="nav-ico" aria-hidden="true">✦</span> Restoran məlumatları</button>
       <button class="nav-item" data-tab="menyu"><span class="nav-ico" aria-hidden="true">≡</span> Menyu</button>
+      <button class="nav-item" data-tab="zallar"><span class="nav-ico" aria-hidden="true">▤</span> Zallar və PDF menyular</button>
       <button class="nav-item" data-tab="metnler"><span class="nav-ico" aria-hidden="true">¶</span> Səhifə mətnləri</button>
+      <button class="nav-item" data-tab="tercume"><span class="nav-ico" aria-hidden="true">文</span> Tərcümələr</button>
       <button class="nav-item" data-tab="sekiller"><span class="nav-ico" aria-hidden="true">▣</span> Şəkillər</button>
       <button class="nav-item" data-tab="dizayn"><span class="nav-ico" aria-hidden="true">◐</span> Dizayn</button>
       <button class="nav-item" data-tab="sistem"><span class="nav-ico" aria-hidden="true">⚙</span> Sistem</button>
@@ -218,6 +220,44 @@
         </div>
         <p class="page-note">Ana səhifədə ilk iki kateqoriyanın ilk 3 yeməyi göstərilir. Sıranı yuxarı/aşağı düymələri ilə dəyişin.</p>
         <div data-menu-editor></div>
+      </section>
+
+      <!-- ============ ZALLAR VƏ PDF MENYULAR ============ -->
+      <section class="tab" data-panel="zallar">
+        <div class="page-head">
+          <h1>Zallar və PDF menyular</h1>
+          <div class="page-actions">
+            <button class="btn btn-ghost" data-add-hall>Zal əlavə et</button>
+            <button class="btn btn-primary" data-save="content">Yadda saxla və yayımla</button>
+          </div>
+        </div>
+        <p class="page-note">
+          Hər zalın öz şəkilləri və hər dil üçün ayrıca PDF menyusu var. Müştəri saytda dili dəyişəndə
+          həmin dildəki menyunu görür; o dildə PDF yüklənməyibsa «tezliklə» yazısı və digər dillərdəki menyular göstərilir.
+          Zalın şəkillərini əvvəlcə <b>Şəkillər</b> bölməsindən yükləyin, sonra burada seçin.
+          Zalın adları və mətnləri digər dillərə <b>Tərcümələr</b> bölməsində çevrilir.
+        </p>
+        <div data-halls-editor></div>
+      </section>
+
+      <!-- ============ TƏRCÜMƏLƏR ============ -->
+      <section class="tab" data-panel="tercume">
+        <div class="page-head">
+          <h1>Tərcümələr</h1>
+          <div class="page-actions">
+            <label class="field-inline">
+              <span>Dil</span>
+              <select data-tr-lang></select>
+            </label>
+            <button class="btn btn-primary" data-save="i18n">Yadda saxla və yayımla</button>
+          </div>
+        </div>
+        <p class="page-note">
+          Solda boz rəngdə Azərbaycan dilindəki mətn görünür. Xananı boş buraxsanız saytın bu dildəki
+          versiyasında Azərbaycan dilindəki mətn göstərilir. Şəkillər, qiymətlər və telefonlar tərcümə edilmir —
+          onlar əsas bölmələrdən gəlir. Düymə və forma yazıları (məs. «Masa ayır») <code>src/i18n/</code> qovluğundadır.
+        </p>
+        <div data-tr-editor></div>
       </section>
 
       <!-- ============ SƏHİFƏ MƏTNLƏRİ ============ -->

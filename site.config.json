@@ -10,7 +10,28 @@
     "tagline": "Odun közündə bişən əsl ləzzət",
     "description": "Mangal Steak House, Bakının mərkəzində odun közü üzərində bişirilən premium steyklər, quzu və dana kabablar. Onlayn masa rezervasiyası.",
     "locale": "az_AZ",
-    "lang": "az"
+    "lang": "az",
+    "languages": [
+      {
+        "code": "az",
+        "label": "AZ",
+        "name": "Azərbaycanca",
+        "locale": "az_AZ"
+      },
+      {
+        "code": "ru",
+        "label": "RU",
+        "name": "Русский",
+        "locale": "ru_RU",
+        "cyrillic": true
+      },
+      {
+        "code": "en",
+        "label": "EN",
+        "name": "English",
+        "locale": "en_US"
+      }
+    ]
   },
   "contact": {
     "addressShort": "Nizami küç. 00, Bakı",
@@ -49,20 +70,16 @@
     "timezoneOffset": "+04:00",
     "areas": [
       {
-        "value": "salon",
-        "label": "Əsas salon"
+        "value": "steak",
+        "label": "Steak zalı"
       },
       {
-        "value": "terrace",
-        "label": "Yay terrası"
+        "value": "ocakbasi",
+        "label": "Ocakbaşı"
       },
       {
-        "value": "mangal-zone",
-        "label": "Mangal zonası (açıq mətbəx)"
-      },
-      {
-        "value": "vip",
-        "label": "VIP otaq"
+        "value": "milli",
+        "label": "Milli zal"
       },
       {
         "value": "any",

@@ -139,6 +139,25 @@ export const ghGetFile = async (filePath) => {
   }
 };
 
+/**
+ * Faylın sha-sı (üstünə yazmaq və silmək üçün lazımdır). Yoxdursa null.
+ *
+ * ghGetFile-dan fərqli olaraq məzmuna baxmır: GitHub 1 MB-dan böyük
+ * fayllarda (PDF menyu, iri şəkil) «content» sahəsini boş qaytarır —
+ * ghGetFile onda null verir və əvəzləmə «sha wasn't supplied» ilə düşürdü.
+ */
+const ghGetSha = async (filePath) => {
+  const { branch } = ghConfig();
+
+  try {
+    const data = await request('GET', contentsPath(filePath) + '?ref=' + encodeURIComponent(branch));
+    return data && !Array.isArray(data) && data.sha ? data.sha : null;
+  } catch (err) {
+    if (err.status === 404) return null;
+    throw err;
+  }
+};
+
 export const ghGetJson = async (filePath) => {
   const file = await ghGetFile(filePath);
   if (!file) return null;
@@ -148,13 +167,13 @@ export const ghGetJson = async (filePath) => {
 /** Faylı yazır (varsa üstünə). Commit qaytarır. */
 export const ghPutFile = async (filePath, buffer, message) => {
   const { branch } = ghConfig();
-  const existing = await ghGetFile(filePath);
+  const sha = await ghGetSha(filePath);
 
   const data = await request('PUT', contentsPath(filePath), {
     message,
     content: Buffer.from(buffer).toString('base64'),
     branch,
-    ...(existing ? { sha: existing.sha } : {}),
+    ...(sha ? { sha } : {}),
   });
 
   return {
@@ -165,10 +184,10 @@ export const ghPutFile = async (filePath, buffer, message) => {
 
 export const ghDeleteFile = async (filePath, message) => {
   const { branch } = ghConfig();
-  const existing = await ghGetFile(filePath);
-  if (!existing) return { deleted: false };
+  const sha = await ghGetSha(filePath);
+  if (!sha) return { deleted: false };
 
-  await request('DELETE', contentsPath(filePath), { message, sha: existing.sha, branch });
+  await request('DELETE', contentsPath(filePath), { message, sha, branch });
   return { deleted: true };
 };
 

@@ -2,7 +2,7 @@
         - #HERO: şəbəkə pəncərəsi
       -->
 
-      <section class="hero" aria-label="Ana səhifə" data-hero>
+      <section class="hero" aria-label="{{t.home.heroLabel}}" data-hero>
         <div class="hero-media">
           {{blocks.heroSlides}}
         </div>
@@ -14,14 +14,14 @@
             <p class="lede" data-hero-text>{{hero.slides.0.text}}</p>
 
             <div class="hero-actions">
-              <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>Masa ayır</a>
-              <a href="menyu.html" class="btn-text">Menyuya bax {{icons.arrow-right}}</a>
+              <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>{{t.common.reserve}}</a>
+              <a href="menyu.html" class="btn-text">{{t.common.viewMenu}} {{icons.arrow-right}}</a>
             </div>
           </div>
 
           <p class="hero-caption">
             <span data-hero-label>{{hero.slides.0.subtitle}}</span>
-            <span class="hero-dots" data-hero-dots aria-label="Slaydlar">{{blocks.heroDots}}</span>
+            <span class="hero-dots" data-hero-dots aria-label="{{t.home.slides}}">{{blocks.heroDots}}</span>
           </p>
         </div>
       </section>
@@ -43,6 +43,29 @@
 
           <ul class="virtue-grid reveal">
             {{blocks.featureCards}}
+          </ul>
+
+        </div>
+      </section>
+
+
+      <!--
+        - #ZALLAR
+      -->
+
+      <section class="section section-alt" aria-labelledby="halls-title">
+        <div class="wrap">
+
+          <div class="events-head reveal">
+            <div class="section-intro">
+              <p class="label">{{halls.subtitle}}</p>
+              <h2 class="display-2" id="halls-title">{{halls.title}}</h2>
+            </div>
+            <a href="zallar.html" class="btn-text">{{t.halls.viewHall}} {{icons.arrow-right}}</a>
+          </div>
+
+          <ul class="hall-cards reveal">
+            {{blocks.hallTeasers}}
           </ul>
 
         </div>
@@ -123,7 +146,7 @@
           <div class="story-media reveal">
             <figure class="story-img frame">
             <img src="./assets/images/about-banner.jpg" width="570" height="620" loading="lazy"
-              alt="{{site.name}} mətbəxi">
+              alt="{{site.name}} {{t.common.kitchenAlt}}">
           </figure>
           </div>
 
@@ -135,7 +158,7 @@
         - #RƏY
       -->
 
-      <section class="band" aria-label="Qonaq rəyi">
+      <section class="band" aria-label="{{t.common.guestReview}}">
         <div class="band-bg">
           <img src="./assets/images/testimonial-bg.jpg" width="1880" height="900" loading="lazy" alt="">
         </div>

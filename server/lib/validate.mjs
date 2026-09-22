@@ -110,6 +110,7 @@ export const validateReservation = (input) => {
   }
 
   const area = clean(input.area, 30);
+  const lang = clean(input.lang, 5).toLowerCase();
   const occasion = clean(input.occasion, 30);
 
   return {
@@ -126,6 +127,8 @@ export const validateReservation = (input) => {
       occasion: occasionValues.has(occasion) ? occasion : '',
       note: clean(input.note, 500),
       source: clean(input.source, 60) || 'website',
+      /* Qonağın saytda seçdiyi dil — heyət geri zəngdə hansı dildə danışacağını bilsin */
+      lang: /^[a-z]{2}$/.test(lang) ? lang : 'az',
     },
   };
 };

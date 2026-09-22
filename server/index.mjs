@@ -32,8 +32,12 @@ import {
   saveImage,
   deleteImage,
   listFonts,
+  listMenus,
+  saveMenu,
+  deleteMenu,
   MAX_IMAGE_BYTES,
 } from './lib/cms.mjs';
+import { MAX_PDF_BYTES } from './lib/menus.mjs';
 
 /* ------------------------------------------------------------------ *
  *  Köməkçilər
@@ -55,6 +59,7 @@ const MIME = {
   '.txt': 'text/plain; charset=utf-8',
   '.xml': 'application/xml; charset=utf-8',
   '.webmanifest': 'application/manifest+json',
+  '.pdf': 'application/pdf',
 };
 
 const sendJson = (res, status, body) => {
@@ -425,6 +430,8 @@ const handleAdminApi = async (req, res, url) => {
       ...readAllConfigs(),
       images: listImages(),
       fonts: listFonts(),
+      menus: listMenus(),
+      menuLimit: MAX_PDF_BYTES,
       site_url: config.siteUrl,
       capabilities: {
         mode: 'server',
@@ -478,6 +485,31 @@ const handleAdminApi = async (req, res, url) => {
     const body = await readJsonBody(req).catch(() => ({}));
     const result = deleteImage(body.name);
     return sendJson(res, result.ok ? 200 : 400, { ...result, images: listImages() });
+  }
+
+  /* ---------------- Zalların PDF menyuları ---------------- */
+
+  if (path === '/api/admin/menus' && req.method === 'GET') {
+    return sendJson(res, 200, { ok: true, menus: listMenus() });
+  }
+
+  if ((path === '/api/admin/menus' || path === '/api/admin/menus/delete') && req.method === 'POST') {
+    const remove = path.endsWith('/delete');
+    let body;
+    try {
+      body = await readJsonBody(req, remove ? undefined : Math.round(MAX_PDF_BYTES * 1.4));
+    } catch (err) {
+      const tooLarge = err && err.message === 'too-large';
+      return sendJson(res, tooLarge ? 413 : 400, {
+        ok: false,
+        error: tooLarge ? 'PDF çox böyükdür (maksimum ' + Math.round(MAX_PDF_BYTES / 1048576) + ' MB).' : 'Fayl oxunmadı.',
+      });
+    }
+
+    const result = remove
+      ? await deleteMenu(body.hall, body.lang)
+      : await saveMenu(body.hall, body.lang, body.data);
+    return sendJson(res, result.ok ? 200 : 400, result);
   }
 
   return sendJson(res, 404, { ok: false, error: 'Tapılmadı.' });

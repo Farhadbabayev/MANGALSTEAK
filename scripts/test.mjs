@@ -78,7 +78,7 @@ const validReservation = (overrides = {}) => ({
   guests: 4,
   date: tomorrow(),
   time: '19:00',
-  area: 'salon',
+  area: 'steak',
   occasion: 'ad-gunu',
   note: 'Pəncərə kənarı olsun',
   source: 'rezervasiya.html',
@@ -126,6 +126,37 @@ const run = async () => {
     );
   }
 
+  console.log('\n  DİLLƏR VƏ ZALLAR\n');
+
+  for (const lang of ['ru', 'en']) {
+    const response = await fetch(BASE + '/' + lang + '/');
+    const html = await response.text();
+    check(lang + ' ana səhifəsi açılır və lang="' + lang + '"',
+      response.status === 200 && html.includes('<html lang="' + lang + '">'), 'status ' + response.status);
+    check(lang + ': fayllar bir pillə yuxarıdan yüklənir', html.includes('href="../assets/css/site.css') && !html.includes('"./assets/'));
+    check(lang + ': brauzer mətnləri həmin dildədir', html.includes('window.MANGAL_LANG = "' + lang + '"'));
+  }
+
+  const ruMenu = await (await fetch(BASE + '/ru/menyu')).text();
+  check('Rus menyu səhifəsi tərcümə olunub', ruMenu.includes('Меню залов') && ruMenu.includes('Стейки'));
+  check('Kiril şrifti yalnız rus səhifəsinə qoşulur',
+    ruMenu.includes('fonts-cyrillic.css') && !homeHtml.includes('fonts-cyrillic.css'));
+  check('hreflang keçidləri var', /hreflang="en" href="[^"]*\/en\/"/.test(homeHtml) && homeHtml.includes('hreflang="x-default"'));
+  check('Dil seçimi eyni səhifənin digər dilinə aparır',
+    ruMenu.includes('href="../menyu.html"') && ruMenu.includes('href="../en/menyu.html"'));
+
+  const halls = await fetch(BASE + '/zallar');
+  const hallsHtml = await halls.text();
+  check('Zallar səhifəsi açılır', halls.status === 200, 'status ' + halls.status);
+  check('Hər zalın öz bölməsi və şəkilləri var',
+    ['steak', 'ocakbasi', 'milli'].every((id) => hallsHtml.includes('id="' + id + '"') &&
+      hallsHtml.includes('data-lightbox-item="' + id + '"')));
+  check('«Bu zalda masa ayır» zalı formada seçir', hallsHtml.includes('data-rez-area="milli"'));
+  check('Zallar formada seçim kimi var', hallsHtml.includes('<option value="ocakbasi">'));
+
+  const sitemap = await (await fetch(BASE + '/sitemap.xml')).text();
+  check('Sitemap bütün dilləri əhatə edir', sitemap.includes('/ru/zallar.html') && sitemap.includes('/en/menyu.html'));
+
   const missing = await fetch(BASE + '/yoxdur-belə-səhifə');
   check('Olmayan səhifə 404 qaytarır', missing.status === 404, 'status ' + missing.status);
 
@@ -134,7 +165,7 @@ const run = async () => {
 
   console.log('\n  REZERVASİYA\n');
 
-  const created = await post('/api/reservations', validReservation());
+  const created = await post('/api/reservations', validReservation({ lang: 'ru', source: 'ru/rezervasiya.html' }));
   const createdBody = await created.json();
   check('Düzgün rezervasiya qəbul olunur', created.status === 201 && createdBody.ok === true,
     'status ' + created.status + ' ' + JSON.stringify(createdBody));
@@ -155,8 +186,10 @@ const run = async () => {
   check('Vaxt starts_at kimi Bakı saatı ilə gedir',
     sent && /T19:00:00\+04:00$/.test(sent.body.starts_at || ''), sent && sent.body.starts_at);
   check('Zona, səbəb və qeyd Vilka qeydinə düşür',
-    sent && /Zona: Əsas salon/.test(sent.body.note || '') && /Səbəb: Ad günü/.test(sent.body.note || '') &&
+    sent && /Zona: Steak zalı/.test(sent.body.note || '') && /Səbəb: Ad günü/.test(sent.body.note || '') &&
       /Pəncərə kənarı olsun/.test(sent.body.note || '') && sent.body.note.includes(createdBody.code),
+    sent && sent.body.note);
+  check('Qonağın dili Vilka qeydinə düşür (Dil: RU)', sent && /Dil: RU/.test(sent.body.note || ''),
     sent && sent.body.note);
   check('Köhnə adlar Vilka-ya getmir',
     sent && !('name' in sent.body) && !('phone' in sent.body) && !('guests' in sent.body) &&
@@ -411,6 +444,42 @@ const run = async () => {
 
   const removed = await post('/api/admin/images/delete', { name: 'test-yoxlama.png' }, adminAuth);
   check('Şəkil silinir', removed.status === 200, 'status ' + removed.status);
+
+  /* Zalların PDF menyuları */
+  const pdf = 'data:application/pdf;base64,' + Buffer.from('%PDF-1.4\n%test\n%%EOF\n').toString('base64');
+
+  const menuUp = await post('/api/admin/menus', { hall: 'milli', lang: 'en', data: pdf }, adminAuth);
+  const menuUpBody = await menuUp.json();
+  check('PDF menyu yüklənir', menuUp.status === 200 && menuUpBody.menus && menuUpBody.menus.milli.en,
+    JSON.stringify(menuUpBody).slice(0, 160));
+
+  const enHalls = await (await fetch(BASE + '/en/zallar.html')).text();
+  check('Yüklənən menyu saytda həmin dildə görünür', /assets\/menus\/milli-en\.pdf\?v=/.test(enHalls));
+  const azHalls = await (await fetch(BASE + '/zallar.html')).text();
+  check('Başqa dildə «digər dildə» kimi təklif olunur',
+    azHalls.includes('hall-menu-other') && azHalls.includes('milli-en.pdf'));
+
+  const pdfFile = await fetch(BASE + '/assets/menus/milli-en.pdf');
+  check('PDF düzgün növ ilə verilir', pdfFile.status === 200 &&
+    (pdfFile.headers.get('content-type') || '').startsWith('application/pdf'));
+
+  const notPdf = await post('/api/admin/menus', { hall: 'milli', lang: 'en', data: onePixel }, adminAuth);
+  check('PDF olmayan fayl rədd olunur', notPdf.status === 400);
+
+  const badHall = await post('/api/admin/menus', { hall: '../../server', lang: 'en', data: pdf }, adminAuth);
+  check('Olmayan zal / yol rədd olunur', badHall.status === 400);
+
+  const badLang = await post('/api/admin/menus', { hall: 'milli', lang: 'de', data: pdf }, adminAuth);
+  check('Olmayan dil rədd olunur', badLang.status === 400);
+
+  const menuNoAuth = await post('/api/admin/menus', { hall: 'milli', lang: 'en', data: pdf });
+  check('PDF yükləmə şifrəsiz bağlıdır', menuNoAuth.status === 401);
+
+  const menuDel = await post('/api/admin/menus?action=delete', { hall: 'milli', lang: 'en' }, adminAuth);
+  const menuDelBody = await menuDel.json();
+  check('PDF menyu silinir', menuDel.status === 200 && menuDelBody.menus.milli.en === null);
+  const enHallsAfter = await (await fetch(BASE + '/en/zallar.html')).text();
+  check('Silinəndən sonra saytda «tezliklə» görünür', !enHallsAfter.includes('milli-en.pdf'));
 
   const adminAsset = await fetch(BASE + '/admin/admin.js');
   check('Admin faylları şifrəsiz bağlıdır', adminAsset.status === 401, 'status ' + adminAsset.status);
