@@ -385,6 +385,16 @@ const pages = [
     heroImage: 'hero-slider-3.jpg',
   },
   {
+    file: 'bron.html',
+    nav: '',
+    title: `Bronu yoxla | ${N}`,
+    description: 'Bron kodunuzla rezervasiyanızın vəziyyətini yoxlayın və ya onu ləğv edin.',
+    heroTitle: 'Bronu yoxla',
+    heroSubtitle: 'Bron kodunuz və telefon nömrənizlə rezervasiyanın vəziyyətinə baxın və ya onu ləğv edin.',
+    heroImage: 'hero-slider-3.jpg',
+    noIndex: true,
+  },
+  {
     file: 'elaqe.html',
     nav: 'elaqe',
     title: `Əlaqə | ${N}`,
@@ -482,7 +492,7 @@ const shortHash = (text) => createHash('sha1').update(text).digest('hex').slice(
 
 const assetVersions = { 'css/theme.css': shortHash(themeCss) };
 
-for (const rel of ['css/site.css', 'css/fonts.css', 'js/script.js', 'js/reservation.js']) {
+for (const rel of ['css/site.css', 'css/fonts.css', 'js/script.js', 'js/reservation.js', 'js/booking.js']) {
   const file = join(OUT, 'assets', ...rel.split('/'));
   if (existsSync(file)) assetVersions[rel] = shortHash(readFileSync(file, 'utf8'));
 }

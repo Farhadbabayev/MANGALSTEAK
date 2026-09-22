@@ -1,0 +1,76 @@
+{{> page-hero}}
+
+
+      <!--
+        - #BRONU YOXLA
+        - Kod və telefon nömrəsi ilə rezerv Vilka-dan oxunur (POST /api/booking).
+      -->
+
+      <section class="section booking" id="bron" aria-labelledby="bron-basliq" data-booking-lookup>
+        <div class="narrow">
+
+          <div class="booking-head reveal">
+            <h2 class="display-2" id="bron-basliq">Rezervasiyanızı tapın</h2>
+            <p class="lede">
+              Bron kodu rezervasiyadan sonra ekranda göstərilir. Kodu və rezervasiyada
+              yazdığınız telefon nömrəsini daxil edin.
+            </p>
+          </div>
+
+          <div class="carpet">
+          <form data-lookup-form novalidate>
+
+            <div class="fields">
+
+              <div class="field">
+                <label for="bron-code">Bron kodu</label>
+                <input type="text" id="bron-code" name="code" data-field="code" required maxlength="24"
+                  autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="27BDF7B6A1C4">
+              </div>
+
+              <div class="field">
+                <label for="bron-phone">Telefon</label>
+                <input type="tel" id="bron-phone" name="phone" data-field="phone" required maxlength="25"
+                  autocomplete="tel" placeholder="+994 50 123 45 67">
+              </div>
+
+            </div>
+
+            <div class="form-status" data-form-status role="status" aria-live="polite"></div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-solid" data-submit-btn>Yoxla</button>
+            </div>
+
+          </form>
+
+          <div class="form-success" data-lookup-result hidden>
+
+            <div class="success-code">
+              <span class="label">Bron kodu</span>
+              <strong data-result-code></strong>
+            </div>
+
+            <p class="booking-state" data-result-state></p>
+
+            <ul class="success-list" data-result-summary></ul>
+
+            <div class="form-status" data-result-status role="status" aria-live="polite"></div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-solid" data-cancel-btn hidden>Rezervasiyanı ləğv et</button>
+              <button type="button" class="btn" data-lookup-again>Başqa kod yoxla</button>
+            </div>
+
+            <p class="dim small">
+              Vaxtı və ya nəfər sayını dəyişmək üçün:
+              <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
+            </p>
+
+          </div>
+          </div>
+
+        </div>
+      </section>
+
+      <script src="./assets/js/booking.js"></script>

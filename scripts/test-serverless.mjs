@@ -170,7 +170,7 @@ const vilka = createServer((req, res) => {
       body,
     });
     res.writeHead(201, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ id: 'VLK-SRV-' + vilkaHits.length }));
+    res.end(JSON.stringify({ id: 'uuid-srv-' + vilkaHits.length, ref: 'SRV0000' + vilkaHits.length }));
   });
 });
 
@@ -306,7 +306,8 @@ try {
   });
   check('Tətbiq qoşulanda rezervasiya qəbul olunur', ok.result.status === 201,
     'status ' + ok.result.status + ' ' + JSON.stringify(ok.result.body));
-  check('Müştəriyə kod verilir', /^MS-\d{6}-\d{4}$/.test((ok.result.body || {}).code || ''));
+  check('Müştəriyə Vilka-nın kodu verilir',
+    (ok.result.body || {}).code === 'SRV0000' + (before + 1), JSON.stringify(ok.result.body));
   check('Sorğu tətbiqə çatdı', vilkaHits.length === before + 1);
   check('Açar göndərilir', vilkaHits[vilkaHits.length - 1].auth === 'Bearer serverless-acar');
   check('Sahə uyğunluğu işləyir', vilkaHits[vilkaHits.length - 1].body.includes('guest_name'));

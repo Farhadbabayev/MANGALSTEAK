@@ -13,6 +13,9 @@
     "api/newsletter.js": {
       "includeFiles": "*.config.json"
     },
+    "api/booking.js": {
+      "includeFiles": "*.config.json"
+    },
     "api/admin/**": {
       "includeFiles": "{*.config.json,server/admin/**,public/assets/css/fonts.css}",
       "maxDuration": 30

@@ -133,8 +133,20 @@ const extractReference = (body) => {
 };
 
 /**
+ * Qonağa göstəriləcək Vilka bron kodu (booking_ref). extractReference-dən
+ * fərqli olaraq id/uuid götürmür — qonaq UUID yox, qısa kod görməlidir.
+ */
+const extractBookingCode = (body) => {
+  if (!body || typeof body !== 'object') return null;
+  const code = body.ref || body.booking_ref;
+  if (code && /^[A-Za-z0-9-]{4,24}$/.test(String(code))) return String(code).toUpperCase();
+  if (body.data && typeof body.data === 'object') return extractBookingCode(body.data);
+  return null;
+};
+
+/**
  * Bir dəfə göndərmə cəhdi.
- * @returns {Promise<{ status: 'sent'|'failed'|'skipped', reference?: string|null, error?: string }>}
+ * @returns {Promise<{ status: 'sent'|'failed'|'skipped', reference?: string|null, code?: string|null, error?: string }>}
  */
 export const deliverOnce = async (reservation) => {
   const vilka = getVilka();
@@ -187,7 +199,12 @@ export const deliverOnce = async (reservation) => {
       };
     }
 
-    return { status: 'sent', reference: extractReference(body), error: null };
+    return {
+      status: 'sent',
+      reference: extractReference(body),
+      code: vilka.mode === 'api' ? extractBookingCode(body) : null,
+      error: null,
+    };
   } catch (err) {
     const aborted = err && err.name === 'AbortError';
     return {
@@ -199,6 +216,79 @@ export const deliverOnce = async (reservation) => {
     done();
   }
 };
+
+/* ------------------------------------------------------------------ *
+ *  Qonağın öz rezervini yoxlaması və ləğvi (Partner API)
+ *
+ *  POST ünvanı .../reservations-dır; bir rezerv .../reservations/<kod>.
+ *  Kod həm Vilka kodu (booking_ref), həm də saytın köhnə «MS-…» kodu
+ *  (external_ref) ola bilər — Vilka ikisini də tanıyır.
+ * ------------------------------------------------------------------ */
+
+const reservationUrl = (vilka, ref, query) =>
+  String(vilka.apiUrl).replace(/\/+$/, '') + '/' + encodeURIComponent(ref) + (query || '');
+
+/**
+ * @returns {Promise<{ ok: true, data: object } | { ok: false, status: number, error: string }>}
+ *   status: Vilka-nın HTTP kodu, bağlantı xətasında 0
+ */
+const requestVilka = async (method, ref, query) => {
+  const vilka = getVilka();
+
+  if (vilka.mode !== 'api' || !vilka.apiUrl) {
+    return { ok: false, status: 0, error: 'Vilka API rejimi aktiv deyil.' };
+  }
+
+  const headers = {
+    Accept: 'application/json',
+    'User-Agent': config.restaurantName + ' Website',
+  };
+
+  if (vilka.apiKey) {
+    const scheme = vilka.authScheme;
+    headers[authHeaderName(vilka.authHeader)] = scheme ? scheme + ' ' + vilka.apiKey : vilka.apiKey;
+  }
+
+  const { signal, done } = timeoutSignal(timeoutOf(vilka.timeoutMs));
+
+  try {
+    const response = await fetch(reservationUrl(vilka, ref, query), { method, headers, signal });
+    const text = await response.text();
+    let body = null;
+    try {
+      body = JSON.parse(text);
+    } catch (_) {
+      /* JSON deyil */
+    }
+
+    if (!response.ok) {
+      return { ok: false, status: response.status, error: 'HTTP ' + response.status + ' — ' + text.slice(0, 300) };
+    }
+    if (!body || typeof body !== 'object') {
+      return { ok: false, status: response.status, error: 'Cavab JSON deyil.' };
+    }
+    return { ok: true, data: body };
+  } catch (err) {
+    const aborted = err && err.name === 'AbortError';
+    return {
+      ok: false,
+      status: 0,
+      error: aborted ? 'Vaxt bitdi (timeout).' : String((err && err.message) || err).slice(0, 300),
+    };
+  } finally {
+    done();
+  }
+};
+
+export const vilkaLookupEnabled = () => {
+  const vilka = getVilka();
+  return vilka.mode === 'api' && Boolean(vilka.apiUrl);
+};
+
+export const fetchVilkaReservation = (ref) => requestVilka('GET', ref);
+
+export const cancelVilkaReservation = (ref, reason) =>
+  requestVilka('DELETE', ref, reason ? '?reason=' + encodeURIComponent(reason) : '');
 
 export const vilkaStatus = () => {
   const vilka = getVilka();

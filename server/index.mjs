@@ -24,6 +24,7 @@ import {
 import { validateReservation, validateEmail } from './lib/validate.mjs';
 import { deliverOnce, vilkaStatus, previewPayload, sendTest } from './lib/vilka.mjs';
 import { notifyReservation, telegramEnabled } from './lib/notify.mjs';
+import { handleBooking } from './lib/booking.mjs';
 import {
   readAllConfigs,
   saveConfig,
@@ -202,6 +203,7 @@ const attemptDelivery = async (reservation) => {
       lastAttemptAt: new Date().toISOString(),
       lastError: result.error || null,
       reference: result.reference || reservation.delivery?.reference || null,
+      code: result.code || reservation.delivery?.code || null,
     },
   });
 
@@ -287,9 +289,13 @@ const handleReservation = async (req, res) => {
 
   notifyReservation(delivered).catch(() => {});
 
+  /* Qonağa Vilka-nın kodu verilir — Vilka panelində və qonaq səhifəsində görünən eyni kod.
+     Vilka-ya hələ çatmayıbsa, saytın öz kodu (Vilka onu da tanıyır). */
+  const vilkaCode = delivered.delivery?.status === 'sent' ? delivered.delivery.code : null;
+
   return sendJson(res, 201, {
     ok: true,
-    code: delivered.code,
+    code: vilkaCode || delivered.code,
     delivery: delivered.delivery.status,
   });
 };
@@ -566,6 +572,17 @@ const server = createServer(async (req, res) => {
 
     if (path === '/api/newsletter' && req.method === 'POST') {
       return await handleNewsletter(req, res);
+    }
+
+    if (path === '/api/booking' && req.method === 'POST') {
+      let input;
+      try {
+        input = await readJsonBody(req, 8 * 1024);
+      } catch (_) {
+        return sendJson(res, 400, { ok: false, error: 'Məlumat düzgün göndərilmədi.' });
+      }
+      const result = await handleBooking(input, clientIp(req));
+      return sendJson(res, result.status, result.body);
     }
 
     if (path === '/api/health' && req.method === 'GET') {
