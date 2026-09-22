@@ -1791,6 +1791,27 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 .booking-state[data-state="seated"],
 .booking-state[data-state="completed"] { color: var(--success); }
 
+.booking .reschedule {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+  padding: 22px 0 0;
+  background: none;
+  border-top: 1px solid var(--hair);
+}
+
+.booking .reschedule[hidden],
+.form-actions[hidden] { display: none; }
+.reschedule .form-hint,
+.reschedule .form-actions { margin-top: 0; }
+
+.reschedule-title {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--cream-dim);
+}
+
 .booking-state[data-state="cancelled"],
 .booking-state[data-state="no_show"] { color: var(--danger); }
 

@@ -232,7 +232,7 @@ const reservationUrl = (vilka, ref, query) =>
  * @returns {Promise<{ ok: true, data: object } | { ok: false, status: number, error: string }>}
  *   status: Vilka-nın HTTP kodu, bağlantı xətasında 0
  */
-const requestVilka = async (method, ref, query) => {
+const requestVilka = async (method, ref, query, payload) => {
   const vilka = getVilka();
 
   if (vilka.mode !== 'api' || !vilka.apiUrl) {
@@ -243,6 +243,7 @@ const requestVilka = async (method, ref, query) => {
     Accept: 'application/json',
     'User-Agent': config.restaurantName + ' Website',
   };
+  if (payload) headers['Content-Type'] = 'application/json';
 
   if (vilka.apiKey) {
     const scheme = vilka.authScheme;
@@ -252,7 +253,12 @@ const requestVilka = async (method, ref, query) => {
   const { signal, done } = timeoutSignal(timeoutOf(vilka.timeoutMs));
 
   try {
-    const response = await fetch(reservationUrl(vilka, ref, query), { method, headers, signal });
+    const response = await fetch(reservationUrl(vilka, ref, query), {
+      method,
+      headers,
+      body: payload ? JSON.stringify(payload) : undefined,
+      signal,
+    });
     const text = await response.text();
     let body = null;
     try {
@@ -262,7 +268,15 @@ const requestVilka = async (method, ref, query) => {
     }
 
     if (!response.ok) {
-      return { ok: false, status: response.status, error: 'HTTP ' + response.status + ' — ' + text.slice(0, 300) };
+      /* Vilka xətası: { error: { code, message } } — message qonağa göstərilə bilər */
+      const failure = body && body.error && typeof body.error === 'object' ? body.error : {};
+      return {
+        ok: false,
+        status: response.status,
+        code: failure.code || null,
+        message: typeof failure.message === 'string' ? failure.message : null,
+        error: 'HTTP ' + response.status + ' — ' + text.slice(0, 300),
+      };
     }
     if (!body || typeof body !== 'object') {
       return { ok: false, status: response.status, error: 'Cavab JSON deyil.' };
@@ -286,6 +300,10 @@ export const vilkaLookupEnabled = () => {
 };
 
 export const fetchVilkaReservation = (ref) => requestVilka('GET', ref);
+
+/** Yalnız vaxt: Vilka onu qonağın öz səhifəsindəki «Vaxtı dəyiş» ilə eyni yoxlayır */
+export const rescheduleVilkaReservation = (ref, date, time) =>
+  requestVilka('PATCH', ref, '', { date, time });
 
 export const cancelVilkaReservation = (ref, reason) =>
   requestVilka('DELETE', ref, reason ? '?reason=' + encodeURIComponent(reason) : '');

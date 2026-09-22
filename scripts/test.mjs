@@ -44,6 +44,7 @@ const received = [];
 /* Vilka Partner API kimi: POST rezerv yaradır və «ref» qaytarır,
    GET/DELETE /reservations/<ref> onu Vilka kodu və ya external_ref ilə tapır */
 const vilkaRows = [];
+const patches = [];
 const findRow = (ref) => vilkaRows.find((r) => r.ref === ref.toUpperCase() || r.external_ref === ref);
 
 const mock = createServer((req, res) => {
@@ -58,9 +59,23 @@ const mock = createServer((req, res) => {
     const url = new URL(req.url, 'http://mock');
     const single = /^\/reservations\/([^/]+)$/.exec(url.pathname);
 
-    if (single && (req.method === 'GET' || req.method === 'DELETE')) {
+    if (single && (req.method === 'GET' || req.method === 'DELETE' || req.method === 'PATCH')) {
       const row = findRow(decodeURIComponent(single[1]));
       if (!row) return reply(404, { error: { code: 'NOT_FOUND', message: 'Rezervasiya tapılmadı.' } });
+      if (req.method === 'PATCH') {
+        const patch = (() => { try { return JSON.parse(body); } catch (_) { return {}; } })();
+        patches.push({ ref: row.ref, auth: req.headers.authorization || null, body: patch });
+        /* Vilka-nın öz yoxlamasını təqlid edir: 22:30-da boş masa yoxdur */
+        if (patch.time === '22:30') {
+          return reply(409, {
+            error: { code: 'NOT_RESCHEDULABLE', message: 'Seçdiyiniz vaxta boş masa yoxdur. Zəhmət olmasa başqa saat seçin' },
+          });
+        }
+        row.date = patch.date;
+        row.time = patch.time;
+        row.starts_at = new Date(patch.date + 'T' + patch.time + ':00+04:00').toISOString();
+        return reply(200, row);
+      }
       if (req.method === 'DELETE') {
         if (!['pending', 'confirmed'].includes(row.status)) {
           return reply(404, { error: { code: 'NOT_FOUND', message: 'Ləğv edilə bilməz' } });
@@ -262,6 +277,54 @@ const run = async () => {
   check('Yanlış kod formatı rədd olunur', badCode.status === 400 && badCodeBody.field === 'code',
     JSON.stringify(badCodeBody));
 
+  check('Vaxtı dəyişmək mümkün göstərilir', lookupBody.reservation && lookupBody.reservation.canReschedule === true);
+
+  const later = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
+  const moved = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '20:30',
+  });
+  const movedBody = await moved.json();
+  check('Qonaq vaxtı dəyişir',
+    moved.status === 200 && movedBody.rescheduled === true &&
+      movedBody.reservation.date === later && movedBody.reservation.time === '20:30',
+    'status ' + moved.status + ' ' + JSON.stringify(movedBody));
+  const lastPatch = patches[patches.length - 1];
+  check('Vilka-ya yalnız yeni vaxt PATCH ilə gedir',
+    lastPatch && lastPatch.ref === 'A1B2C3D4E5F1' && lastPatch.auth === 'Bearer test-acar' &&
+      JSON.stringify(lastPatch.body) === JSON.stringify({ date: later, time: '20:30' }),
+    lastPatch && JSON.stringify(lastPatch));
+
+  const patchCount = patches.length;
+  const moveWrongPhone = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994551112233', date: later, time: '19:00',
+  });
+  check('Başqa telefonla vaxt dəyişmir',
+    moveWrongPhone.status === 404 && patches.length === patchCount && findRow('A1B2C3D4E5F1').time === '20:30',
+    'status ' + moveWrongPhone.status);
+
+  const moveBadHour = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '04:00',
+  });
+  const moveBadHourBody = await moveBadHour.json();
+  check('İş saatından kənar yeni vaxt rədd olunur',
+    moveBadHour.status === 400 && moveBadHourBody.field === 'time' && patches.length === patchCount,
+    JSON.stringify(moveBadHourBody));
+
+  const movePast = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: '2020-01-01', time: '19:00',
+  });
+  check('Keçmiş tarixə köçürmək olmur', movePast.status === 400, 'status ' + movePast.status);
+
+  const moveFull = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '22:30',
+  });
+  const moveFullBody = await moveFull.json();
+  check('Vilka-nın səbəbi qonağa çatır (boş masa yoxdur)',
+    moveFull.status === 409 && /boş masa yoxdur/.test(moveFullBody.error || '') &&
+      findRow('A1B2C3D4E5F1').time === '20:30',
+    'status ' + moveFull.status + ' ' + JSON.stringify(moveFullBody));
+
   const cancel = await post('/api/booking', { action: 'cancel', code: 'A1B2C3D4E5F1', phone: '+994501234567' });
   const cancelBody = await cancel.json();
   check('Qonaq bronu ləğv edir',
@@ -273,6 +336,14 @@ const run = async () => {
 
   const cancelAgain = await post('/api/booking', { action: 'cancel', code: 'A1B2C3D4E5F1', phone: '+994501234567' });
   check('Ləğv olunmuş bron təkrar ləğv olunmur', cancelAgain.status === 409, 'status ' + cancelAgain.status);
+
+  const moveCancelled = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '19:00',
+  });
+  check('Ləğv olunmuş bronun vaxtı dəyişmir', moveCancelled.status === 409, 'status ' + moveCancelled.status);
+
+  const bronHasReschedule = bronHtml.includes('data-reschedule-form') && bronHtml.includes('value="20:30"');
+  check('bron.html-də vaxt dəyişmə forması var', bronHasReschedule);
 
   console.log('\n  ADMIN PANELİ\n');
 

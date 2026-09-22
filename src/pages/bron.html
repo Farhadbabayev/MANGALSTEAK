@@ -3,7 +3,8 @@
 
       <!--
         - #BRONU YOXLA
-        - Kod və telefon nömrəsi ilə rezerv Vilka-dan oxunur (POST /api/booking).
+        - Kod və telefon nömrəsi ilə rezerv Vilka-dan oxunur (POST /api/booking);
+        - qonaq buradan vaxtı dəyişə və ya rezervi ləğv edə bilir.
       -->
 
       <section class="section booking" id="bron" aria-labelledby="bron-basliq" data-booking-lookup>
@@ -57,13 +58,41 @@
 
             <div class="form-status" data-result-status role="status" aria-live="polite"></div>
 
-            <div class="form-actions">
-              <button type="button" class="btn btn-solid" data-cancel-btn hidden>Rezervasiyanı ləğv et</button>
-              <button type="button" class="btn" data-lookup-again>Başqa kod yoxla</button>
+            <form class="reschedule" data-reschedule-form novalidate hidden>
+              <p class="reschedule-title">Yeni tarix və saat</p>
+
+              <div class="fields">
+                <div class="field">
+                  <label for="bron-new-date">Tarix</label>
+                  <input type="date" id="bron-new-date" name="date" data-field="date" required>
+                </div>
+
+                <div class="field">
+                  <label for="bron-new-time">Saat</label>
+                  <select id="bron-new-time" name="time" data-field="time" required>
+                  {{blocks.timeOptions}}
+                  </select>
+                </div>
+              </div>
+
+              <p class="form-hint">
+                Yeni vaxtda boş masa yoxlanılır. Masa olmasa, rezervasiyanız köhnə vaxtda qalır.
+              </p>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-solid" data-reschedule-save>Yadda saxla</button>
+                <button type="button" class="btn-text" data-reschedule-close>İmtina</button>
+              </div>
+            </form>
+
+            <div class="form-actions" data-result-actions>
+              <button type="button" class="btn btn-solid" data-reschedule-btn hidden>Vaxtı dəyiş</button>
+              <button type="button" class="btn" data-cancel-btn hidden>Rezervasiyanı ləğv et</button>
+              <button type="button" class="btn-text" data-lookup-again>Başqa kod yoxla</button>
             </div>
 
             <p class="dim small">
-              Vaxtı və ya nəfər sayını dəyişmək üçün:
+              Nəfər sayını dəyişmək üçün:
               <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
             </p>
 

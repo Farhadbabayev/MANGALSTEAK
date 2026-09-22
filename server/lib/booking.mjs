@@ -1,5 +1,5 @@
 /**
- * Qonağın rezervini saytda yoxlaması və ləğv etməsi.
+ * Qonağın rezervini saytda yoxlaması, vaxtını dəyişməsi və ləğv etməsi.
  *
  * Qonaq bron kodunu və rezervdəki telefon nömrəsini yazır; server rezervi
  * Vilka-dan oxuyur və nömrə uyğun gələndə göstərir. Nömrə tələb olunur,
@@ -10,11 +10,12 @@
  * (server/index.mjs) eyni məntiqi çağırır.
  */
 
-import { normalizePhone } from './validate.mjs';
+import { normalizePhone, validateSlot } from './validate.mjs';
 import {
   vilkaLookupEnabled,
   fetchVilkaReservation,
   cancelVilkaReservation,
+  rescheduleVilkaReservation,
 } from './vilka.mjs';
 
 /* Vilka kodu (27BDF7B6, 12 simvolluq yenilər) və ya saytın MS-260101-1234 kodu */
@@ -37,6 +38,8 @@ const STATUS_LABELS = {
 };
 
 const CANCELLABLE = ['hold', 'pending', 'confirmed'];
+/* «hold» hələ ödəniş mərhələsindədir — vaxtı sabitdir */
+const RESCHEDULABLE = ['pending', 'confirmed'];
 
 /* Telefonların müqayisəsi: son 9 rəqəm (+994 / 0 / boşluq fərqi önəmsizdir) */
 const phoneKey = (value) => String(value || '').replace(/\D/g, '').slice(-9);
@@ -65,6 +68,7 @@ const publicView = (r) => {
     name: (r.guest && r.guest.name) || '',
     place: r.place || '',
     canCancel: CANCELLABLE.includes(r.status) && upcoming,
+    canReschedule: RESCHEDULABLE.includes(r.status) && upcoming,
   };
 };
 
@@ -88,12 +92,12 @@ const rateLimited = (ip) => {
 };
 
 /**
- * @param {{ action?: string, code?: string, phone?: string }} input
+ * @param {{ action?: string, code?: string, phone?: string, date?: string, time?: string }} input
  * @param {string} ip
  * @returns {Promise<{ status: number, body: object }>}
  */
 export const handleBooking = async (input, ip) => {
-  const action = input && input.action === 'cancel' ? 'cancel' : 'lookup';
+  const action = ['cancel', 'reschedule'].includes(input && input.action) ? input.action : 'lookup';
   const code = normalizeCode(input && input.code);
   const phone = normalizePhone(input && input.phone);
 
@@ -105,6 +109,13 @@ export const handleBooking = async (input, ip) => {
       status: 400,
       body: { ok: false, field: 'phone', error: 'Rezervasiyadakı telefon nömrəsini yazın. Nümunə: +994 50 123 45 67' },
     };
+  }
+
+  /* Yeni vaxt Vilka-ya getməzdən əvvəl saytın öz qaydaları ilə yoxlanılır */
+  let slot = null;
+  if (action === 'reschedule') {
+    slot = validateSlot(input.date, input.time);
+    if (!slot.ok) return { status: 400, body: { ok: false, field: slot.field, error: slot.error } };
   }
 
   if (rateLimited(ip)) {
@@ -134,6 +145,32 @@ export const handleBooking = async (input, ip) => {
   const current = publicView(found.data);
   if (action === 'lookup') {
     return { status: 200, body: { ok: true, reservation: current } };
+  }
+
+  if (action === 'reschedule') {
+    if (!current.canReschedule) {
+      return {
+        status: 409,
+        body: {
+          ok: false,
+          error: 'Bu rezervasiyanın vaxtını artıq onlayn dəyişmək mümkün deyil. Zəhmət olmasa bizə zəng edin.',
+          reservation: current,
+        },
+      };
+    }
+
+    const moved = await rescheduleVilkaReservation(found.data.ref || code, slot.date, slot.time);
+    if (!moved.ok) {
+      /* 400/409: Vilka səbəbi deyir (boş masa yoxdur, restoran bağlıdır…) */
+      if ((moved.status === 400 || moved.status === 409) && moved.message) {
+        return { status: 409, body: { ok: false, field: 'time', error: moved.message, reservation: current } };
+      }
+      console.warn('[bron] Vilka-da vaxt dəyişmədi: ' + moved.error);
+      return { status: 502, body: { ok: false, error: UNAVAILABLE } };
+    }
+
+    console.log('[bron] qonaq vaxtı dəyişdi: ' + (found.data.ref || code) + ' → ' + slot.date + ' ' + slot.time);
+    return { status: 200, body: { ok: true, rescheduled: true, reservation: publicView(moved.data) } };
   }
 
   if (!current.canCancel) {

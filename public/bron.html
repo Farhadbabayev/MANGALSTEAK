@@ -6,14 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Bronu yoxla | Mangal Steak House</title>
-  <meta name="description" content="Bron kodunuzla rezervasiyanızın vəziyyətini yoxlayın və ya onu ləğv edin.">
+  <meta name="description" content="Bron kodunuzla rezervasiyanızın vəziyyətini yoxlayın, vaxtını dəyişin və ya onu ləğv edin.">
   <link rel="canonical" href="https://mangalsteakhouse.az/bron.html">
 
   <meta property="og:type" content="website">
   <meta property="og:locale" content="az_AZ">
   <meta property="og:site_name" content="Mangal Steak House">
   <meta property="og:title" content="Bronu yoxla | Mangal Steak House">
-  <meta property="og:description" content="Bron kodunuzla rezervasiyanızın vəziyyətini yoxlayın və ya onu ləğv edin.">
+  <meta property="og:description" content="Bron kodunuzla rezervasiyanızın vəziyyətini yoxlayın, vaxtını dəyişin və ya onu ləğv edin.">
   <meta property="og:url" content="https://mangalsteakhouse.az/bron.html">
   <meta property="og:image" content="https://mangalsteakhouse.az/assets/images/hero-slider-1.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -30,7 +30,7 @@
   <script>document.documentElement.classList.add('js');</script>
 
   <link rel="stylesheet" href="./assets/css/fonts.css?v=57540acc">
-  <link rel="stylesheet" href="./assets/css/site.css?v=f6d4ef77">
+  <link rel="stylesheet" href="./assets/css/site.css?v=6c608efb">
   <link rel="stylesheet" href="./assets/css/theme.css?v=a0731467">
 
 
@@ -116,7 +116,7 @@
           </nav>
 
           <h1 class="display-1" id="page-title">Bronu yoxla</h1>
-          <p class="lede">Bron kodunuz və telefon nömrənizlə rezervasiyanın vəziyyətinə baxın və ya onu ləğv edin.</p>
+          <p class="lede">Bron kodunuz və telefon nömrənizlə rezervasiyanın vəziyyətinə baxın, vaxtını dəyişin və ya onu ləğv edin.</p>
         </div>
       </section>
 
@@ -131,7 +131,8 @@
 
       <!--
         - #BRONU YOXLA
-        - Kod və telefon nömrəsi ilə rezerv Vilka-dan oxunur (POST /api/booking).
+        - Kod və telefon nömrəsi ilə rezerv Vilka-dan oxunur (POST /api/booking);
+        - qonaq buradan vaxtı dəyişə və ya rezervi ləğv edə bilir.
       -->
 
       <section class="section booking" id="bron" aria-labelledby="bron-basliq" data-booking-lookup>
@@ -185,13 +186,66 @@
 
             <div class="form-status" data-result-status role="status" aria-live="polite"></div>
 
-            <div class="form-actions">
-              <button type="button" class="btn btn-solid" data-cancel-btn hidden>Rezervasiyanı ləğv et</button>
-              <button type="button" class="btn" data-lookup-again>Başqa kod yoxla</button>
+            <form class="reschedule" data-reschedule-form novalidate hidden>
+              <p class="reschedule-title">Yeni tarix və saat</p>
+
+              <div class="fields">
+                <div class="field">
+                  <label for="bron-new-date">Tarix</label>
+                  <input type="date" id="bron-new-date" name="date" data-field="date" required>
+                </div>
+
+                <div class="field">
+                  <label for="bron-new-time">Saat</label>
+                  <select id="bron-new-time" name="time" data-field="time" required>
+                                    <option value="" disabled selected>Saat seçin</option>
+                  <option value="11:00">11:00</option>
+                  <option value="11:30">11:30</option>
+                  <option value="12:00">12:00</option>
+                  <option value="12:30">12:30</option>
+                  <option value="13:00">13:00</option>
+                  <option value="13:30">13:30</option>
+                  <option value="14:00">14:00</option>
+                  <option value="14:30">14:30</option>
+                  <option value="15:00">15:00</option>
+                  <option value="15:30">15:30</option>
+                  <option value="16:00">16:00</option>
+                  <option value="16:30">16:30</option>
+                  <option value="17:00">17:00</option>
+                  <option value="17:30">17:30</option>
+                  <option value="18:00">18:00</option>
+                  <option value="18:30">18:30</option>
+                  <option value="19:00">19:00</option>
+                  <option value="19:30">19:30</option>
+                  <option value="20:00">20:00</option>
+                  <option value="20:30">20:30</option>
+                  <option value="21:00">21:00</option>
+                  <option value="21:30">21:30</option>
+                  <option value="22:00">22:00</option>
+                  <option value="22:30">22:30</option>
+                  <option value="23:00">23:00</option>
+                  </select>
+                </div>
+              </div>
+
+              <p class="form-hint">
+                Yeni vaxtda boş masa yoxlanılır. Masa olmasa, rezervasiyanız köhnə vaxtda qalır.
+              </p>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-solid" data-reschedule-save>Yadda saxla</button>
+                <button type="button" class="btn-text" data-reschedule-close>İmtina</button>
+              </div>
+            </form>
+
+            <div class="form-actions" data-result-actions>
+              <button type="button" class="btn btn-solid" data-reschedule-btn hidden>Vaxtı dəyiş</button>
+              <button type="button" class="btn" data-cancel-btn hidden>Rezervasiyanı ləğv et</button>
+              <button type="button" class="btn-text" data-lookup-again>Başqa kod yoxla</button>
             </div>
 
             <p class="dim small">
-              Vaxtı və ya nəfər sayını dəyişmək üçün:
+              Nəfər sayını dəyişmək üçün:
               <a href="tel:+994502281011">+994 12 5051011</a>
             </p>
 
@@ -201,7 +255,7 @@
         </div>
       </section>
 
-      <script src="./assets/js/booking.js?v=8536c7f0"></script>
+      <script src="./assets/js/booking.js?v=c13b03da"></script>
 
 
   </main>

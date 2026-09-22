@@ -2,7 +2,8 @@
 
 /**
  * «Bronu yoxla» səhifəsi — qonaq bron kodu və telefon nömrəsi ilə
- * rezervasiyasının vəziyyətinə baxır və istəsə onu ləğv edir.
+ * rezervasiyasının vəziyyətinə baxır, istəsə vaxtını dəyişir və ya onu
+ * ləğv edir.
  *
  * Sorğu öz API-mıza gedir (POST /api/booking), server isə rezervi
  * Vilka-dan oxuyur. Kod ?kod= parametri ilə gəlirsə, sahə doldurulur.
@@ -29,9 +30,27 @@
   const resultStatus = root.querySelector('[data-result-status]');
   const cancelBtn = root.querySelector('[data-cancel-btn]');
   const againBtn = root.querySelector('[data-lookup-again]');
+  const resultActions = root.querySelector('[data-result-actions]');
 
-  /* Son uğurlu yoxlama — ləğv eyni kod və nömrə ilə göndərilir */
+  const rescheduleBtn = root.querySelector('[data-reschedule-btn]');
+  const rescheduleForm = root.querySelector('[data-reschedule-form]');
+  const rescheduleSave = root.querySelector('[data-reschedule-save]');
+  const rescheduleClose = root.querySelector('[data-reschedule-close]');
+  const newDate = rescheduleForm.querySelector('[data-field="date"]');
+  const newTime = rescheduleForm.querySelector('[data-field="time"]');
+
+  const MAX_DAYS_AHEAD = 90;
+  const pad = function (n) { return String(n).padStart(2, '0'); };
+  const toISO = function (d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); };
+
+  /* Son uğurlu yoxlama — ləğv və vaxt dəyişmə eyni kod və nömrə ilə göndərilir */
   let current = null;
+
+  const remember = function (r) {
+    if (!current || !r) return;
+    current.date = r.date;
+    current.time = r.time;
+  };
 
   const normalizeCode = function (raw) {
     return String(raw || '').toUpperCase().replace(/[\s#]/g, '');
@@ -62,8 +81,8 @@
     box.classList.remove('is-visible', 'is-error', 'is-info');
   };
 
-  const markInvalid = function (field, invalid) {
-    const el = form.querySelector('[data-field="' + field + '"]');
+  const markInvalid = function (field, invalid, scope) {
+    const el = (scope || form).querySelector('[data-field="' + field + '"]');
     if (!el) return null;
     el.classList.toggle('is-invalid', invalid);
     if (invalid) el.setAttribute('aria-invalid', 'true');
@@ -134,7 +153,102 @@
       .join('');
 
     cancelBtn.hidden = !r.canCancel;
+    rescheduleBtn.hidden = !r.canReschedule;
   };
+
+  /* Bu gün üçün keçmiş saatlar söndürülür (ən azı 45 dəq sonra) */
+  const refreshTimes = function () {
+    const isToday = newDate.value === toISO(new Date());
+    const now = new Date();
+    const earliest = now.getHours() * 60 + now.getMinutes() + 45;
+    Array.prototype.forEach.call(newTime.options, function (opt) {
+      if (!opt.value) return;
+      const parts = opt.value.split(':').map(Number);
+      opt.disabled = isToday && parts[0] * 60 + parts[1] < earliest;
+    });
+    const selected = newTime.selectedOptions[0];
+    if (selected && selected.disabled) newTime.value = '';
+  };
+
+  const closeReschedule = function () {
+    rescheduleForm.hidden = true;
+    resultActions.hidden = false;
+    markInvalid('date', false, rescheduleForm);
+    markInvalid('time', false, rescheduleForm);
+  };
+
+  newDate.addEventListener('change', refreshTimes);
+  rescheduleForm.addEventListener('input', function (event) {
+    if (event.target.classList.contains('is-invalid')) {
+      markInvalid(event.target.dataset.field, false, rescheduleForm);
+    }
+  });
+
+  rescheduleBtn.addEventListener('click', function () {
+    if (!current) return;
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + MAX_DAYS_AHEAD);
+    newDate.min = toISO(new Date());
+    newDate.max = toISO(maxDate);
+    newDate.value = current.date || toISO(new Date());
+    newTime.value = current.time || '';
+    refreshTimes();
+    clearStatus(resultStatus);
+    resultActions.hidden = true;
+    rescheduleForm.hidden = false;
+    newDate.focus();
+  });
+
+  rescheduleClose.addEventListener('click', closeReschedule);
+
+  rescheduleForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
+    if (!current) return;
+    clearStatus(resultStatus);
+
+    if (!newDate.value) {
+      markInvalid('date', true, rescheduleForm).focus();
+      showStatus(resultStatus, 'Tarix seçin.', 'error');
+      return;
+    }
+    if (!newTime.value) {
+      markInvalid('time', true, rescheduleForm).focus();
+      showStatus(resultStatus, 'Saat seçin.', 'error');
+      return;
+    }
+    if (newDate.value === current.date && newTime.value === current.time) {
+      showStatus(resultStatus, 'Yeni vaxt indiki ilə eynidir.', 'error');
+      return;
+    }
+
+    setLoading(rescheduleSave, true);
+    showStatus(resultStatus, 'Vaxt dəyişdirilir…', 'info');
+
+    const res = await call({
+      action: 'reschedule',
+      code: current.code,
+      phone: current.phone,
+      date: newDate.value,
+      time: newTime.value,
+    });
+    setLoading(rescheduleSave, false);
+
+    if (!res.ok) {
+      if (res.payload && res.payload.field) markInvalid(res.payload.field, true, rescheduleForm);
+      showStatus(resultStatus, (res.payload && res.payload.error) || 'Vaxtı dəyişmək alınmadı. Zəhmət olmasa bizə zəng edin.', 'error');
+      return;
+    }
+
+    remember(res.payload.reservation);
+    render(res.payload.reservation);
+    closeReschedule();
+    showStatus(
+      resultStatus,
+      'Rezervasiyanızın vaxtı dəyişdirildi: ' +
+        res.payload.reservation.date.split('-').reverse().join('.') + ', ' + res.payload.reservation.time + '.',
+      'info'
+    );
+  });
 
   form.addEventListener('submit', async function (event) {
     event.preventDefault();
@@ -170,7 +284,9 @@
 
     clearStatus(statusBox);
     current = { code: code, phone: phone };
+    remember(res.payload.reservation);
     render(res.payload.reservation);
+    closeReschedule();
     clearStatus(resultStatus);
     form.hidden = true;
     result.hidden = false;
@@ -187,7 +303,10 @@
     const res = await call({ action: 'cancel', code: current.code, phone: current.phone });
     setLoading(cancelBtn, false);
 
-    if (res.payload && res.payload.reservation) render(res.payload.reservation);
+    if (res.payload && res.payload.reservation) {
+      remember(res.payload.reservation);
+      render(res.payload.reservation);
+    }
 
     if (!res.ok) {
       showStatus(resultStatus, (res.payload && res.payload.error) || 'Ləğv etmək alınmadı. Zəhmət olmasa bizə zəng edin.', 'error');
@@ -195,11 +314,13 @@
     }
 
     cancelBtn.hidden = true;
+    rescheduleBtn.hidden = true;
     showStatus(resultStatus, 'Rezervasiyanız ləğv olundu.', 'info');
   });
 
   againBtn.addEventListener('click', function () {
     current = null;
+    closeReschedule();
     result.hidden = true;
     form.hidden = false;
     form.reset();
