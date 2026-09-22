@@ -796,7 +796,6 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 
 /* Bordo divarda həkk olunmuş şəbəkə */
 .dish::before,
-.booking::before,
 .stats-band::before {
   content: '';
   position: absolute;
@@ -1555,39 +1554,72 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 
 /*-----------------------------------*\
   #REZERVASİYA FORMASI
+  Sakit, yumşaq forma: sahələr qruplanıb, əlavələr gizlənir.
+  Qalan saytın "radius 0" qaydasından qəsdən istisnadır: burada
+  müştəri yazır, göz yorulmamalıdır.
 \*-----------------------------------*/
 
 .booking {
+  --radius: 14px;
+  --radius-sm: 10px;
   position: relative;
-  background-color: var(--brand);
-  overflow: hidden;
+  background-color: var(--black);
 }
 
-.booking .narrow { position: relative; }
+.booking-head { display: grid; gap: 12px; margin-bottom: clamp(28px, 4vw, 40px); }
 
-.booking-head { display: grid; gap: 18px; margin-bottom: clamp(36px, 5vw, 56px); }
-.booking-head .lede { color: color-mix(in srgb, var(--cream) 80%, var(--brand)); }
+.booking-title {
+  font-size: clamp(1.9rem, 1.5rem + 1.6vw, 2.75rem);
+  font-stretch: 88%;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
 
-.booking form,
-.booking .form-success {
-  background-color: var(--black);
-  padding: clamp(24px, 4vw, 56px);
+.booking-card form,
+.booking-card .form-success {
+  padding: clamp(22px, 4vw, 44px);
+  background-color: var(--black-2);
+  border: 1px solid var(--hair);
+  border-radius: var(--radius);
+}
+
+.field-group {
+  border: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.field-group + .field-group,
+.field-group + .field-more { margin-top: 28px; }
+
+.field-group-title {
+  margin-bottom: 14px;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--cream);
 }
 
 .fields {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px 28px;
+  gap: 16px;
 }
 
-.field { display: grid; gap: 8px; align-content: start; }
+.fields-when .field-date { grid-column: 1 / -1; }
+
+@media (min-width: 700px) {
+  .booking .fields-when { grid-template-columns: 1.3fr 1fr 1fr; }
+  .booking .fields-when .field-date { grid-column: auto; }
+}
+
+.field { display: grid; gap: 6px; align-content: start; min-width: 0; }
 .field.full { grid-column: 1 / -1; }
 
 .field label {
-  font-size: 13px;
-  font-weight: 600;
-  font-stretch: 108%;
-  letter-spacing: 0.04em;
+  font-size: 14px;
+  font-weight: 500;
   color: var(--cream-dim);
 }
 
@@ -1595,32 +1627,38 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 .field select,
 .field textarea {
   width: 100%;
-  min-height: 52px;
-  padding: 12px 16px;
-  background-color: var(--black-2);
-  border: 1px solid var(--hair-strong);
-  border-radius: 0;
+  min-height: 50px;
+  padding: 12px 14px;
+  background-color: color-mix(in srgb, var(--cream) 5%, var(--black));
+  border: 1px solid var(--hair);
+  border-radius: var(--radius-sm, 10px);
   color: var(--cream);
   font-size: 16px;
   outline: none;
   -webkit-appearance: none;
   appearance: none;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover { border-color: var(--hair-strong); }
 }
 
 .field select {
-  padding-right: 44px;
+  padding-right: 40px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath fill='%23B3A79C' d='M212.24 100.24l-80 80a6 6 0 0 1-8.48 0l-80-80a6 6 0 0 1 8.48-8.48L128 167.51l75.76-75.75a6 6 0 0 1 8.48 8.48z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 16px center;
-  background-size: 16px;
+  background-position: right 14px center;
+  background-size: 14px;
   cursor: pointer;
 }
 
 .field select option { background-color: var(--black); color: var(--cream); }
 
 .field input::placeholder,
-.field textarea::placeholder { color: color-mix(in srgb, var(--cream-dim) 72%, transparent); }
+.field textarea::placeholder { color: color-mix(in srgb, var(--cream-dim) 60%, transparent); }
 
 .field input:focus,
 .field select:focus,
@@ -1636,41 +1674,89 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 18%, transparent);
 }
 
-.field textarea { min-height: 104px; resize: vertical; line-height: 1.5; }
+.field textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
 .field input[type="date"] { color-scheme: dark; }
+
+/* əlavə istəklər: istəyə bağlı, bağlı gəlir */
+
+.field-more {
+  margin-top: 28px;
+  border-top: 1px solid var(--hair);
+}
+
+.field-more summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding-top: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.field-more summary::-webkit-details-marker { display: none; }
+
+.field-more summary span {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--cream-dim);
+}
+
+.field-more summary::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  margin-left: auto;
+  border-right: 1.5px solid var(--cream-dim);
+  border-bottom: 1.5px solid var(--cream-dim);
+  transform: translateY(-3px) rotate(45deg);
+  transition: transform 200ms var(--ease-out);
+}
+
+.field-more[open] summary::after { transform: translateY(2px) rotate(-135deg); }
+.field-more[open] > .fields { padding-top: 8px; }
+
+@media (hover: hover) and (pointer: fine) {
+  .field-more summary:hover { color: var(--gold); }
+}
 
 .form-hint {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 24px;
-  font-size: 14px;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 13px;
   color: var(--cream-dim);
+  text-align: center;
 }
 
-.form-hint .icon { color: var(--gold); }
+.form-hint .icon { width: 16px; height: 16px; flex-shrink: 0; color: var(--cream-dim); }
 
 .form-status {
   display: none;
   gap: 12px;
   margin-top: 24px;
-  padding: 14px 18px;
+  padding: 12px 16px;
   font-size: 15px;
   line-height: 1.55;
   border: 1px solid transparent;
+  border-radius: var(--radius-sm, 10px);
 }
 
 .form-status.is-visible { display: flex; }
 
 .form-status.is-error {
   color: var(--danger);
-  border-color: color-mix(in srgb, var(--danger) 60%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 50%, transparent);
   background-color: color-mix(in srgb, var(--danger) 10%, transparent);
 }
 
 .form-status.is-info {
   color: var(--gold);
-  border-color: color-mix(in srgb, var(--gold) 60%, transparent);
+  border-color: color-mix(in srgb, var(--gold) 50%, transparent);
   background-color: var(--gold-soft);
 }
 
@@ -1686,9 +1772,18 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 16px 24px;
-  margin-top: 32px;
+  gap: 14px 24px;
+  margin-top: 28px;
 }
+
+[data-reservation-form] .form-actions .btn-solid {
+  width: 100%;
+  min-height: 54px;
+  border-radius: var(--radius-sm, 10px);
+  font-size: 16px;
+}
+
+.form-success .btn { border-radius: var(--radius-sm, 10px); }
 
 .btn.is-loading { pointer-events: none; opacity: 0.8; }
 
@@ -1705,8 +1800,8 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 @keyframes spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 600px) {
-  .fields { grid-template-columns: 1fr; gap: 20px; }
-  .form-actions .btn-solid { width: 100%; }
+  .fields { gap: 14px 12px; }
+  .fields:not(.fields-when) { grid-template-columns: 1fr; }
 }
 
 /* uğur paneli */
@@ -1739,7 +1834,8 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
   display: grid;
   gap: 6px;
   width: 100%;
-  padding: 20px 22px;
+  padding: 18px 20px;
+  border-radius: var(--radius-sm, 10px);
   border: 1px solid color-mix(in srgb, var(--gold) 50%, transparent);
   background-color: var(--gold-soft);
 }
@@ -2001,6 +2097,7 @@ body.rez-open .rez-modal { visibility: visible; transition: visibility 0s; }
 body.rez-open .rez-modal-veil { opacity: 1; }
 
 .rez-modal-panel {
+  --radius-sm: 10px;
   position: absolute;
   top: 0;
   right: 0;
@@ -2016,16 +2113,6 @@ body.rez-open .rez-modal-veil { opacity: 1; }
 
 body.rez-open .rez-modal-panel { transform: none; transition-duration: 480ms; }
 
-.rez-modal-panel::before {
-  content: '';
-  display: block;
-  height: 24px;
-  flex-shrink: 0;
-  background-color: var(--gold);
-  box-shadow: inset 0 0 0 100px var(--brand);
-  -webkit-mask: url('../ornament/motif.svg') 0 0 / 24px 24px repeat-x;
-  mask: url('../ornament/motif.svg') 0 0 / 24px 24px repeat-x;
-}
 
 .rez-modal-head {
   display: flex;
@@ -2037,11 +2124,14 @@ body.rez-open .rez-modal-panel { transform: none; transition-duration: 480ms; }
 }
 
 .rez-modal-head h2 {
-  font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
-  font-stretch: 68%;
-  text-transform: uppercase;
-  letter-spacing: -0.025em;
+  font-size: 1.5rem;
+  font-stretch: 88%;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
+
+.rez-modal-sub { margin-top: 2px; font-size: 14px; color: var(--cream-dim); }
 
 .rez-modal-close {
   display: grid;
@@ -2067,14 +2157,11 @@ body.rez-open .rez-modal-panel { transform: none; transition-duration: 480ms; }
   padding: 28px clamp(20px, 4vw, 36px) 36px;
 }
 
-.rez-modal-body .fields { gap: 18px 20px; }
-.rez-modal-body .form-actions .btn-solid { width: 100%; }
 
 .rez-modal-note { font-size: 14px; color: var(--cream-dim); }
 .rez-modal-note a { color: var(--gold); }
 
-.rez-modal-body .form-success h2 { font-size: 1.8rem; font-stretch: 68%;
-  text-transform: uppercase; }
+.rez-modal-body .form-success h2 { font-size: 1.6rem; font-stretch: 88%; font-weight: 700; }
 
 @media (max-width: 600px) {
   .rez-modal-panel {
@@ -2084,8 +2171,23 @@ body.rez-open .rez-modal-panel { transform: none; transition-duration: 480ms; }
     max-height: 92vh;
     max-height: 92dvh;
     border-left: 0;
+    border-radius: 20px 20px 0 0;
     transform: translateY(100%);
   }
+
+  /* çəkmə tutacağı: alt pəncərə olduğunu göstərir */
+  .rez-modal-panel::before {
+    content: '';
+    align-self: center;
+    width: 40px;
+    height: 4px;
+    margin-top: 10px;
+    flex-shrink: 0;
+    border-radius: 2px;
+    background-color: var(--hair-strong);
+  }
+
+  .rez-modal-head { padding-top: 12px; }
 }
 
 /*-----------------------------------*\

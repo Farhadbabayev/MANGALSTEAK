@@ -10,7 +10,10 @@
       data-reservation data-rez-panel>
 
       <div class="rez-modal-head">
-        <h2 id="rez-modal-basliq">Masanızı ayırın</h2>
+        <div>
+          <h2 id="rez-modal-basliq">Masanızı ayırın</h2>
+          <p class="rez-modal-sub">Təsdiq üçün sizə zəng edəcəyik.</p>
+        </div>
 
         <button type="button" class="rez-modal-close" data-rez-close aria-label="Pəncərəni bağla">
           {{icons.x}}
@@ -21,60 +24,80 @@
 
         <form data-reservation-form novalidate>
 
-          <div class="fields">
+          <fieldset class="field-group">
+            <legend class="field-group-title">Nə vaxt gəlirsiniz?</legend>
 
-            <div class="field">
-              <label for="rezm-name">Ad, Soyad</label>
-              <input type="text" id="rezm-name" name="name" data-field="name" required maxlength="80"
-                autocomplete="name" placeholder="Aysel Quliyeva">
+            <div class="fields fields-when">
+
+              <div class="field field-date">
+                <label for="rezm-date">Tarix</label>
+                <input type="date" id="rezm-date" name="date" data-field="date" required>
+              </div>
+
+              <div class="field">
+                <label for="rezm-time">Saat</label>
+                <select id="rezm-time" name="time" data-field="time" required>
+                  {{blocks.timeOptions}}
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="rezm-guests">Nəfər</label>
+                <select id="rezm-guests" name="guests" data-field="guests">
+                  {{blocks.guestOptions}}
+                </select>
+              </div>
+
             </div>
+          </fieldset>
 
-            <div class="field">
-              <label for="rezm-phone">Telefon</label>
-              <input type="tel" id="rezm-phone" name="phone" data-field="phone" required maxlength="25"
-                autocomplete="tel" placeholder="+994 50 123 45 67">
+          <fieldset class="field-group">
+            <legend class="field-group-title">Sizinlə necə əlaqə saxlayaq?</legend>
+
+            <div class="fields">
+
+              <div class="field">
+                <label for="rezm-name">Ad, soyad</label>
+                <input type="text" id="rezm-name" name="name" data-field="name" required maxlength="80"
+                  autocomplete="name" placeholder="Aysel Quliyeva">
+              </div>
+
+              <div class="field">
+                <label for="rezm-phone">Telefon</label>
+                <input type="tel" id="rezm-phone" name="phone" data-field="phone" required maxlength="25"
+                  autocomplete="tel" inputmode="tel" placeholder="+994 50 123 45 67">
+              </div>
+
             </div>
+          </fieldset>
 
-            <div class="field">
-              <label for="rezm-date">Tarix</label>
-              <input type="date" id="rezm-date" name="date" data-field="date" required>
+          <details class="field-more">
+            <summary>Əlavə istəklər <span>istəyə bağlı</span></summary>
+
+            <div class="fields">
+
+              <div class="field">
+                <label for="rezm-area">Zona</label>
+                <select id="rezm-area" name="area" data-field="area">
+                  {{blocks.areaOptions}}
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="rezm-occasion">Səbəb</label>
+                <select id="rezm-occasion" name="occasion" data-field="occasion">
+                  {{blocks.occasionOptions}}
+                </select>
+              </div>
+
+              <div class="field full">
+                <label for="rezm-note">Qeyd</label>
+                <input type="text" id="rezm-note" name="note" data-field="note" maxlength="500"
+                  placeholder="Uşaq kreslosu, tort…">
+              </div>
+
             </div>
-
-            <div class="field">
-              <label for="rezm-time">Saat</label>
-              <select id="rezm-time" name="time" data-field="time" required>
-                {{blocks.timeOptions}}
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="rezm-guests">Nəfər sayı</label>
-              <select id="rezm-guests" name="guests" data-field="guests">
-                {{blocks.guestOptions}}
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="rezm-area">Zona</label>
-              <select id="rezm-area" name="area" data-field="area">
-                {{blocks.areaOptions}}
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="rezm-occasion">Səbəb</label>
-              <select id="rezm-occasion" name="occasion" data-field="occasion">
-                {{blocks.occasionOptions}}
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="rezm-note">Qeyd</label>
-              <input type="text" id="rezm-note" name="note" data-field="note" maxlength="500"
-                placeholder="Uşaq kreslosu, tort…">
-            </div>
-
-          </div>
+          </details>
 
           <div class="form-status" data-form-status role="status" aria-live="polite"></div>
 

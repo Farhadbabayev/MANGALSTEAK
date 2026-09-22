@@ -45,7 +45,7 @@ Logo wordmark stays Grenze Gotisch.
 
 ## Shape
 
-Photos sharp rectangles; controls square (radius 0). No arches, no rounded cards.
+Photos sharp rectangles; controls square (radius 0). No arches, no rounded cards. Exception: the reservation form (section + modal) uses soft 10–14px radii, a calm dark background and grouped fields, because guests type there and it must not tire the eye.
 
 ## Motion
 

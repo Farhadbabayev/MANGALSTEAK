@@ -192,6 +192,9 @@
       const el = form.querySelector(`[data-field="${field}"]`);
       if (!el) return null;
       el.classList.toggle('is-invalid', invalid);
+      // Xəta bağlı "Əlavə istəklər" içindədirsə, görünsün deyə aç
+      const more = invalid ? el.closest('details') : null;
+      if (more) more.open = true;
       if (invalid) el.setAttribute('aria-invalid', 'true');
       else el.removeAttribute('aria-invalid');
       return el;

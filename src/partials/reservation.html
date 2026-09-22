@@ -6,75 +6,89 @@
         <div class="narrow">
 
           <div class="booking-head reveal">
-            <h2 class="display-2" id="rezervasiya-basliq">Masanızı ayırın</h2>
+            <h2 class="booking-title" id="rezervasiya-basliq">Masanızı ayırın</h2>
             <p class="lede">
-              Sorğunuz birbaşa restoranın rezervasiya sisteminə düşür.
-              Heyətimiz qısa müddətdə təsdiq üçün sizinlə əlaqə saxlayır.
+              Bir dəqiqəlik forma. Heyətimiz qısa müddətdə zəng edib təsdiqləyəcək.
             </p>
           </div>
 
-          <div class="carpet">
+          <div class="booking-card">
           <form data-reservation-form novalidate>
 
-            <div class="fields">
+            <fieldset class="field-group">
+              <legend class="field-group-title">Nə vaxt gəlirsiniz?</legend>
 
-              <div class="field">
-                <label for="rez-name">Ad, Soyad</label>
-                <input type="text" id="rez-name" name="name" data-field="name" required maxlength="80"
-                  autocomplete="name" placeholder="Aysel Quliyeva">
+              <div class="fields fields-when">
+
+                <div class="field field-date">
+                  <label for="rez-date">Tarix</label>
+                  <input type="date" id="rez-date" name="date" data-field="date" required>
+                </div>
+
+                <div class="field">
+                  <label for="rez-time">Saat</label>
+                  <select id="rez-time" name="time" data-field="time" required>
+                    {{blocks.timeOptions}}
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="rez-guests">Nəfər</label>
+                  <select id="rez-guests" name="guests" data-field="guests">
+                    {{blocks.guestOptions}}
+                  </select>
+                </div>
+
               </div>
+            </fieldset>
 
-              <div class="field">
-                <label for="rez-phone">Telefon</label>
-                <input type="tel" id="rez-phone" name="phone" data-field="phone" required maxlength="25"
-                  autocomplete="tel" placeholder="+994 50 123 45 67">
+            <fieldset class="field-group">
+              <legend class="field-group-title">Sizinlə necə əlaqə saxlayaq?</legend>
+
+              <div class="fields">
+
+                <div class="field">
+                  <label for="rez-name">Ad, soyad</label>
+                  <input type="text" id="rez-name" name="name" data-field="name" required maxlength="80"
+                    autocomplete="name" placeholder="Aysel Quliyeva">
+                </div>
+
+                <div class="field">
+                  <label for="rez-phone">Telefon</label>
+                  <input type="tel" id="rez-phone" name="phone" data-field="phone" required maxlength="25"
+                    autocomplete="tel" inputmode="tel" placeholder="+994 50 123 45 67">
+                </div>
+
               </div>
+            </fieldset>
 
-              <div class="field">
-                <label for="rez-date">Tarix</label>
-                <input type="date" id="rez-date" name="date" data-field="date" required>
+            <details class="field-more">
+              <summary>Əlavə istəklər <span>istəyə bağlı</span></summary>
+
+              <div class="fields">
+
+                <div class="field">
+                  <label for="rez-area">Zona</label>
+                  <select id="rez-area" name="area" data-field="area">
+                    {{blocks.areaOptions}}
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="rez-occasion">Səbəb</label>
+                  <select id="rez-occasion" name="occasion" data-field="occasion">
+                    {{blocks.occasionOptions}}
+                  </select>
+                </div>
+
+                <div class="field full">
+                  <label for="rez-note">Qeyd</label>
+                  <textarea id="rez-note" name="note" data-field="note" maxlength="500"
+                    placeholder="Uşaq kreslosu, doğum günü tortu, pəncərə kənarı…"></textarea>
+                </div>
+
               </div>
-
-              <div class="field">
-                <label for="rez-time">Saat</label>
-                <select id="rez-time" name="time" data-field="time" required>
-                  {{blocks.timeOptions}}
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="rez-guests">Nəfər sayı</label>
-                <select id="rez-guests" name="guests" data-field="guests">
-                  {{blocks.guestOptions}}
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="rez-area">Zona</label>
-                <select id="rez-area" name="area" data-field="area">
-                  {{blocks.areaOptions}}
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="rez-occasion">Səbəb</label>
-                <select id="rez-occasion" name="occasion" data-field="occasion">
-                  {{blocks.occasionOptions}}
-                </select>
-              </div>
-
-              <div class="field full">
-                <label for="rez-note">Qeyd</label>
-                <textarea id="rez-note" name="note" data-field="note" maxlength="500"
-                  placeholder="Uşaq kreslosu, doğum günü tortu, pəncərə kənarı…"></textarea>
-              </div>
-
-            </div>
-
-            <p class="form-hint">
-              {{icons.lock-simple}}
-              Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
-            </p>
+            </details>
 
             <div class="form-status" data-form-status role="status" aria-live="polite"></div>
 
@@ -86,6 +100,10 @@
 
             <div class="form-actions">
               <button type="submit" class="btn btn-solid" data-submit-btn>Masanı ayır</button>
+              <p class="form-hint">
+                {{icons.lock-simple}}
+                Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
+              </p>
             </div>
 
           </form>
@@ -96,7 +114,7 @@
               {{icons.check}}
             </div>
 
-            <h2 class="display-2">Rezervasiya qəbul olundu</h2>
+            <h2 class="booking-title">Rezervasiya qəbul olundu</h2>
 
             <p class="lede">
               Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü.
