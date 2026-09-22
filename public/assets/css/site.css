@@ -281,13 +281,26 @@ p { text-wrap: pretty; }
   z-index: var(--z-header);
   height: var(--header-h);
   border-bottom: 1px solid transparent;
-  transition: background-color 300ms ease, border-color 300ms ease, backdrop-filter 300ms ease;
+  transition: border-color 300ms ease;
+}
+
+/* Fon və blur psevdo-elementdə: backdrop-filter .header-in özündə olsa,
+   içindəki position:fixed mobil menyu header-ə bağlanır və hero-nun arxasında qalır. */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  transition: background-color 300ms ease, backdrop-filter 300ms ease;
 }
 
 body.is-scrolled .header,
-body.nav-open .header {
+body.nav-open .header { border-bottom-color: var(--hair); }
+
+body.is-scrolled .header::before,
+body.nav-open .header::before {
   background-color: color-mix(in srgb, var(--black) 88%, transparent);
-  border-bottom-color: var(--hair);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   backdrop-filter: blur(14px) saturate(140%);
 }
