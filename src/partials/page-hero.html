@@ -1,25 +1,18 @@
       <section class="page-hero" aria-labelledby="page-title">
-        <div class="wrap page-hero-grid">
+        <div class="page-hero-media">
+          <img src="./assets/images/{{page.heroImage}}" width="1880" height="900" alt="">
+        </div>
 
-          <div class="page-hero-copy">
-            <nav class="breadcrumb" aria-label="Naviqasiya">
-              <a href="index.html">Ana Səhifə</a>
-              <span class="sep" aria-hidden="true">/</span>
-              <span class="current" aria-current="page">{{page.heroTitle}}</span>
-            </nav>
+        <div class="wrap page-hero-copy">
+          <nav class="breadcrumb" aria-label="Naviqasiya">
+            <a href="index.html">Ana Səhifə</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <span class="current" aria-current="page">{{page.heroTitle}}</span>
+          </nav>
 
-            <h1 class="display-1" id="page-title">{{page.heroTitle}}</h1>
-            <p class="lede">{{page.heroSubtitle}}</p>
-          </div>
-
-          <figure class="page-hero-window">
-            <div class="window" data-window>
-              <div class="window-media">
-                <img src="./assets/images/{{page.heroImage}}" width="1880" height="900" alt="">
-              </div>
-              {{blocks.pageLattice}}
-            </div>
-          </figure>
-
+          <h1 class="display-1" id="page-title">{{page.heroTitle}}</h1>
+          <p class="lede">{{page.heroSubtitle}}</p>
         </div>
       </section>
+
+{{> kilim}}

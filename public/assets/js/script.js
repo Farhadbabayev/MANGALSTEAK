@@ -64,29 +64,27 @@
 
 
   /* ---------------------------------------------------------------- *
-   *  Şəbəkə pəncərələri: şüşə görünəndə bir dəfə işıqlanır
+   *  Kilim zolaqları: görünəndə bir dəfə "toxunur"
    * ---------------------------------------------------------------- */
 
-  const windows = document.querySelectorAll('.window');
+  const kilims = document.querySelectorAll('.kilim');
 
-  if (windows.length) {
+  if (kilims.length) {
     if (!('IntersectionObserver' in window)) {
-      windows.forEach(function (el) { el.classList.add('is-lit'); });
+      kilims.forEach(function (el) { el.classList.add('in'); });
     } else {
-      const windowObserver = new IntersectionObserver(
+      const kilimObserver = new IntersectionObserver(
         function (entries, obs) {
           entries.forEach(function (entry) {
             if (!entry.isIntersecting) return;
-            /* Tağ açılışı ilə üst-üstə düşməsin deyə bir az gözləyirik */
-            const el = entry.target;
-            window.setTimeout(function () { el.classList.add('is-lit'); }, 420);
-            obs.unobserve(el);
+            entry.target.classList.add('in');
+            obs.unobserve(entry.target);
           });
         },
-        { threshold: 0.35 }
+        { threshold: 0.6 }
       );
 
-      windows.forEach(function (el) { windowObserver.observe(el); });
+      kilims.forEach(function (el) { kilimObserver.observe(el); });
     }
   }
 

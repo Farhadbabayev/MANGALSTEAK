@@ -2,12 +2,12 @@
   "_comment": "Rənglər, şriftlər və loqo. Admin panelin «Dizayn» bölməsindən dəyişdirilir.",
 
   "colors": {
-    "black": "#140E0C",
-    "black2": "#1E1512",
-    "black3": "#0C0807",
-    "cream": "#F2ECE4",
-    "creamDim": "#B3A79C",
-    "gold": "#EFA93A",
+    "black": "#0F0D0C",
+    "black2": "#191613",
+    "black3": "#0A0908",
+    "cream": "#F3EEE6",
+    "creamDim": "#ADA398",
+    "gold": "#D9A441",
     "brand": "#4E0007",
     "brand2": "#6B0A12"
   },

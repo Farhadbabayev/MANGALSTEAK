@@ -69,74 +69,6 @@ for (const file of readdirSync(join(SRC, 'icons'))) {
     .replace('<svg ', '<svg class="icon" aria-hidden="true" focusable="false" ');
 }
 
-/* --- Şəbəkə (Şəki şəbəkəsi) --- *
- *
- * Səkkizguşəli ulduzlardan ibarət taxta tor. Ulduzlar "şüşə"dir: bəziləri
- * yaqut, zəfəran və kobalt rəngində işıqlanır, arxadakı şəkil onlardan görünür.
- * Ölçülər viewBox vahidindədir; SVG pəncərəyə "slice" ilə yerləşir.
- */
-
-const GLASS = ['ruby', '', 'saffron', '', 'cobalt', '', '', 'ruby', '', 'saffron', 'cobalt', ''];
-
-const star = (cx, cy, R = 50) => {
-  const r = (R * Math.cos(Math.PI / 4)) / Math.cos(Math.PI / 8);
-  const pts = [];
-  for (let k = 0; k < 16; k++) {
-    const a = ((-90 + k * 22.5) * Math.PI) / 180;
-    const rad = k % 2 ? r : R;
-    pts.push(`${(cx + rad * Math.cos(a)).toFixed(2)},${(cy + rad * Math.sin(a)).toFixed(2)}`);
-  }
-  return pts.join(' ');
-};
-
-const lattice = ({ id, cols, rows, glass = true }) => {
-  const S = 100;
-  const W = cols * S;
-  const H = rows * S;
-  const stars = [];
-  const frame = [];
-  const d = Math.cos(Math.PI / 4) * 50;
-
-  for (let row = 0; row < rows; row++) {
-    for (let col = 0; col < cols; col++) {
-      const cx = col * S + 50;
-      const cy = row * S + 50;
-      const points = star(cx, cy);
-      frame.push(`M${points.split(' ').join('L')}Z`);
-      for (const [sx, sy] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {
-        frame.push(`M${(cx + sx * d).toFixed(2)},${(cy + sy * d).toFixed(2)}L${cx + sx * 50},${cy + sy * 50}`);
-      }
-      const tone = GLASS[(row * 5 + col * 3) % GLASS.length];
-      /* İşıq aşağıdan yuxarı qalxır — köz pəncərənin altındadır */
-      const delay = (rows - 1 - row) * 90 + Math.abs(col - (cols - 1) / 2) * 45;
-      stars.push({ points, tone, delay: Math.round(delay) });
-    }
-  }
-
-  const panes = glass
-    ? stars
-        .filter((s) => s.tone)
-        .map((s) => `<polygon class="pane pane-${s.tone}" style="--d:${s.delay}ms" points="${s.points}"/>`)
-        .join('')
-    : '';
-
-  return `<svg class="lattice" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-            <defs>
-              <mask id="${id}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}">
-                <rect width="${W}" height="${H}" fill="#fff"/>
-                ${stars.map((s) => `<polygon points="${s.points}" fill="#000"/>`).join('')}
-              </mask>
-            </defs>
-            <rect class="lattice-veil" width="${W}" height="${H}" mask="url(#${id}-mask)"/>
-            <g class="lattice-glass">${panes}</g>
-            <path class="lattice-frame" d="${frame.join('')}"/>
-          </svg>`;
-};
-
-blocks.heroLattice = lattice({ id: 'hero-lat', cols: 4, rows: 6 });
-blocks.pageLattice = lattice({ id: 'page-lat', cols: 4, rows: 5 });
-blocks.dishLattice = lattice({ id: 'dish-lat', cols: 4, rows: 5 });
-
 /* --- Loqo --- */
 
 const MARKS = {
@@ -207,7 +139,7 @@ blocks.featureCards = content.features.cards
   .map(
     (c) => `
             <li class="virtue">
-              <span class="star-mark" aria-hidden="true"></span>
+              <span class="gol-mark" aria-hidden="true"></span>
               <h3>${esc(c.title)}</h3>
               <p>${esc(c.text)}</p>
             </li>`
@@ -268,7 +200,7 @@ blocks.eventCards = content.events.cards
     (c, i) => `
             <li class="event${i === 0 ? ' is-lead' : ''}">
               <article>
-                <figure class="arch">
+                <figure class="frame">
                   <img src="${img(c.image)}" width="700" height="800" loading="lazy" alt="${esc(c.title)}">
                 </figure>
                 <div class="event-body">
@@ -285,7 +217,7 @@ blocks.eventCards = content.events.cards
 blocks.galleryItems = content.gallery.images
   .map(
     (g, i) => `
-            <li class="gallery-item${i % 5 === 0 ? ' tall' : ''}${i % 5 === 0 ? ' arch' : ''}">
+            <li class="gallery-item${i % 5 === 0 ? ' tall' : ''}">
               <figure>
                 <img src="${img(g.src)}" width="500" height="500" loading="lazy" alt="${esc(g.alt)}">
                 <figcaption>${esc(g.alt)}</figcaption>
@@ -310,7 +242,7 @@ blocks.storyBlocks = content.pages.haqqimizda.blocks
   .map(
     (b) => `
             <li class="story-item">
-              <span class="star-mark" aria-hidden="true"></span>
+              <span class="gol-mark" aria-hidden="true"></span>
               <h3>${esc(b.title)}</h3>
               <p>${esc(b.text)}</p>
             </li>`

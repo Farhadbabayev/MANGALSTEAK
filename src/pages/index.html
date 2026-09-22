@@ -3,8 +3,11 @@
       -->
 
       <section class="hero" aria-label="Ana səhifə" data-hero>
-        <div class="wrap hero-grid">
+        <div class="hero-media">
+          {{blocks.heroSlides}}
+        </div>
 
+        <div class="wrap hero-inner">
           <div class="hero-copy">
             <h1 class="display-1" data-hero-title>{{hero.slides.0.title}}</h1>
 
@@ -16,22 +19,14 @@
             </div>
           </div>
 
-          <figure class="hero-window">
-            <div class="window" data-window>
-              <div class="window-media">
-                {{blocks.heroSlides}}
-              </div>
-              {{blocks.heroLattice}}
-            </div>
-
-            <figcaption class="window-caption">
-              <span data-hero-label>{{hero.slides.0.subtitle}}</span>
-              <span class="hero-dots" data-hero-dots aria-label="Slaydlar">{{blocks.heroDots}}</span>
-            </figcaption>
-          </figure>
-
+          <p class="hero-caption">
+            <span data-hero-label>{{hero.slides.0.subtitle}}</span>
+            <span class="hero-dots" data-hero-dots aria-label="Slaydlar">{{blocks.heroDots}}</span>
+          </p>
         </div>
       </section>
+
+{{> kilim}}
 
 
       <!--
@@ -61,14 +56,9 @@
       <section class="section dish" aria-labelledby="dish-label">
         <div class="wrap dish-grid">
 
-          <figure class="dish-window reveal">
-            <div class="window window-still">
-              <div class="window-media">
-                <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
-                  alt="{{specialDish.title}}">
-              </div>
-              {{blocks.dishLattice}}
-            </div>
+          <figure class="dish-photo frame reveal">
+            <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
+              alt="{{specialDish.title}}">
           </figure>
 
           <div class="dish-body reveal">
@@ -95,7 +85,8 @@
       <section class="section" id="menyu" aria-labelledby="menu-title">
         <div class="wrap">
 
-          <div class="menu-card reveal">
+          <div class="carpet reveal">
+          <div class="menu-card">
             <div class="menu-card-head">
               <h2 class="display-2" id="menu-title">{{menuPreview.title}}</h2>
               <p class="dim">{{menu.note}}</p>
@@ -109,6 +100,7 @@
               <p class="menu-note">{{hours.kitchenNote}}</p>
               <a href="{{menuPreview.buttonLink}}" class="btn">{{menuPreview.buttonText}}</a>
             </div>
+          </div>
           </div>
 
         </div>
@@ -129,7 +121,7 @@
           </div>
 
           <div class="story-media reveal">
-            <figure class="story-img arch">
+            <figure class="story-img frame">
             <img src="./assets/images/about-banner.jpg" width="570" height="620" loading="lazy"
               alt="{{site.name}} mətbəxi">
           </figure>
