@@ -88,13 +88,13 @@
               <div class="field">
                 <label for="int-restaurant">Restoran / filial kodu</label>
                 <input type="text" id="int-restaurant" data-int="restaurantId" placeholder="məsələn: 123">
-                <span class="help">Tətbiq tələb edirsə doldurun</span>
+                <span class="help">Vilka üçün lazım deyil — restoranı açar özü müəyyən edir</span>
               </div>
 
               <div class="field full">
                 <label for="int-url">API ünvanı</label>
-                <input type="url" id="int-url" data-int="apiUrl" placeholder="https://api.vilka.az/v1/reservations">
-                <span class="help">Rezervasiyanın POST ediləcəyi ünvan — tətbiqdən alınır</span>
+                <input type="url" id="int-url" data-int="apiUrl" placeholder="https://mqirnsmgnymjnyabvurr.supabase.co/functions/v1/api-v1/r/mangal-steak-house/reservations">
+                <span class="help">Vilka super-admin → «İnteqrasiyalar (API)» → Mangal Steak House: göstərilən ünvan + <code>/reservations</code></span>
               </div>
 
               <div class="field full">
@@ -118,8 +118,8 @@
               <div class="field full">
                 <label for="int-map">Sahə uyğunluğu (JSON)</label>
                 <textarea id="int-map" data-int="fieldMap" spellcheck="false"
-                  placeholder='{"name":"guest_name","phone":"guest_phone","comment":"note"}'></textarea>
-                <span class="help">Tətbiq başqa sahə adları gözləyirsə burada uyğunlaşdırın: «bizim ad» → «onların adı»</span>
+                  placeholder='boş buraxın — Vilka API-si üçün adlar avtomatik uyğunlaşdırılır'></textarea>
+                <span class="help">«API» rejimində Vilka-nın adları (guest_name, guest_phone, party_size, external_ref, note, starts_at) avtomatik gedir. Yalnız başqa sistem üçün doldurun: «bizim ad» → «onların adı»</span>
               </div>
 
               <div class="field full">

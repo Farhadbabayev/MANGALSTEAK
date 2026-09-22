@@ -10,12 +10,60 @@
  *   webhook  — aralıq webhook-a POST (Make, n8n, Zapier və s.)
  */
 
-import { config } from './config.mjs';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { config, ROOT } from './config.mjs';
 import { getVilka, vilkaEnabled } from './integration.mjs';
+
+/**
+ * Vilka Partner API-sinin öz sahə adları (api-v1, POST /reservations).
+ *
+ * «api» rejimində bunlar standart olaraq tətbiq olunur — beləliklə sayt
+ * VILKA_FIELD_MAP yazılmadan da Vilka-nın başa düşdüyü JSON göndərir və
+ * rezervasiya birbaşa Vilka panelində restoranın öz jurnalına düşür.
+ * Paneldən / .env-dən yazılan uyğunluq bunların üstünə yazılır.
+ *
+ * external_ref vacibdir: Vilka onunla təkrarı tanıyır. Təkrar cəhd (retry)
+ * ikinci rezerv yaratmır, mövcud olanı qaytarır.
+ */
+export const VILKA_API_FIELDS = {
+  name: 'guest_name',
+  phone: 'guest_phone',
+  guests: 'party_size',
+  external_id: 'external_ref',
+  comment: 'note',
+  datetime: 'starts_at',
+};
+
+/* Zona və səbəb Vilka-da ayrıca sahə deyil — heyət onları qeyddə görür */
+const labels = (() => {
+  try {
+    const rules = JSON.parse(readFileSync(join(ROOT, 'site.config.json'), 'utf8')).reservation || {};
+    const pick = (list) => Object.fromEntries((list || []).map((i) => [i.value, i.label]));
+    return { areas: pick(rules.areas), occasions: pick(rules.occasions) };
+  } catch (_) {
+    return { areas: {}, occasions: {} };
+  }
+})();
+
+/** «api» rejimi üçün: zona və səbəbi qonağın qeydinə qoşur. */
+const vilkaNote = (reservation) => {
+  const parts = [];
+  if (reservation.area && reservation.area !== 'any') {
+    parts.push('Zona: ' + (labels.areas[reservation.area] || reservation.area));
+  }
+  if (reservation.occasion) {
+    parts.push('Səbəb: ' + (labels.occasions[reservation.occasion] || reservation.occasion));
+  }
+  if (reservation.note) parts.push(reservation.note);
+  parts.push('Sayt kodu: ' + reservation.code);
+  return parts.join(' · ');
+};
 
 /** Rezervasiyanı Vilka-nın gözlədiyi formaya salır. */
 export const buildPayload = (reservation, settings) => {
   const vilka = settings || getVilka();
+  const direct = vilka.mode === 'api';
 
   const base = {
     external_id: reservation.code,
@@ -26,9 +74,9 @@ export const buildPayload = (reservation, settings) => {
     date: reservation.date,
     time: reservation.time,
     datetime: reservation.datetimeLocal || reservation.datetime,
-    area: reservation.area,
-    occasion: reservation.occasion || undefined,
-    comment: reservation.note || undefined,
+    area: direct ? undefined : reservation.area,
+    occasion: direct ? undefined : reservation.occasion || undefined,
+    comment: direct ? vilkaNote(reservation) : reservation.note || undefined,
     source: 'website',
     created_at: reservation.createdAt,
   };
@@ -40,7 +88,7 @@ export const buildPayload = (reservation, settings) => {
   }
 
   /* Sahə uyğunluğu: { "bizim_sahə": "onların_sahəsi" } */
-  const map = vilka.fieldMap || {};
+  const map = { ...(direct ? VILKA_API_FIELDS : {}), ...(vilka.fieldMap || {}) };
   const mapped = {};
   for (const [key, value] of Object.entries(compact)) {
     mapped[map[key] || key] = value;
@@ -75,7 +123,8 @@ const timeoutSignal = (ms) => {
 /** Cavabdan Vilka tərəfindəki identifikatoru tapmağa çalışır. */
 const extractReference = (body) => {
   if (!body || typeof body !== 'object') return null;
-  const candidates = ['id', 'reservation_id', 'reservationId', 'booking_id', 'bookingId', 'uuid', 'code'];
+  /* Vilka-nın «ref»-i (məs. 27BDF7B6) paneldə və qonağın səhifəsində görünən koddur */
+  const candidates = ['ref', 'booking_ref', 'id', 'reservation_id', 'reservationId', 'booking_id', 'bookingId', 'uuid', 'code'];
   for (const key of candidates) {
     if (body[key]) return String(body[key]);
   }

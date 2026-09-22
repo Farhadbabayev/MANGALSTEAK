@@ -82,8 +82,8 @@ Qalanları istəyə bağlıdır:
 | `VILKA_MODE` | `api` və ya `webhook` | rezervasiya üçün |
 | `VILKA_API_URL` | Vilka-nın rezervasiya ünvanı | rezervasiya üçün |
 | `VILKA_API_KEY` | Vilka açarı | rezervasiya üçün |
-| `VILKA_RESTAURANT_ID` | Filial kodu | tələb olunursa |
-| `VILKA_FIELD_MAP` | Sahə uyğunluğu, JSON | **mütləq** — aşağıya baxın |
+| `VILKA_RESTAURANT_ID` | Filial kodu | Vilka üçün lazım deyil (açar restoranı özü bilir) |
+| `VILKA_FIELD_MAP` | Sahə uyğunluğu, JSON | Vilka üçün **lazım deyil** — aşağıya baxın |
 | `VILKA_EXTRA_FIELDS` | Əlavə sabit sahələr, JSON | lazım olsa |
 | `TELEGRAM_BOT_TOKEN` | Ehtiyat kanal | **çox tövsiyə olunur** |
 | `TELEGRAM_CHAT_ID` | Telegram qrupunun ID-si | **çox tövsiyə olunur** |
@@ -97,26 +97,39 @@ Qalanları istəyə bağlıdır:
 > Boş dəyər «təyin olunmayıb» sayılır və standart dəyər işə düşür, amma
 > siyahını təmiz saxlamaq sonradan nəyin həqiqətən qoşulduğunu göstərir.
 
-#### Sahə uyğunluğu (`VILKA_FIELD_MAP`)
+#### Vilka-ya qoşulma (rezerv birbaşa Mangal Steak House-un səhifəsinə düşür)
 
-Sayt sahələri öz adları ilə göndərir, Vilka isə başqa adlar gözləyir.
-Uyğunluq verilməsə sorğu rədd olunur. Hazırkı API üçün:
+1. Vilka super-admin panelində **İnteqrasiyalar (API)** → restoran: **Mangal Steak House** → yeni açar (yazma icazəsi,
+   `reservations:write`). Açar `vk_live_…` ilə başlayır və bir dəfə göstərilir.
+2. Vercel-ə yazın:
 
-```json
-{"name":"guest_name","phone":"guest_phone","guests":"party_size","external_id":"external_ref"}
+```env
+VILKA_MODE=api
+VILKA_API_URL=https://mqirnsmgnymjnyabvurr.supabase.co/functions/v1/api-v1/r/mangal-steak-house/reservations
+VILKA_API_KEY=vk_live_...
 ```
 
-| Sayt göndərir | Vilka gözləyir |
-|---|---|
-| `name` | `guest_name` |
-| `phone` | `guest_phone` (`+994…` formatında) |
-| `guests` | `party_size` (rəqəm) |
-| `external_id` | `external_ref` (rezervasiya kodumuz) |
-| `date`, `time` | eyni adla gedir |
+`VILKA_AUTH_HEADER` / `VILKA_AUTH_SCHEME` standart qalır (`Authorization: Bearer …`).
+Ünvandakı `mangal-steak-house` restoranın Vilka-dakı slug-udur: açar başqa
+restoranındırsa Vilka `403` qaytarır — səhv restorana rezerv düşə bilməz.
 
-Bundan əlavə `datetime`, `area`, `occasion`, `comment`, `source`,
-`created_at` da göndərilir. API artıq sahələri qəbul etmirsə, sınaq
-sorğusu `400` qaytaracaq və cavabda hansı sahənin artıq olduğu yazılacaq.
+#### Sahə uyğunluğu (`VILKA_FIELD_MAP`)
+
+`api` rejimində sayt Vilka Partner API-sinin öz adlarını **avtomatik** göndərir —
+`VILKA_FIELD_MAP` yazmaq lazım deyil:
+
+| Saytda | Vilka-ya gedir |
+|---|---|
+| ad | `guest_name` |
+| telefon | `guest_phone` (`+994…` formatında) |
+| nəfər sayı | `party_size` (rəqəm) |
+| tarix, saat | `date`, `time`, `starts_at` (`…+04:00`, Bakı vaxtı) |
+| rezervasiya kodu (`MS-…`) | `external_ref` — təkrar göndəriş ikinci rezerv yaratmır |
+| zona, səbəb, qeyd | `note` — «Zona: Yay terrası · Səbəb: Ad günü · … · Sayt kodu: MS-…» |
+
+Vilka-nın cavabındakı `ref` (paneldə görünən kod) saytın jurnalına yazılır.
+`VILKA_FIELD_MAP` yalnız başqa sistemə (webhook, Make, n8n) göndərəndə və ya
+bu adları üstələmək lazım olanda doldurulur.
 
 #### Rezervasiya işləmirsə
 
@@ -129,6 +142,8 @@ jurnalındadır: **Deployments → son deployment → Runtime Logs**, sətir
 | `vilka: skipped` | `VILKA_MODE` `api`/`webhook` deyil |
 | `vilka: failed (HTTP 401 …)` | Açar və ya sxem yanlışdır — `VILKA_AUTH_SCHEME` (`none` da ola bilər) |
 | `vilka: failed (HTTP 404 …)` | `VILKA_API_URL` yanlış ünvandır |
+| `vilka: failed (HTTP 403 … FORBIDDEN)` | Açar ünvandakı restoranın deyil (slug uyğun gəlmir) |
+| `vilka: failed (HTTP 409 NO_TABLE / CLOSED_AT_TIME …)` | Vilka-da həmin saata boş masa yoxdur və ya restoran bağlıdır |
 | `vilka: failed (Vaxt bitdi)` | Vilka cavab vermir |
 | `telegram: sönülü` | `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` yoxdur |
 
