@@ -34,17 +34,17 @@
     ]
   },
   "contact": {
-    "addressShort": "Nizami küç. 00, Bakı",
-    "addressFull": "Nizami küçəsi 00, Səbail rayonu,<br> Bakı AZ1005, Azərbaycan",
-    "addressOneLine": "Nizami küçəsi 00, Səbail rayonu, Bakı AZ1005, Azərbaycan",
+    "addressShort": "5 Aydin Nasirov, Bakı",
+    "addressFull": "5 Aydin Nasirov, Bakı",
+    "addressOneLine": "5 Aydin Nasirov, Bakı",
     "phone": "+994 12 5051011",
-    "phoneHref": "+994502281011",
-    "mobile": "+994 5",
-    "mobileHref": "+994500000000",
-    "whatsapp": "994500000000",
-    "email": "rezervasiya@mangalsteakhouse.az",
-    "mapEmbed": "https://www.google.com/maps?q=Baku%20Nizami%20street&output=embed",
-    "mapLink": "https://maps.google.com/?q=Mangal+Steak+House+Baku"
+    "phoneHref": "+994125051011",
+    "mobile": "+994502281011",
+    "mobileHref": "+ 994502281011",
+    "whatsapp": "+994502281011",
+    "email": "",
+    "mapEmbed": "https://maps.app.goo.gl/dbLWNPGwUqP4oFij7?g_st=ic",
+    "mapLink": "https://maps.app.goo.gl/dbLWNPGwUqP4oFij7?g_st=ic"
   },
   "hours": {
     "short": "Hər gün 11:00 - 24:00",
