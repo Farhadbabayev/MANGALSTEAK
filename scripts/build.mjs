@@ -165,9 +165,6 @@ const uiFor = (code) => overlay(uiBase, code === DEFAULT_LANG ? {} : readJson(jo
 /** Dilin qovluğu: əsas dil kökdə, digərləri öz qovluğunda */
 const prefixOf = (code) => (code === DEFAULT_LANG ? '' : code + '/');
 
-/** Bir dilin səhifəsindən başqa dilin eyni səhifəsinə nisbi keçid */
-const langHref = (from, to, file) => (from === DEFAULT_LANG ? '' : '../') + prefixOf(to) + file;
-
 /* --- Zalların PDF menyuları: public/assets/menus/<zal>-<dil>.pdf --- */
 
 const MENU_DIR = join(OUT, 'assets', 'menus');
@@ -637,8 +634,18 @@ const withVersions = (html) =>
     return version ? `${match}?v=${version}` : match;
   });
 
-/** Alt qovluqdakı (ru/, en/) səhifələrdə fayl ünvanları bir pillə yuxarıdan başlayır */
-const rebase = (html) => html.replace(/(["'(])\.\/(assets\/|favicon\.svg)/g, '$1../$2');
+/**
+ * Alt qovluqdakı (ru/, en/) səhifələr.
+ *
+ * Fayllar bir pillə yuxarıdan yüklənir. Səhifə keçidləri isə MÜTLƏQ
+ * (/ru/menyu.html) olur: Vercel «cleanUrls» ilə /ru/index.html-i /ru-ya
+ * (sonda «/» olmadan) yönləndirir və oradan nisbi «menyu.html» brauzerdə
+ * /menyu.html, yəni Azərbaycan dilinə açılırdı — dil itirdi.
+ */
+const rebase = (html, code) =>
+  html
+    .replace(/(["'(])\.\/(assets\/|favicon\.svg)/g, '$1../$2')
+    .replace(/href="([a-z0-9-]+\.html)((?:#[^"]*)?)"/g, (m, file, hash) => `href="/${prefixOf(code)}${file}${hash}"`);
 
 const base = site.site.url.replace(/\/$/, '');
 const localeOf = (l) => l.locale || l.code;
@@ -690,7 +697,7 @@ for (const lang of LANGS) {
     const switcher = LANGS.filter(hasPage)
       .map((l) => l.code === code
         ? `<li><a href="${page.file}" class="lang-link is-active" aria-current="true" lang="${l.code}" title="${attr(l.name)}">${esc(l.label)}</a></li>`
-        : `<li><a href="${langHref(code, l.code, page.file)}" class="lang-link" hreflang="${l.code}" lang="${l.code}" title="${attr(l.name)}" data-lang-link="${l.code}">${esc(l.label)}</a></li>`)
+        : `<li><a href="/${prefixOf(l.code)}${page.file}" class="lang-link" hreflang="${l.code}" lang="${l.code}" title="${attr(l.name)}" data-lang-link="${l.code}">${esc(l.label)}</a></li>`)
       .join('');
 
     const pagePath = (l) => prefixOf(l) + (page.file === 'index.html' ? '' : page.file);
@@ -731,7 +738,7 @@ for (const lang of LANGS) {
     }
 
     let out = withVersions(html);
-    if (!isDefault) out = rebase(out);
+    if (!isDefault) out = rebase(out, code);
 
     writeFileSync(join(dir, page.file), out, 'utf8');
     console.log(`  ✓ public/${prefixOf(code)}${page.file}  (${(out.length / 1024).toFixed(1)} KB)`);

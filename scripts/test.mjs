@@ -137,13 +137,22 @@ const run = async () => {
     check(lang + ': brauzer mətnləri həmin dildədir', html.includes('window.MANGAL_LANG = "' + lang + '"'));
   }
 
+  /* Vercel /ru/index.html-i /ru-ya yönləndirir: oradan nisbi keçid Azərbaycan dilinə aparırdı */
+  const ruBare = await fetch(BASE + '/ru');
+  const ruBareHtml = await ruBare.text();
+  check('/ru (sonda «/» olmadan) açılır', ruBare.status === 200 && ruBareHtml.includes('<html lang="ru">'),
+    'status ' + ruBare.status);
+  check('Rus səhifəsində bütün keçidlər rus dilində qalır',
+    !/href="[a-z0-9-]+\.html/.test(ruBareHtml) && ruBareHtml.includes('href="/ru/menyu.html"'),
+    (ruBareHtml.match(/href="[a-z0-9-]+\.html[^"]*"/) || [''])[0]);
+
   const ruMenu = await (await fetch(BASE + '/ru/menyu')).text();
   check('Rus menyu səhifəsi tərcümə olunub', ruMenu.includes('Меню залов') && ruMenu.includes('Стейки'));
   check('Kiril şrifti yalnız rus səhifəsinə qoşulur',
     ruMenu.includes('fonts-cyrillic.css') && !homeHtml.includes('fonts-cyrillic.css'));
   check('hreflang keçidləri var', /hreflang="en" href="[^"]*\/en\/"/.test(homeHtml) && homeHtml.includes('hreflang="x-default"'));
   check('Dil seçimi eyni səhifənin digər dilinə aparır',
-    ruMenu.includes('href="../menyu.html"') && ruMenu.includes('href="../en/menyu.html"'));
+    ruMenu.includes('href="/menyu.html"') && ruMenu.includes('href="/en/menyu.html"'));
 
   const halls = await fetch(BASE + '/zallar');
   const hallsHtml = await halls.text();

@@ -537,6 +537,9 @@ const serveStatic = (req, res, pathname) => {
     return sendText(res, 403, 'Qadağandır.');
   }
 
+  /* Qovluq ünvanı sonda «/» olmadan: /ru -> /ru/index.html (Vercel kimi) */
+  if (existsSync(filePath) && statSync(filePath).isDirectory()) filePath = join(filePath, 'index.html');
+
   /* Uzantısız ünvanlar: /menyu -> /menyu.html */
   if (!existsSync(filePath) && !extname(filePath)) {
     const withHtml = filePath + '.html';
