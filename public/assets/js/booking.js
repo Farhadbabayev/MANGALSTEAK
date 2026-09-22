@@ -11,8 +11,68 @@
 
 (function () {
 
+/* Skript <main> içindədir, window.MANGAL_T isə səhifənin sonunda qoyulur —
+   ona görə DOM tam oxunandan sonra işə düşür */
+const init = function () {
+
   const root = document.querySelector('[data-booking-lookup]');
   if (!root) return;
+
+  /* Mətnlər səhifənin dilindədir (build → window.MANGAL_T); olmasa Azərbaycan dili */
+  const T = Object.assign({
+    phoneInvalid: 'Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67',
+    dateRequired: 'Tarix seçin.',
+    timeRequired: 'Saat seçin.',
+    dateInvalid: 'Tarix və ya saat düzgün deyil.',
+    guestsInvalid: 'Nəfər sayı düzgün deyil.',
+    timeout: 'Server cavab vermədi. Zəhmət olmasa telefonla əlaqə saxlayın.',
+    network: 'Bağlantı xətası oldu. İnternet bağlantınızı yoxlayın və ya bizə zəng edin.',
+    sumDate: 'Tarix', sumTime: 'Saat', sumGuests: 'Nəfər',
+    bkCodeRequired: 'Bron kodunu yazın.',
+    bkChecking: 'Yoxlanılır…',
+    bkLookupFailed: 'Yoxlamaq alınmadı. Bir az sonra yenidən cəhd edin.',
+    bkNotFound: 'Bu kod və telefon nömrəsi ilə rezervasiya tapılmadı. Kodu və nömrəni yoxlayın.',
+    bkUnavailable: 'Rezervasiyanı hazırda onlayn yoxlamaq mümkün olmadı. Zəhmət olmasa bizə zəng edin.',
+    bkRateLimited: 'Çox sayda sorğu göndərildi. Bir az sonra yenidən yoxlayın və ya bizə zəng edin.',
+    bkNotCancellable: 'Bu rezervasiyanı artıq onlayn ləğv etmək mümkün deyil. Zəhmət olmasa bizə zəng edin.',
+    bkNotChangeable: 'Bu rezervasiyanı artıq onlayn dəyişmək mümkün deyil. Zəhmət olmasa bizə zəng edin.',
+    bkRejected: 'Seçdiyiniz vaxta və ya nəfər sayına boş masa yoxdur, ya da restoran həmin vaxt bağlıdır. Başqa vaxt seçin və ya bizə zəng edin.',
+    bkNoChange: 'Heç nə dəyişməyib — yeni vaxt və ya nəfər sayı seçin.',
+    bkCancelConfirm: 'Rezervasiyanı ləğv etmək istədiyinizə əminsiniz? Bunu geri qaytarmaq olmur.',
+    bkCancelling: 'Ləğv edilir…',
+    bkCancelled: 'Rezervasiyanız ləğv olundu.',
+    bkCancelFailed: 'Ləğv etmək alınmadı. Zəhmət olmasa bizə zəng edin.',
+    bkUpdating: 'Rezervasiya yenilənir…',
+    bkUpdated: 'Rezervasiyanız yeniləndi: {when}.',
+    bkChangeFailed: 'Dəyişmək alınmadı. Zəhmət olmasa bizə zəng edin.',
+    bkSumName: 'Ad', bkSumPlace: 'Yer',
+    bkStatus: {},
+    guestUnit: 'nəfər',
+  }, window.MANGAL_T || {});
+
+  const LANG = window.MANGAL_LANG || document.documentElement.lang || 'az';
+
+  /* Server mətnləri Azərbaycan dilindədir (Vilka-nın səbəbi də). Başqa dildə
+     cavabın koduna uyğun öz mətnimiz göstərilir. */
+  const CODE_MESSAGE = {
+    not_found: T.bkNotFound,
+    unavailable: T.bkUnavailable,
+    rate_limited: T.bkRateLimited,
+    not_cancellable: T.bkNotCancellable,
+    not_changeable: T.bkNotChangeable,
+    rejected: T.bkRejected,
+    no_change: T.bkNoChange,
+    invalid_code: T.bkCodeRequired,
+    invalid_phone: T.phoneInvalid,
+    invalid_slot: T.dateInvalid,
+    invalid_guests: T.guestsInvalid,
+  };
+
+  const errorText = function (payload, fallback) {
+    if (!payload) return fallback;
+    if (LANG === 'az' && payload.error) return payload.error;
+    return CODE_MESSAGE[payload.code] || payload.error || fallback;
+  };
 
   const API_BASE = (window.MANGAL_API_BASE || '').replace(/\/$/, '');
   const API_URL = API_BASE + '/api/booking';
@@ -123,9 +183,7 @@
       return {
         ok: false,
         payload: {
-          error: err && err.name === 'AbortError'
-            ? 'Server cavab vermədi. Zəhmət olmasa telefonla əlaqə saxlayın.'
-            : 'Bağlantı xətası oldu. İnternet bağlantınızı yoxlayın və ya bizə zəng edin.',
+          error: err && err.name === 'AbortError' ? T.timeout : T.network,
         },
       };
     } finally {
@@ -136,15 +194,15 @@
   const render = function (r) {
     resultCode.textContent = r.code;
 
-    resultState.textContent = r.statusLabel;
+    resultState.textContent = (T.bkStatus && T.bkStatus[r.status]) || r.statusLabel;
     resultState.dataset.state = r.status;
 
     const rows = [
-      ['Ad', r.name],
-      ['Tarix', r.date ? r.date.split('-').reverse().join('.') : ''],
-      ['Saat', r.time],
-      ['Nəfər', r.guests],
-      ['Yer', r.place],
+      [T.bkSumName, r.name],
+      [T.sumDate, r.date ? r.date.split('-').reverse().join('.') : ''],
+      [T.sumTime, r.time],
+      [T.sumGuests, r.guests],
+      [T.bkSumPlace, r.place],
     ].filter(function (row) { return row[1]; });
 
     resultSummary.innerHTML = rows
@@ -210,7 +268,7 @@
     newDate.value = current.date || toISO(new Date());
     ensureOption(newTime, current.time);
     newTime.value = current.time || '';
-    ensureOption(newGuests, current.guests ? String(current.guests) : '', current.guests + ' nəfər');
+    ensureOption(newGuests, current.guests ? String(current.guests) : '', current.guests + ' ' + T.guestUnit);
     newGuests.value = current.guests ? String(current.guests) : newGuests.value;
     refreshTimes();
     clearStatus(resultStatus);
@@ -228,23 +286,23 @@
 
     if (!newDate.value) {
       markInvalid('date', true, rescheduleForm).focus();
-      showStatus(resultStatus, 'Tarix seçin.', 'error');
+      showStatus(resultStatus, T.dateRequired, 'error');
       return;
     }
     if (!newTime.value) {
       markInvalid('time', true, rescheduleForm).focus();
-      showStatus(resultStatus, 'Saat seçin.', 'error');
+      showStatus(resultStatus, T.timeRequired, 'error');
       return;
     }
     const timeChanged = newDate.value !== current.date || newTime.value !== current.time;
     const guestsChanged = Number(newGuests.value) !== Number(current.guests);
     if (!timeChanged && !guestsChanged) {
-      showStatus(resultStatus, 'Heç nə dəyişməyib — yeni vaxt və ya nəfər sayı seçin.', 'error');
+      showStatus(resultStatus, T.bkNoChange, 'error');
       return;
     }
 
     setLoading(rescheduleSave, true);
-    showStatus(resultStatus, 'Rezervasiya yenilənir…', 'info');
+    showStatus(resultStatus, T.bkUpdating, 'info');
 
     /* Yalnız dəyişən sahələr gedir */
     const body = { action: 'change', code: current.code, phone: current.phone };
@@ -259,7 +317,7 @@
 
     if (!res.ok) {
       if (res.payload && res.payload.field) markInvalid(res.payload.field, true, rescheduleForm);
-      showStatus(resultStatus, (res.payload && res.payload.error) || 'Dəyişmək alınmadı. Zəhmət olmasa bizə zəng edin.', 'error');
+      showStatus(resultStatus, errorText(res.payload, T.bkChangeFailed), 'error');
       return;
     }
 
@@ -269,8 +327,8 @@
     const r = res.payload.reservation;
     showStatus(
       resultStatus,
-      'Rezervasiyanız yeniləndi: ' + r.date.split('-').reverse().join('.') + ', ' + r.time +
-        (r.guests ? ', ' + r.guests + ' nəfər' : '') + '.',
+      T.bkUpdated.replace('{when}', r.date.split('-').reverse().join('.') + ', ' + r.time +
+        (r.guests ? ', ' + r.guests + ' ' + T.guestUnit : '')),
       'info'
     );
   });
@@ -286,24 +344,24 @@
 
     if (code.length < 4) {
       markInvalid('code', true).focus();
-      showStatus(statusBox, 'Bron kodunu yazın.', 'error');
+      showStatus(statusBox, T.bkCodeRequired, 'error');
       return;
     }
     if (!phone) {
       markInvalid('phone', true).focus();
-      showStatus(statusBox, 'Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67', 'error');
+      showStatus(statusBox, T.phoneInvalid, 'error');
       return;
     }
 
     setLoading(submitBtn, true);
-    showStatus(statusBox, 'Yoxlanılır…', 'info');
+    showStatus(statusBox, T.bkChecking, 'info');
 
     const res = await call({ action: 'lookup', code: code, phone: phone });
     setLoading(submitBtn, false);
 
     if (!res.ok) {
       if (res.payload && res.payload.field) markInvalid(res.payload.field, true);
-      showStatus(statusBox, (res.payload && res.payload.error) || 'Yoxlamaq alınmadı. Bir az sonra yenidən cəhd edin.', 'error');
+      showStatus(statusBox, errorText(res.payload, T.bkLookupFailed), 'error');
       return;
     }
 
@@ -320,10 +378,10 @@
 
   cancelBtn.addEventListener('click', async function () {
     if (!current) return;
-    if (!window.confirm('Rezervasiyanı ləğv etmək istədiyinizə əminsiniz? Bunu geri qaytarmaq olmur.')) return;
+    if (!window.confirm(T.bkCancelConfirm)) return;
 
     setLoading(cancelBtn, true);
-    showStatus(resultStatus, 'Ləğv edilir…', 'info');
+    showStatus(resultStatus, T.bkCancelling, 'info');
 
     const res = await call({ action: 'cancel', code: current.code, phone: current.phone });
     setLoading(cancelBtn, false);
@@ -334,13 +392,13 @@
     }
 
     if (!res.ok) {
-      showStatus(resultStatus, (res.payload && res.payload.error) || 'Ləğv etmək alınmadı. Zəhmət olmasa bizə zəng edin.', 'error');
+      showStatus(resultStatus, errorText(res.payload, T.bkCancelFailed), 'error');
       return;
     }
 
     cancelBtn.hidden = true;
     rescheduleBtn.hidden = true;
-    showStatus(resultStatus, 'Rezervasiyanız ləğv olundu.', 'info');
+    showStatus(resultStatus, T.bkCancelled, 'info');
   });
 
   againBtn.addEventListener('click', function () {
@@ -359,5 +417,10 @@
     codeInput.value = normalizeCode(fromUrl).slice(0, 24);
     phoneInput.focus({ preventScroll: true });
   }
+
+};
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
 
 })();

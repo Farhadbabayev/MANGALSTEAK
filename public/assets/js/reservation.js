@@ -21,6 +21,43 @@
   const NEWSLETTER_URL = API_BASE + '/api/newsletter';
   const MAX_DAYS_AHEAD = 90;
 
+  /**
+   * Mətnlər səhifənin dilindədir: build hər səhifəyə window.MANGAL_T qoyur.
+   * Olmasa (köhnə səhifə) Azərbaycan dilindəki mətnlər işlənir.
+   */
+  const T = Object.assign({
+    nameRequired: 'Zəhmət olmasa adınızı yazın.',
+    nameLong: 'Ad çox uzundur (maksimum 80 simvol).',
+    phoneInvalid: 'Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67',
+    dateRequired: 'Tarix seçin.',
+    timeRequired: 'Saat seçin.',
+    dateInvalid: 'Tarix və ya saat düzgün deyil.',
+    past: 'Keçmiş vaxt üçün rezervasiya etmək olmur. Başqa saat seçin.',
+    tooFar: 'Rezervasiya ən çox {days} gün əvvəlcədən edilə bilər.',
+    guestsRequired: 'Nəfər sayını seçin.',
+    guestsInvalid: 'Nəfər sayı düzgün deyil.',
+    sending: 'Rezervasiya göndərilir…',
+    failed: 'Rezervasiyanı qeyd edə bilmədik. Zəhmət olmasa bir az sonra yenidən yoxlayın və ya bizə zəng edin.',
+    timeout: 'Server cavab vermədi. Zəhmət olmasa telefonla əlaqə saxlayın.',
+    network: 'Bağlantı xətası oldu. İnternet bağlantınızı yoxlayın və ya bizə zəng edin.',
+    sumName: 'Ad', sumPhone: 'Telefon', sumDate: 'Tarix', sumTime: 'Saat', sumGuests: 'Nəfər', sumArea: 'Zal',
+    emailInvalid: 'E-mail ünvanı düzgün deyil.',
+    subscribed: 'Təşəkkürlər! Abunəliyiniz qeyd olundu.',
+    subscribeFailed: 'Alınmadı. Bir az sonra yenidən yoxlayın.',
+    subscribeNetwork: 'Bağlantı xətası. Bir az sonra yenidən yoxlayın.',
+  }, window.MANGAL_T || {});
+
+  const LANG = window.MANGAL_LANG || document.documentElement.lang || 'az';
+
+  /** Server mesajları Azərbaycan dilindədir; digər dillərdə sahəyə uyğun öz mətnimiz göstərilir */
+  const FIELD_MESSAGE = {
+    name: T.nameRequired,
+    phone: T.phoneInvalid,
+    date: T.dateInvalid,
+    time: T.dateInvalid,
+    guests: T.guestsInvalid,
+  };
+
   const pad = (n) => String(n).padStart(2, '0');
   const toISO = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
@@ -53,46 +90,43 @@
 
   const validate = function (data) {
     if (!data.name || data.name.trim().length < 2) {
-      return { field: 'name', message: 'Zəhmət olmasa adınızı yazın.' };
+      return { field: 'name', message: T.nameRequired };
     }
 
     if (data.name.trim().length > 80) {
-      return { field: 'name', message: 'Ad çox uzundur (maksimum 80 simvol).' };
+      return { field: 'name', message: T.nameLong };
     }
 
     if (!normalizePhone(data.phone)) {
-      return {
-        field: 'phone',
-        message: 'Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67',
-      };
+      return { field: 'phone', message: T.phoneInvalid };
     }
 
     if (!data.date) {
-      return { field: 'date', message: 'Tarix seçin.' };
+      return { field: 'date', message: T.dateRequired };
     }
 
     if (!data.time) {
-      return { field: 'time', message: 'Saat seçin.' };
+      return { field: 'time', message: T.timeRequired };
     }
 
     const when = new Date(`${data.date}T${data.time}:00`);
     if (isNaN(when.getTime())) {
-      return { field: 'date', message: 'Tarix və ya saat düzgün deyil.' };
+      return { field: 'date', message: T.dateInvalid };
     }
 
     if (when.getTime() < Date.now() + 15 * 60 * 1000) {
-      return { field: 'time', message: 'Keçmiş vaxt üçün rezervasiya etmək olmur. Başqa saat seçin.' };
+      return { field: 'time', message: T.past };
     }
 
     const limit = new Date();
     limit.setDate(limit.getDate() + MAX_DAYS_AHEAD);
     if (when > limit) {
-      return { field: 'date', message: `Rezervasiya ən çox ${MAX_DAYS_AHEAD} gün əvvəlcədən edilə bilər.` };
+      return { field: 'date', message: T.tooFar.replace('{days}', MAX_DAYS_AHEAD) };
     }
 
     const guests = Number(data.guests);
     if (!guests || guests < 1) {
-      return { field: 'guests', message: 'Nəfər sayını seçin.' };
+      return { field: 'guests', message: T.guestsRequired };
     }
 
     return null;
@@ -250,12 +284,12 @@
 
       if (successSummary) {
         const rows = [
-          ['Ad', data.name],
-          ['Telefon', prettyPhone(data.phone)],
-          ['Tarix', data.date.split('-').reverse().join('.')],
-          ['Saat', data.time],
-          ['Nəfər', labelOf('guests') || data.guests],
-          ['Zona', labelOf('area')],
+          [T.sumName, data.name],
+          [T.sumPhone, prettyPhone(data.phone)],
+          [T.sumDate, data.date.split('-').reverse().join('.')],
+          [T.sumTime, data.time],
+          [T.sumGuests, labelOf('guests') || data.guests],
+          [T.sumArea, labelOf('area')],
         ].filter(function (row) { return row[1]; });
 
         successSummary.innerHTML = rows
@@ -310,6 +344,7 @@
         note: (fd.get('note') || '').toString().trim(),
         website: (fd.get('website') || '').toString(),
         source: window.location.pathname.replace(/^\//, '') || 'index.html',
+        lang: LANG,
       };
 
       const error = validate(data);
@@ -323,7 +358,7 @@
       data.phone = normalizePhone(data.phone);
 
       setLoading(true);
-      showStatus('Rezervasiya göndərilir…', 'info');
+      showStatus(T.sending, 'info');
 
       try {
         const controller = new AbortController();
@@ -349,18 +384,17 @@
 
         if (payload && payload.field) markInvalid(payload.field, true);
 
-        showStatus(
-          (payload && payload.error) ||
-          'Rezervasiyanı qeyd edə bilmədik. Zəhmət olmasa bir az sonra yenidən yoxlayın və ya bizə zəng edin.',
-          'error'
-        );
+        const serverText = payload && payload.error;
+        const localized = LANG === 'az'
+          ? serverText
+          : (payload && payload.field && FIELD_MESSAGE[payload.field]) || null;
+
+        showStatus(localized || serverText || T.failed, 'error');
 
       } catch (err) {
         const offline = err && err.name === 'AbortError';
         showStatus(
-          offline
-            ? 'Server cavab vermədi. Zəhmət olmasa telefonla əlaqə saxlayın.'
-            : 'Bağlantı xətası oldu. İnternet bağlantınızı yoxlayın və ya bizə zəng edin.',
+          offline ? T.timeout : T.network,
           'error'
         );
       } finally {
@@ -386,7 +420,7 @@
       const email = input ? input.value.trim() : '';
 
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
-        if (newsletterStatus) newsletterStatus.textContent = 'E-mail ünvanı düzgün deyil.';
+        if (newsletterStatus) newsletterStatus.textContent = T.emailInvalid;
         return;
       }
 
@@ -398,13 +432,13 @@
         });
 
         if (response.ok) {
-          if (newsletterStatus) newsletterStatus.textContent = 'Təşəkkürlər! Abunəliyiniz qeyd olundu.';
+          if (newsletterStatus) newsletterStatus.textContent = T.subscribed;
           newsletterForm.reset();
         } else {
-          if (newsletterStatus) newsletterStatus.textContent = 'Alınmadı. Bir az sonra yenidən yoxlayın.';
+          if (newsletterStatus) newsletterStatus.textContent = T.subscribeFailed;
         }
       } catch (_) {
-        if (newsletterStatus) newsletterStatus.textContent = 'Bağlantı xətası. Bir az sonra yenidən yoxlayın.';
+        if (newsletterStatus) newsletterStatus.textContent = T.subscribeNetwork;
       }
     });
   }

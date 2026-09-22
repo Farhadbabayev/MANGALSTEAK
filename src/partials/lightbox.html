@@ -1,0 +1,17 @@
+  <!--
+    - Şəkil baxışı (zalların şəkilləri). <dialog> fokus və Esc-i özü idarə edir.
+  -->
+
+  <dialog class="lightbox" data-lightbox aria-label="{{t.lightbox.label}}">
+    <figure class="lightbox-figure">
+      <img data-lightbox-img alt="">
+      <figcaption>
+        <span data-lightbox-caption></span>
+        <span class="lightbox-count" data-lightbox-count></span>
+      </figcaption>
+    </figure>
+
+    <button type="button" class="lightbox-btn lightbox-close" data-lightbox-close aria-label="{{t.lightbox.close}}">{{icons.x}}</button>
+    <button type="button" class="lightbox-btn lightbox-prev" data-lightbox-prev aria-label="{{t.lightbox.prev}}">{{icons.arrow-left}}</button>
+    <button type="button" class="lightbox-btn lightbox-next" data-lightbox-next aria-label="{{t.lightbox.next}}">{{icons.arrow-right}}</button>
+  </dialog>

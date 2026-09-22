@@ -6,11 +6,8 @@
         <div class="narrow">
 
           <div class="booking-head reveal">
-            <h2 class="display-2" id="rezervasiya-basliq">Masanızı ayırın</h2>
-            <p class="lede">
-              Sorğunuz birbaşa restoranın rezervasiya sisteminə düşür.
-              Heyətimiz qısa müddətdə təsdiq üçün sizinlə əlaqə saxlayır.
-            </p>
+            <h2 class="display-2" id="rezervasiya-basliq">{{t.form.title}}</h2>
+            <p class="lede">{{t.form.lede}}</p>
           </div>
 
           <div class="carpet">
@@ -19,73 +16,73 @@
             <div class="fields">
 
               <div class="field">
-                <label for="rez-name">Ad, Soyad</label>
+                <label for="rez-name">{{t.form.name}}</label>
                 <input type="text" id="rez-name" name="name" data-field="name" required maxlength="80"
-                  autocomplete="name" placeholder="Aysel Quliyeva">
+                  autocomplete="name" placeholder="{{t.form.namePlaceholder}}">
               </div>
 
               <div class="field">
-                <label for="rez-phone">Telefon</label>
+                <label for="rez-phone">{{t.form.phone}}</label>
                 <input type="tel" id="rez-phone" name="phone" data-field="phone" required maxlength="25"
                   autocomplete="tel" placeholder="+994 50 123 45 67">
               </div>
 
               <div class="field">
-                <label for="rez-date">Tarix</label>
+                <label for="rez-date">{{t.form.date}}</label>
                 <input type="date" id="rez-date" name="date" data-field="date" required>
               </div>
 
               <div class="field">
-                <label for="rez-time">Saat</label>
+                <label for="rez-time">{{t.form.time}}</label>
                 <select id="rez-time" name="time" data-field="time" required>
                   {{blocks.timeOptions}}
                 </select>
               </div>
 
               <div class="field">
-                <label for="rez-guests">Nəfər sayı</label>
+                <label for="rez-guests">{{t.form.guests}}</label>
                 <select id="rez-guests" name="guests" data-field="guests">
                   {{blocks.guestOptions}}
                 </select>
               </div>
 
               <div class="field">
-                <label for="rez-area">Zona</label>
+                <label for="rez-area">{{t.form.area}}</label>
                 <select id="rez-area" name="area" data-field="area">
                   {{blocks.areaOptions}}
                 </select>
               </div>
 
               <div class="field">
-                <label for="rez-occasion">Səbəb</label>
+                <label for="rez-occasion">{{t.form.occasion}}</label>
                 <select id="rez-occasion" name="occasion" data-field="occasion">
                   {{blocks.occasionOptions}}
                 </select>
               </div>
 
               <div class="field full">
-                <label for="rez-note">Qeyd</label>
+                <label for="rez-note">{{t.form.note}}</label>
                 <textarea id="rez-note" name="note" data-field="note" maxlength="500"
-                  placeholder="Uşaq kreslosu, doğum günü tortu, pəncərə kənarı…"></textarea>
+                  placeholder="{{t.form.notePlaceholder}}"></textarea>
               </div>
 
             </div>
 
             <p class="form-hint">
               {{icons.lock-simple}}
-              Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
+              {{t.form.privacy}}
             </p>
 
             <div class="form-status" data-form-status role="status" aria-live="polite"></div>
 
             <p class="hp-field" aria-hidden="true">
-              <label>Bu xananı boş buraxın
+              <label>{{t.form.honeypot}}
                 <input type="text" name="website" tabindex="-1" autocomplete="off">
               </label>
             </p>
 
             <div class="form-actions">
-              <button type="submit" class="btn btn-solid" data-submit-btn>Masanı ayır</button>
+              <button type="submit" class="btn btn-solid" data-submit-btn>{{t.form.submit}}</button>
             </div>
 
           </form>
@@ -96,27 +93,24 @@
               {{icons.check}}
             </div>
 
-            <h2 class="display-2">Rezervasiya qəbul olundu</h2>
+            <h2 class="display-2">{{t.form.successTitle}}</h2>
 
-            <p class="lede">
-              Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü.
-              Heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
-            </p>
+            <p class="lede">{{t.form.successText}}</p>
 
             <div class="success-code">
-              <span class="label">Rezervasiya kodunuz</span>
+              <span class="label">{{t.form.codeLabel}}</span>
               <strong data-success-code></strong>
             </div>
 
             <ul class="success-list" data-success-summary></ul>
 
             <p class="dim small">
-              Bronu yoxlamaq və ya ləğv etmək üçün:
-              <a href="bron.html" data-success-manage>Bronu yoxla</a> · <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
+              {{t.form.manageText}}
+              <a href="bron.html" data-success-manage>{{t.form.manageLink}}</a> · <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
             </p>
 
             <div class="form-actions">
-              <button type="button" class="btn" data-new-reservation>Yeni rezervasiya</button>
+              <button type="button" class="btn" data-new-reservation>{{t.form.newReservation}}</button>
             </div>
 
           </div>

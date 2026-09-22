@@ -46,7 +46,69 @@ const fetchText = async (url) => {
   return response.text();
 };
 
+/**
+ * Kiril (rus dili) üçün köməkçi şrift.
+ *
+ * Archivo-da kiril hərfləri yoxdur. Roboto Flex-in kiril alt dəsti eyni
+ * «wdth» oxuna malikdir, ona görə «Archivo» adı altında, yalnız kiril
+ * unicode-range ilə qoşulur: başlıqlar (font-stretch: 68%) sıx, mətn isə
+ * normal enində qalır. Fayl ayrıca CSS-dədir və yalnız /ru/ səhifələrinə
+ * qoşulur — digər dillərdə heç yüklənmir.
+ *
+ *   node scripts/fetch-fonts.mjs --cyrillic   (yalnız bu hissə)
+ */
+const CYRILLIC = { family: 'Roboto+Flex:wdth,wght@25..151,100..1000', as: 'Archivo', subsets: ['cyrillic', 'cyrillic-ext'] };
+
+const fetchCyrillic = async () => {
+  await mkdir(FONT_DIR, { recursive: true });
+
+  const css = await fetchText('https://fonts.googleapis.com/css2?family=' + CYRILLIC.family + '&display=swap');
+  const out = [
+    '/*-----------------------------------*\\',
+    '  #fonts-cyrillic.css — rus səhifələri üçün kiril hərfləri',
+    '  scripts/fetch-fonts.mjs ilə yaradılıb, əl ilə redaktə etməyin.',
+    '\\*-----------------------------------*/',
+    '',
+  ];
+
+  for (const part of css.split('/*').slice(1)) {
+    const subset = part.slice(0, part.indexOf('*/')).trim();
+    if (!CYRILLIC.subsets.includes(subset)) continue;
+
+    const block = part.slice(part.indexOf('*/') + 2);
+    const srcMatch = block.match(/src:\s*url\(([^)]+)\)\s*format\('([^']+)'\)/);
+    const rangeMatch = block.match(/unicode-range:\s*([^;]+);/);
+    if (!srcMatch || !rangeMatch) continue;
+
+    const fileName = 'roboto-flex-cyr-' + subset + '.woff2';
+    const response = await fetch(srcMatch[1], { headers: { 'User-Agent': UA } });
+    if (!response.ok) throw new Error('yüklənmədi: ' + srcMatch[1]);
+    const buffer = Buffer.from(await response.arrayBuffer());
+    await writeFile(join(FONT_DIR, fileName), buffer);
+
+    for (const family of [CYRILLIC.as]) {
+      out.push('@font-face {');
+      out.push("  font-family: '" + family + "';");
+      out.push('  font-style: normal;');
+      out.push('  font-weight: 100 900;');
+      out.push('  font-stretch: 25% 151%;');
+      out.push('  font-display: swap;');
+      out.push("  src: url('../fonts/" + fileName + "') format('woff2');");
+      out.push('  unicode-range: ' + rangeMatch[1].trim() + ';');
+      out.push('}');
+      out.push('');
+    }
+
+    console.log('  ✓ ' + fileName + '  (' + Math.round(buffer.length / 1024) + ' KB)');
+  }
+
+  await writeFile(join(ROOT, 'public', 'assets', 'css', 'fonts-cyrillic.css'), out.join('\n'), 'utf8');
+  console.log('  public/assets/css/fonts-cyrillic.css yeniləndi');
+};
+
 const main = async () => {
+  if (process.argv.includes('--cyrillic')) return fetchCyrillic();
+
   await mkdir(FONT_DIR, { recursive: true });
 
   const out = [
@@ -118,6 +180,8 @@ const main = async () => {
   await writeFile(join(ROOT, 'public', 'assets', 'css', 'fonts.css'), out.join('\n'), 'utf8');
   console.log('\n  ' + downloaded + ' fayl yükləndi → public/assets/fonts/');
   console.log('  public/assets/css/fonts.css yeniləndi');
+
+  await fetchCyrillic();
 };
 
 main().catch((err) => {

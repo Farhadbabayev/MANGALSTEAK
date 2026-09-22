@@ -35,7 +35,9 @@ const archive = (file) => {
   writeFileSync(join(BACKUP, `${stamp}-${name}`), readFileSync(path));
 };
 
-for (const file of ['site.config.json', 'content.config.json', 'theme.config.json']) archive(file);
+for (const file of ['site.config.json', 'content.config.json', 'theme.config.json', 'i18n.config.json']) {
+  if (existsSync(join(ROOT, file))) archive(file);
+}
 
 /* Rezervasiyalar da arxivə köçürülür */
 const reservations = join(ROOT, 'data', 'reservations.jsonl');
@@ -60,6 +62,11 @@ const site = {
     description: 'Restoran haqqında bir cümləlik təsvir — axtarış sistemlərində görünür.',
     locale: 'az_AZ',
     lang: 'az',
+    languages: [
+      { code: 'az', label: 'AZ', name: 'Azərbaycanca', locale: 'az_AZ' },
+      { code: 'ru', label: 'RU', name: 'Русский', locale: 'ru_RU', cyrillic: true },
+      { code: 'en', label: 'EN', name: 'English', locale: 'en_US' },
+    ],
   },
   contact: {
     addressShort: 'Küçə 00, Bakı',
@@ -97,9 +104,7 @@ const site = {
     maxDaysAhead: 90,
     timezoneOffset: '+04:00',
     areas: [
-      { value: 'salon', label: 'Əsas salon' },
-      { value: 'terrace', label: 'Terras' },
-      { value: 'vip', label: 'VIP otaq' },
+      { value: 'salon', label: 'Əsas zal' },
       { value: 'any', label: 'Fərqi yoxdur' },
     ],
     occasions: [
@@ -179,6 +184,17 @@ const content = {
       { id: 'ickiler', name: 'İçkilər', subtitle: 'Alt başlıq', items: [dish('İçki')] },
     ],
   },
+  halls: {
+    subtitle: 'Kiçik etiket',
+    title: 'Zallarımız',
+    text: 'Zallar haqqında qısa giriş.',
+    items: [
+      {
+        id: 'salon', name: 'Əsas zal', tagline: 'Kiçik etiket', text: 'Zalın qısa təsviri.', capacity: '',
+        images: [{ src: 'event-1.jpg', alt: 'Zalın şəkli' }],
+      },
+    ],
+  },
   gallery: {
     subtitle: 'Obyektivdən',
     title: 'Qalereya',
@@ -190,6 +206,7 @@ const content = {
     ],
   },
   pages: {
+    zallar: { title: 'Zallar', subtitle: 'Kiçik etiket' },
     haqqimizda: {
       title: 'Haqqımızda',
       subtitle: 'Kiçik etiket',
@@ -250,6 +267,7 @@ const write = (file, data) =>
 write('site.config.json', site);
 write('content.config.json', content);
 write('theme.config.json', theme);
+write('i18n.config.json', { _comment: 'Tərcümələr — admin paneli → Tərcümələr', ru: {}, en: {} });
 
 console.log(`
   Şablon hazırdır. Köhnə məlumatlar: data/backups/${stamp}-*

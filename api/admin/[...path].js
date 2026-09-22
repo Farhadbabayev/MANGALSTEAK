@@ -18,6 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { ghEnabled, ghGetJson, ghGetFile, ghPutFile, ghDeleteFile, ghListDir, ghCheck, ghConfig } from '../../server/lib/github.mjs';
 import { maskedVilka } from '../../server/lib/integration.mjs';
 import { vilkaStatus, previewPayload, sendTest } from '../../server/lib/vilka.mjs';
+import { MENU_DIR, MAX_PDF_BYTES_VERCEL, menuFileName, checkSlot, parsePdf, menuMatrix } from '../../server/lib/menus.mjs';
 
 /* ------------------------------------------------------------------ *
  *  Fayl tapma (bundle daxilində)
@@ -92,12 +93,14 @@ const CONFIG_FILES = {
   site: 'site.config.json',
   content: 'content.config.json',
   theme: 'theme.config.json',
+  i18n: 'i18n.config.json',
 };
 
 const REQUIRED_KEYS = {
   site: ['site', 'contact', 'hours', 'social', 'reservation', 'footer'],
   content: ['hero', 'menu', 'gallery', 'pages'],
   theme: ['colors', 'fonts', 'layout', 'logo'],
+  i18n: [],
 };
 
 /**
@@ -122,6 +125,8 @@ const readConfig = async (name, warn) => {
   }
 
   const local = readLocal(file);
+  /* Tərcümə faylı hələ yaradılmayıbsa boş sayılır */
+  if (!local && name === 'i18n') return {};
   if (!local) throw new Error(file + ' tapılmadı.');
   return JSON.parse(local.toString('utf8'));
 };
@@ -143,6 +148,22 @@ const listImages = async (warn) => {
   }
 
   return [];
+};
+
+/** Zalların PDF menyuları: zal × dil cədvəli */
+const listMenus = async (site, content, warn) => {
+  let files = [];
+
+  if (ghEnabled()) {
+    try {
+      files = (await ghListDir(MENU_DIR)).filter((f) => f.name.endsWith('.pdf'));
+    } catch (err) {
+      console.error('[admin] menyu siyahısı alınmadı:', err.message);
+      if (warn) warn(err.message);
+    }
+  }
+
+  return menuMatrix(site, content, files);
 };
 
 const listFonts = async () => {
@@ -325,14 +346,17 @@ export default async function handler(req, res) {
       const warnings = [];
       const warn = (message) => { if (!warnings.includes(message)) warnings.push(message); };
 
-      const [site, content, theme, images, fonts, gh] = await Promise.all([
+      const [site, content, theme, i18n, images, fonts, gh] = await Promise.all([
         readConfig('site', warn),
         readConfig('content', warn),
         readConfig('theme', warn),
+        readConfig('i18n', warn),
         listImages(warn),
         listFonts(),
         ghCheck(),
       ]);
+
+      const menus = await listMenus(site, content, warn);
 
       const writable = gh.ok && warnings.length === 0;
 
@@ -341,8 +365,11 @@ export default async function handler(req, res) {
         site,
         content,
         theme,
+        i18n,
         images,
         fonts,
+        menus,
+        menuLimit: MAX_PDF_BYTES_VERCEL,
         site_url: process.env.SITE_URL || '',
         capabilities: {
           mode: 'git',
@@ -473,6 +500,47 @@ export default async function handler(req, res) {
 
       await ghDeleteFile('public/assets/images/' + name, 'Panel: ' + name + ' silindi');
       return res.status(200).json({ ok: true, images: await listImages(), deploy: 'queued' });
+    }
+
+    /* ---------- Zalların PDF menyuları ---------- */
+
+    if (route === 'menus' && req.method === 'GET') {
+      const [site, content] = await Promise.all([readConfig('site'), readConfig('content')]);
+      return res.status(200).json({ ok: true, menus: await listMenus(site, content) });
+    }
+
+    if ((route === 'menus' || route === 'menus/delete') && req.method === 'POST') {
+      if (!ghEnabled()) {
+        return res.status(503).json({ ok: false, error: 'GITHUB_TOKEN təyin olunmayıb.' });
+      }
+
+      let body;
+      try {
+        body = await readBody(req);
+      } catch (err) {
+        const tooLarge = err && err.message === 'too-large';
+        return res.status(tooLarge ? 413 : 400).json({
+          ok: false,
+          error: tooLarge ? 'PDF çox böyükdür (maksimum 3 MB).' : 'Fayl oxunmadı.',
+        });
+      }
+
+      const [site, content] = await Promise.all([readConfig('site'), readConfig('content')]);
+      const invalid = checkSlot(body.hall, body.lang, site, content);
+      if (invalid) return res.status(400).json({ ok: false, error: invalid });
+
+      const file = MENU_DIR + '/' + menuFileName(body.hall, body.lang);
+
+      if (route === 'menus/delete') {
+        const result = await ghDeleteFile(file, 'Panel: ' + menuFileName(body.hall, body.lang) + ' silindi');
+        if (!result.deleted) return res.status(404).json({ ok: false, error: 'Menyu tapılmadı.' });
+      } else {
+        const pdf = parsePdf(body.data, MAX_PDF_BYTES_VERCEL);
+        if (!pdf.ok) return res.status(400).json(pdf);
+        await ghPutFile(file, pdf.buffer, 'Panel: ' + menuFileName(body.hall, body.lang) + ' menyusu yükləndi');
+      }
+
+      return res.status(200).json({ ok: true, deploy: 'queued', menus: await listMenus(site, content) });
     }
 
     /* ---------- Rezervasiya sistemi ---------- */

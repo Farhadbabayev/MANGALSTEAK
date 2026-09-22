@@ -1,0 +1,28 @@
+{{> page-hero}}
+
+      <!--
+        - #ZALLAR: giriş və zallar arası keçid
+      -->
+
+      <section class="section halls-intro" aria-labelledby="halls-title">
+        <div class="wrap">
+
+          <div class="section-intro reveal">
+            <p class="label">{{halls.subtitle}}</p>
+            <h2 class="display-2" id="halls-title">{{halls.title}}</h2>
+            <p class="lede">{{halls.text}}</p>
+          </div>
+
+          <nav class="menu-nav hall-nav" aria-label="{{t.nav.halls}}">
+            {{blocks.hallNav}}
+          </nav>
+
+        </div>
+      </section>
+
+
+      <!--
+        - #HƏR ZAL: şəkillər, mətn, menyu (PDF), rezervasiya
+      -->
+
+{{blocks.hallSections}}

@@ -1,13 +1,35 @@
 {{> page-hero}}
 
       <!--
+        - #ZALLARIN MENYULARI (PDF, hər dil üçün ayrıca)
+      -->
+
+      <section class="section" id="zal-menyulari" aria-labelledby="hall-menus-title">
+        <div class="wrap">
+
+          <div class="section-intro reveal">
+            <h2 class="display-2" id="hall-menus-title">{{t.halls.menuTitle}}</h2>
+            <p class="lede">{{t.halls.menuLead}}</p>
+          </div>
+
+          <ul class="hall-cards reveal">
+            {{blocks.hallMenuCards}}
+          </ul>
+
+        </div>
+      </section>
+
+
+      <!--
         - #TAM MENYU
       -->
 
-      <section class="section section-menu" aria-label="Menyu">
+      <section class="section section-menu section-alt" aria-labelledby="dishes-title">
         <div class="wrap">
 
-          <nav class="menu-nav" aria-label="Menyu bölmələri">
+          <h2 class="display-2 section-title reveal" id="dishes-title">{{t.halls.otherDishes}}</h2>
+
+          <nav class="menu-nav" aria-label="{{t.menuPage.sections}}">
             {{blocks.menuNav}}
           </nav>
 
@@ -46,7 +68,7 @@
               <s class="was">{{specialDish.oldPrice}}</s>
             </div>
 
-            <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>Masa ayır</a>
+            <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>{{t.common.reserve}}</a>
           </div>
 
         </div>

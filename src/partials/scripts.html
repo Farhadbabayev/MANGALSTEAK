@@ -1,9 +1,9 @@
   <a href="https://wa.me/{{contact.whatsapp}}" class="float-btn float-whatsapp" target="_blank" rel="noopener"
-    aria-label="WhatsApp ilə yazın">
+    aria-label="{{t.common.whatsapp}}">
     {{icons.whatsapp-logo}}
   </a>
 
-  <a href="#top" class="float-btn float-top" data-back-top-btn aria-label="Yuxarı qayıt">
+  <a href="#top" class="float-btn float-top" data-back-top-btn aria-label="{{t.common.backTop}}">
     {{icons.arrow-up}}
   </a>
 
@@ -14,10 +14,14 @@
 
   <a href="rezervasiya.html#rezervasiya" class="float-reserve" data-rez-open>
     {{icons.calendar-check}}
-    <span>Masa ayır</span>
+    <span>{{t.common.reserve}}</span>
   </a>
 
 {{> reservation-modal}}
+
+{{> lightbox}}
+
+  {{lang.jsI18n}}
 
   <script src="./assets/js/script.js"></script>
   <script src="./assets/js/reservation.js"></script>

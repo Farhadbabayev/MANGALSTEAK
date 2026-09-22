@@ -35,12 +35,15 @@ an open mangal zone where guests watch the fire.
 - The owner edits texts, menu, images, colors, fonts and logo from `/admin`
   (the "Dizayn" section writes `theme.config.json` → `theme.css`). The design
   must keep working when the owner changes those tokens.
-- Language: Azerbaijani (`lang="az"`), Latin script with ə, ğ, ı, ö, ü, ç, ş.
+- Languages: Azerbaijani (default, site root), Russian (`/ru/`, Cyrillic via a
+  Roboto Flex companion font) and English (`/en/`). UI strings live in
+  `src/i18n/*.json`, owner-editable translations in `i18n.config.json`.
 
 ## Capabilities and Constraints
 
-- Pages: home, menu (7 categories), about, gallery, events & banquet,
-  reservation, contact, 404. URLs, nav labels and form field names stay stable.
+- Pages: home, menu (per-hall PDF menus per language + 7 categories), halls
+  (Steak, Ocakbaşı, Milli: own photos, own menu), about, gallery, events &
+  banquet, reservation, contact, 404. URLs, nav labels and form field names stay stable.
 - Reservation form fields and IDs are relied on by `reservation.js`, the API
   and tests; they must not be renamed.
 - Fonts are self-hosted woff2 in `public/assets/fonts/`.

@@ -1,0 +1,591 @@
+{
+  "_comment": "Tərcümələr. site.config.json və content.config.json-un üzərinə qoyulur: yalnız mətnlər yazılır, şəkil, qiymət və kodlar əsas fayldan gəlir. Boş və ya çatışmayan mətn Azərbaycan dilindəki ilə əvəz olunur. Admin paneli → Tərcümələr.",
+  "ru": {
+    "site": {
+      "site": {
+        "tagline": "Настоящий вкус на живых углях",
+        "description": "Mangal Steak House — премиальные стейки, кебабы из баранины и говядины на дровяных углях в центре Баку. Онлайн-бронирование столов."
+      },
+      "contact": {
+        "addressShort": "ул. Низами 00, Баку",
+        "addressFull": "ул. Низами 00, Сабаильский район,<br> Баку AZ1005, Азербайджан",
+        "addressOneLine": "ул. Низами 00, Сабаильский район, Баку AZ1005, Азербайджан"
+      },
+      "hours": {
+        "short": "Ежедневно 11:00 - 24:00",
+        "lunchTitle": "Обед",
+        "lunchValue": "Понедельник - Воскресенье<br> 11:00 - 16:00",
+        "dinnerTitle": "Ужин",
+        "dinnerValue": "Понедельник - Воскресенье<br> 17:00 - 24:00",
+        "kitchenNote": "Кухня принимает заказы до <span class=\"span\">23:30</span>"
+      },
+      "reservation": {
+        "areas": [
+          { "label": "Стейк-зал" },
+          { "label": "Очагбашы" },
+          { "label": "Национальный зал" },
+          { "label": "Без разницы" }
+        ],
+        "occasions": [
+          { "label": "Повод (необязательно)" },
+          { "label": "День рождения" },
+          { "label": "Деловая встреча" },
+          { "label": "Юбилей" },
+          { "label": "Семейный ужин" },
+          { "label": "Другое" }
+        ]
+      },
+      "footer": {
+        "newsletterTitle": "Новости и акции",
+        "newsletterText": "Подпишитесь и получите <span class=\"span\">скидку 10%</span> на первый заказ."
+      }
+    },
+    "content": {
+      "hero": {
+        "slides": [
+          { "subtitle": "Дровяные угли и премиальное мясо", "title": "Настоящий дом<br> стейка", "text": "Приходите всей семьёй и попробуйте вкус, рождённый на углях." },
+          { "subtitle": "28 дней сухой выдержки", "title": "Идеальный баланс<br> в каждом куске", "text": "Dry-aged рибай, томагавк и филе-миньон. Рукой мастера." },
+          { "subtitle": "Азербайджанская кухня и мангал", "title": "Вкус, знакомый<br> по дыму", "text": "Кебаб из баранины, люля-кебаб и открытая мангальная зона ждут вас." }
+        ]
+      },
+      "services": {
+        "subtitle": "Вкус царского застолья",
+        "title": "Мы предлагаем",
+        "text": "Открытая мангальная зона, выбор премиальных стейков и азербайджанская кухня на любой вкус — всё в одном месте."
+      },
+      "about": {
+        "subtitle": "Наша история",
+        "title": "У каждого куска своя история",
+        "text": "Mangal Steak House начинался в 2014 году как небольшой мангал. Сегодня в центре Баку мы объединяем премиальный стейк и азербайджанскую мангальную традицию за одним столом. Мясо поступает с местных ферм, стейки 28 дней выдерживаются в нашей собственной камере, а кебабы готовятся только на дубовых и тутовых углях. Потому что настоящий вкус не любит спешки.",
+        "callLabel": "Бронирование по телефону",
+        "buttonText": "Читать далее"
+      },
+      "specialDish": {
+        "subtitle": "Выбор шефа",
+        "title": "Dry-Aged Томагавк",
+        "text": "Рибай на кости весом 1 кг, 28 дней сухой выдержки, приготовлен на дубовых углях. Идеален на двоих, подаётся с печёными на углях овощами и соусом чимичурри.",
+        "buttonText": "Всё меню"
+      },
+      "menuPreview": {
+        "subtitle": "Особый выбор",
+        "title": "Вкусное меню",
+        "buttonText": "Смотреть всё меню"
+      },
+      "testimonial": {
+        "text": "Лучший рибай, который я ел в Баку. До сих пор помню запах дыма. Обязательно вернёмся."
+      },
+      "features": {
+        "subtitle": "Почему мы?",
+        "title": "Наши сильные стороны",
+        "cards": [
+          { "title": "Свежее и халяльное мясо", "text": "Ежедневные поставки с местных ферм, полностью халяльный забой." },
+          { "title": "Открытый мангал", "text": "Смотрите своими глазами, как готовится ваше блюдо." },
+          { "title": "Опытные шефы", "text": "Мастера стейка и мангала с опытом более 15 лет." },
+          { "title": "Мероприятия и банкеты", "text": "Отдельный зал для дней рождения, свадеб и корпоративов." }
+        ]
+      },
+      "events": {
+        "subtitle": "Последние новости",
+        "title": "Ближайшие события",
+        "buttonText": "Все события",
+        "cards": [
+          { "category": "Дегустация", "title": "Вечер дегустации стейков: 5 разных отрубов" },
+          { "category": "Живая музыка", "title": "Живой джаз и мангал по четвергам" },
+          { "category": "Мастер-класс", "title": "Вместе с шефом: идеальный стейк дома" }
+        ]
+      },
+      "menu": {
+        "subtitle": "Для каждого отруба — своё мастерство",
+        "title": "Наше меню",
+        "note": "Все цены включают НДС 18%. Плата за обслуживание не взимается.",
+        "categories": [
+          {
+            "name": "Стейки",
+            "subtitle": "Премиальные отрубы сухой выдержки",
+            "items": [
+              { "name": "Рибай (300 г)", "badge": "Хит", "text": "28 дней dry-aged, с морской солью и молотым чёрным перцем." },
+              { "name": "Томагавк (1000 г)", "badge": "На двоих", "text": "Рибай на кости, с овощами на углях и соусом чимичурри." },
+              { "name": "Ти-бон (450 г)", "text": "С одной стороны филе-миньон, с другой — стриплойн." },
+              { "name": "Филе-миньон (220 г)", "text": "Самый нежный отруб, с грибным соусом и картофельным пюре." },
+              { "name": "Стриплойн (300 г)", "text": "Насыщенный вкус, по краю — золотистый слой жира." },
+              { "name": "Пиканья (350 г)", "badge": "Новинка", "text": "По-бразильски, на углях с крупной солью." }
+            ]
+          },
+          {
+            "name": "Мангал и кебабы",
+            "subtitle": "На дубовых и тутовых углях",
+            "items": [
+              { "name": "Кебаб из баранины", "badge": "Хит", "text": "Из молодой баранины, с луком и сумахом." },
+              { "name": "Люля-кебаб", "text": "Мясо, рубленное вручную, с хлебом из тандыра." },
+              { "name": "Кебаб из говядины", "text": "Маринованная говяжья вырезка с томатами на углях." },
+              { "name": "Кебаб из курицы", "text": "Шафрановый маринад, с чесночным соусом." },
+              { "name": "Бараньи рёбрышки", "text": "Томлёные рёбрышки, розмарин и медовая глазурь." },
+              { "name": "Овощи на мангале", "badge": "Веган", "text": "Баклажан, перец, томаты и грибы на углях." }
+            ]
+          },
+          {
+            "name": "Закуски",
+            "subtitle": "Начало застолья",
+            "items": [
+              { "name": "Карпаччо из говядины", "text": "Тонко нарезанное мясо, пармезан, руккола и каперсы." },
+              { "name": "Сырная тарелка", "badge": "Для компании", "text": "5 видов местного сыра с орехами и мёдом." },
+              { "name": "Баклажан на углях", "text": "Баклажан с мангала, чеснок и йогурт." },
+              { "name": "Жареный картофель", "text": "По-домашнему, с розмариновой солью." }
+            ]
+          },
+          {
+            "name": "Салаты",
+            "subtitle": "Свежо и легко",
+            "items": [
+              { "name": "Цезарь (с курицей)", "text": "Романо, пармезан, домашние крутоны и соус цезарь." },
+              { "name": "Пастуший салат", "text": "Томаты, огурцы, лук, зелень и оливковое масло." },
+              { "name": "Руккола и пармезан", "text": "Руккола, черри, бальзамическая глазурь." },
+              { "name": "Салат с мангала", "badge": "Фирменный", "text": "Из печёных на углях овощей, с зёрнами граната." }
+            ]
+          },
+          {
+            "name": "Гарниры",
+            "subtitle": "К стейку",
+            "items": [
+              { "name": "Печёный картофель", "text": "Со сливочным маслом и зелёным луком." },
+              { "name": "Овощи на углях", "text": "Сезонные овощи, оливковое масло." },
+              { "name": "Картофельное пюре", "text": "Сливочное, с каплей трюфельного масла." },
+              { "name": "Жареные грибы", "text": "Шампиньоны, чеснок и петрушка." }
+            ]
+          },
+          {
+            "name": "Десерты",
+            "subtitle": "Сладкая точка",
+            "items": [
+              { "name": "Шоколадный фондан", "badge": "Хит", "text": "Горячий шоколадный центр, с ванильным мороженым." },
+              { "name": "Бакинская пахлава", "text": "По-домашнему, с орехами и шафрановым сиропом." },
+              { "name": "Медовик", "text": "Медовый торт с нежными слоями крема." },
+              { "name": "Павлова", "text": "С сезонными фруктами и кремом." }
+            ]
+          },
+          {
+            "name": "Напитки",
+            "subtitle": "Освежающие и горячие",
+            "items": [
+              { "name": "Домашний лимонад", "text": "Лимон-мята, фейхоа или клубника." },
+              { "name": "Свежий сок", "text": "Апельсин, гранат или яблоко. Свежевыжатый." },
+              { "name": "Азербайджанский чайный набор", "badge": "Для компании", "text": "В стаканах армуду, с вареньем и лимоном." },
+              { "name": "Красное вино (бокал)", "text": "Местные и импортные вина, идеальная пара к стейку." }
+            ]
+          }
+        ]
+      },
+      "halls": {
+        "subtitle": "Три зала, три атмосферы",
+        "title": "Наши залы",
+        "text": "Стейк, очагбашы и национальное застолье: у каждого зала своя атмосфера и своё меню. Посмотрите фотографии и выберите подходящий.",
+        "items": [
+          {
+            "name": "Стейк-зал",
+            "tagline": "Премиальные стейки",
+            "text": "Тихий зал с приглушённым светом для dry-aged стейков. Мясо 28 дней выдерживается в нашей камере и готовится на дубовых углях.",
+            "images": [
+              { "alt": "Премиальные отрубы в стейк-зале" },
+              { "alt": "Dry-aged томагавк" },
+              { "alt": "Сервировка стейк-зала" }
+            ]
+          },
+          {
+            "name": "Очагбашы",
+            "tagline": "Прямо у огня",
+            "text": "Садитесь у очага: мастер готовит кебаб у вас на глазах. Аромат дыма, жар углей и живая, душевная атмосфера.",
+            "images": [
+              { "alt": "Очагбашы: открытый мангал" },
+              { "alt": "Кебабы на углях" },
+              { "alt": "Мясо на углях" }
+            ]
+          },
+          {
+            "name": "Национальный зал",
+            "tagline": "Азербайджанское застолье",
+            "text": "Зал национальной кухни и традиций застолья: семейные торжества, большие приёмы и общие блюда в центре стола.",
+            "images": [
+              { "alt": "Общий вид национального зала" },
+              { "alt": "Вечернее застолье" },
+              { "alt": "Национальное застолье" }
+            ]
+          }
+        ]
+      },
+      "gallery": {
+        "subtitle": "Через объектив",
+        "title": "Галерея",
+        "text": "Несколько кадров с нашей кухни, из зала и с вашего стола.",
+        "images": [
+          { "alt": "Стейк на углях" },
+          { "alt": "Стол к завтраку" },
+          { "alt": "Зал ресторана" },
+          { "alt": "Блюдо, приготовленное шефом" },
+          { "alt": "Премиальные отрубы" },
+          { "alt": "Закуски" },
+          { "alt": "Вечерняя атмосфера" },
+          { "alt": "Мангальная зона" },
+          { "alt": "Подача" },
+          { "alt": "Напитки" },
+          { "alt": "Десерты" },
+          { "alt": "Фирменное блюдо шефа" }
+        ]
+      },
+      "pages": {
+        "haqqimizda": {
+          "title": "О нас",
+          "subtitle": "У огня с 2014 года",
+          "lead": "Мы не просто ресторан — мы история дыма, железного шампура и терпения.",
+          "blocks": [
+            { "title": "Всё начинается с выбора мяса", "text": "Каждую неделю мы работаем с одними и теми же фермами. Мясо поступает в ресторан целыми отрубами и разделывается нашим мастером. Стейки 28 дней проходят сухую выдержку в нашей собственной камере — единственный способ придать мясу насыщенный ореховый вкус и мягкость." },
+            { "title": "Огонь и терпение", "text": "На нашей кухне нет стейков, приготовленных на газу. Только дубовые и тутовые угли. Шефы переворачивают мясо вручную и следят за температурой, как за пульсом. Поэтому иногда нужно подождать несколько минут. И оно того стоит." },
+            { "title": "Традиция застолья", "text": "Азербайджанское застолье — это когда делятся. Мы построили меню так, чтобы большие блюда в центре стола хватило всем. Томагавк рассчитан на двоих, а сырная тарелка и мангальный сет — на весь стол." }
+          ],
+          "stats": [
+            { "label": "лет опыта" },
+            { "label": "дней dry-aged" },
+            { "label": "посадочных мест" },
+            { "label": "средний рейтинг" }
+          ]
+        },
+        "tedbirler": {
+          "title": "События и банкеты",
+          "subtitle": "Для ваших особых дней",
+          "lead": "Для дней рождения, помолвок, юбилеев и корпоративов у нас есть отдельный зал и индивидуальное меню.",
+          "packages": [
+            { "name": "Семейный праздник", "capacity": "10-25 человек", "price": "45 ₼ / человек", "features": ["Сет-меню (из 5 блюд)", "Отдельная зона со столами", "Подача торта", "Безлимитный чай и лимонад"] },
+            { "name": "Корпоративный вечер", "capacity": "25-60 человек", "price": "65 ₼ / человек", "features": ["Фуршет со стейками и мангалом", "Проектор и звуковая система", "Отдельный вход и гардероб", "Персональные официанты"] },
+            { "name": "Весь ресторан", "capacity": "60-140 человек", "price": "Индивидуальная цена", "features": ["Весь зал в вашем распоряжении", "Индивидуальное меню", "Организация живой музыки", "Помощь с декором"] }
+          ]
+        },
+        "elaqe": {
+          "title": "Контакты",
+          "subtitle": "Как нас найти",
+          "lead": "Есть вопрос? Позвоните, напишите или приходите — мы открыты каждый день."
+        },
+        "qalereya": {
+          "title": "Галерея",
+          "subtitle": "Несколько кадров"
+        },
+        "menyu": {
+          "title": "Меню",
+          "subtitle": "С углей на ваш стол"
+        },
+        "zallar": {
+          "title": "Залы",
+          "subtitle": "Steak · Очагбашы · Милли"
+        },
+        "rezervasiya": {
+          "title": "Бронирование",
+          "subtitle": "Три простых шага",
+          "lead": "Заполните форму — заявка сразу попадёт в систему бронирования ресторана, и мы свяжемся с вами для подтверждения.",
+          "steps": [
+            { "title": "Заполните форму", "text": "Укажите дату, время, количество гостей и номер телефона." },
+            { "title": "Заявка зарегистрирована", "text": "Заявка сразу попадает в нашу систему, вы получаете код." },
+            { "title": "Звонок для подтверждения", "text": "В течение 15 минут мы свяжемся с вами и подтвердим стол." }
+          ],
+          "rules": [
+            "Стол сохраняется 15 минут после времени брони.",
+            "Для компаний от 6 человек может потребоваться предзаказ.",
+            "Для отмены или изменения свяжитесь с нами по телефону.",
+            "Принести свой торт на день рождения можно бесплатно."
+          ]
+        }
+      }
+    }
+  },
+  "en": {
+    "site": {
+      "site": {
+        "tagline": "The real taste of wood-fire embers",
+        "description": "Mangal Steak House: premium steaks, lamb and beef kebabs cooked over wood embers in the centre of Baku. Book a table online."
+      },
+      "contact": {
+        "addressShort": "00 Nizami St, Baku",
+        "addressFull": "00 Nizami Street, Sabail district,<br> Baku AZ1005, Azerbaijan",
+        "addressOneLine": "00 Nizami Street, Sabail district, Baku AZ1005, Azerbaijan"
+      },
+      "hours": {
+        "short": "Daily 11:00 - 24:00",
+        "lunchTitle": "Lunch",
+        "lunchValue": "Monday - Sunday<br> 11:00 - 16:00",
+        "dinnerTitle": "Dinner",
+        "dinnerValue": "Monday - Sunday<br> 17:00 - 24:00",
+        "kitchenNote": "The kitchen takes orders until <span class=\"span\">23:30</span>"
+      },
+      "reservation": {
+        "areas": [
+          { "label": "Steak hall" },
+          { "label": "Ocakbashi" },
+          { "label": "Milli hall" },
+          { "label": "No preference" }
+        ],
+        "occasions": [
+          { "label": "Occasion (optional)" },
+          { "label": "Birthday" },
+          { "label": "Business meeting" },
+          { "label": "Anniversary" },
+          { "label": "Family dinner" },
+          { "label": "Other" }
+        ]
+      },
+      "footer": {
+        "newsletterTitle": "News & offers",
+        "newsletterText": "Subscribe and get <span class=\"span\">10% off</span> your first order."
+      }
+    },
+    "content": {
+      "hero": {
+        "slides": [
+          { "subtitle": "Wood embers & premium meat", "title": "The true home<br> of steak", "text": "Come with your family and share the taste of food cooked over the embers." },
+          { "subtitle": "28 days of dry-ageing", "title": "Perfect balance<br> in every bite", "text": "Dry-aged ribeye, tomahawk and filet mignon. By a master's hand." },
+          { "subtitle": "Azerbaijani cuisine & mangal", "title": "A taste known<br> by its smoke", "text": "Lamb tikka, lula kebab and an open mangal zone are waiting for you." }
+        ]
+      },
+      "services": {
+        "subtitle": "A royal table",
+        "title": "What we offer",
+        "text": "An open mangal zone, a choice of premium steaks and Azerbaijani cuisine for every taste, all in one place."
+      },
+      "about": {
+        "subtitle": "Our story",
+        "title": "Every cut has its own story",
+        "text": "Mangal Steak House began in 2014 as a small mangal grill. Today, in the centre of Baku, we bring premium steak and the Azerbaijani mangal tradition to one table. Our meat comes from local farms, our steaks are dry-aged for 28 days in our own ageing room, and our kebabs are cooked only over oak and mulberry charcoal. Because real flavour doesn't like to be rushed.",
+        "callLabel": "Book by phone",
+        "buttonText": "Read more"
+      },
+      "specialDish": {
+        "subtitle": "Chef's choice",
+        "title": "Dry-Aged Tomahawk",
+        "text": "A 1 kg bone-in ribeye, dry-aged for 28 days and cooked over oak charcoal. Ideal for two, served with ember-roasted vegetables and chimichurri.",
+        "buttonText": "Full menu"
+      },
+      "menuPreview": {
+        "subtitle": "Special selection",
+        "title": "Our menu",
+        "buttonText": "See the full menu"
+      },
+      "testimonial": {
+        "text": "The best ribeye I've had in Baku. I still remember the smell of the smoke. We'll definitely be back."
+      },
+      "features": {
+        "subtitle": "Why us?",
+        "title": "What we do best",
+        "cards": [
+          { "title": "Fresh & halal meat", "text": "Daily supply from local farms, fully halal." },
+          { "title": "Open mangal", "text": "Watch your food being cooked with your own eyes." },
+          { "title": "Expert chefs", "text": "Steak and mangal masters with over 15 years of experience." },
+          { "title": "Events & banquets", "text": "A separate hall for birthdays, weddings and corporate events." }
+        ]
+      },
+      "events": {
+        "subtitle": "Latest news",
+        "title": "Upcoming events",
+        "buttonText": "All events",
+        "cards": [
+          { "category": "Tasting", "title": "Steak tasting night: 5 different cuts" },
+          { "category": "Live music", "title": "Live jazz and mangal on Thursdays" },
+          { "category": "Masterclass", "title": "With the chef: the perfect steak at home" }
+        ]
+      },
+      "menu": {
+        "subtitle": "A different craft for every cut",
+        "title": "Our menu",
+        "note": "All prices include 18% VAT. No service charge.",
+        "categories": [
+          {
+            "name": "Steaks",
+            "subtitle": "Dry-aged premium cuts",
+            "items": [
+              { "name": "Ribeye (300 g)", "badge": "Bestseller", "text": "Dry-aged for 28 days, with sea salt and cracked black pepper." },
+              { "name": "Tomahawk (1000 g)", "badge": "For two", "text": "Bone-in ribeye with ember-roasted vegetables and chimichurri." },
+              { "name": "T-Bone (450 g)", "text": "Filet mignon on one side, striploin on the other." },
+              { "name": "Filet mignon (220 g)", "text": "The most tender cut, with mushroom sauce and mashed potatoes." },
+              { "name": "Striploin (300 g)", "text": "Rich flavour with a golden layer of fat on the edge." },
+              { "name": "Picanha (350 g)", "badge": "New", "text": "Brazilian style, over the embers with coarse salt." }
+            ]
+          },
+          {
+            "name": "Mangal & Kebab",
+            "subtitle": "Over oak and mulberry charcoal",
+            "items": [
+              { "name": "Lamb tikka kebab", "badge": "Bestseller", "text": "Young lamb, with onion and sumac." },
+              { "name": "Lula kebab", "text": "Hand-minced meat, with tandir bread." },
+              { "name": "Beef tikka kebab", "text": "Marinated beef fillet with ember-roasted tomatoes." },
+              { "name": "Chicken kebab", "text": "Saffron marinade, with garlic sauce." },
+              { "name": "Lamb ribs", "text": "Slow-cooked ribs, rosemary and honey glaze." },
+              { "name": "Vegetable mangal", "badge": "Vegan", "text": "Aubergine, peppers, tomatoes and mushrooms over the embers." }
+            ]
+          },
+          {
+            "name": "Starters",
+            "subtitle": "To open the table",
+            "items": [
+              { "name": "Beef carpaccio", "text": "Thinly sliced beef, parmesan, rocket and capers." },
+              { "name": "Cheese board", "badge": "To share", "text": "5 local cheeses with walnuts and honey." },
+              { "name": "Ember-roasted aubergine", "text": "Aubergine from the mangal, garlic and yoghurt." },
+              { "name": "Fried potatoes", "text": "Home style, with rosemary salt." }
+            ]
+          },
+          {
+            "name": "Salads",
+            "subtitle": "Fresh and light",
+            "items": [
+              { "name": "Caesar (with chicken)", "text": "Romaine, parmesan, house croutons and Caesar dressing." },
+              { "name": "Shepherd's salad", "text": "Tomato, cucumber, onion, herbs and olive oil." },
+              { "name": "Rocket & parmesan", "text": "Rocket, cherry tomatoes, balsamic glaze." },
+              { "name": "Mangal salad", "badge": "House special", "text": "Ember-roasted vegetables with pomegranate seeds." }
+            ]
+          },
+          {
+            "name": "Sides",
+            "subtitle": "Next to the steak",
+            "items": [
+              { "name": "Baked potatoes", "text": "With butter and spring onion." },
+              { "name": "Ember-roasted vegetables", "text": "Seasonal vegetables, olive oil." },
+              { "name": "Mashed potatoes", "text": "Creamy, with a drop of truffle oil." },
+              { "name": "Sautéed mushrooms", "text": "Champignons, garlic and parsley." }
+            ]
+          },
+          {
+            "name": "Desserts",
+            "subtitle": "A sweet finish",
+            "items": [
+              { "name": "Chocolate fondant", "badge": "Bestseller", "text": "Warm chocolate centre, with vanilla ice cream." },
+              { "name": "Baku pakhlava", "text": "Home style, with walnuts and saffron syrup." },
+              { "name": "Medovik", "text": "Honey cake with delicate layers of cream." },
+              { "name": "Pavlova", "text": "With seasonal fruit and cream." }
+            ]
+          },
+          {
+            "name": "Drinks",
+            "subtitle": "Refreshing and hot",
+            "items": [
+              { "name": "House lemonade", "text": "Lemon-mint, feijoa or strawberry." },
+              { "name": "Fresh juice", "text": "Orange, pomegranate or apple. Freshly squeezed." },
+              { "name": "Azerbaijani tea set", "badge": "To share", "text": "In armudu glasses, with jam and lemon." },
+              { "name": "Red wine (glass)", "text": "Local and imported wines, a perfect match for steak." }
+            ]
+          }
+        ]
+      },
+      "halls": {
+        "subtitle": "Three halls, three moods",
+        "title": "Our halls",
+        "text": "Steak, ocakbashi and the national table: each hall has its own atmosphere and its own menu. Browse the photos and choose the one that suits you.",
+        "items": [
+          {
+            "name": "Steak hall",
+            "tagline": "Premium steaks",
+            "text": "A quiet, softly lit hall dedicated to dry-aged steak. The meat is aged for 28 days in our own ageing room and cooked over oak charcoal.",
+            "images": [
+              { "alt": "Premium cuts in the Steak hall" },
+              { "alt": "Dry-aged tomahawk" },
+              { "alt": "A table in the Steak hall" }
+            ]
+          },
+          {
+            "name": "Ocakbashi",
+            "tagline": "Right by the fire",
+            "text": "Sit by the hearth: the master cooks your kebab right in front of you. The scent of smoke, the heat of the embers and a lively, warm atmosphere.",
+            "images": [
+              { "alt": "Ocakbashi: the open mangal" },
+              { "alt": "Kebabs over the embers" },
+              { "alt": "Meat over the embers" }
+            ]
+          },
+          {
+            "name": "Milli hall",
+            "tagline": "The Azerbaijani table",
+            "text": "A hall for national cuisine and the tradition of the table: family celebrations, large gatherings and platters shared in the middle of the table.",
+            "images": [
+              { "alt": "The Milli hall" },
+              { "alt": "An evening table" },
+              { "alt": "The national table" }
+            ]
+          }
+        ]
+      },
+      "gallery": {
+        "subtitle": "Through the lens",
+        "title": "Gallery",
+        "text": "A few shots from our kitchen, our dining room and your table.",
+        "images": [
+          { "alt": "Steak cooking over the embers" },
+          { "alt": "Breakfast table" },
+          { "alt": "The dining room" },
+          { "alt": "A dish prepared by the chef" },
+          { "alt": "Premium cuts" },
+          { "alt": "Starters" },
+          { "alt": "Evening atmosphere" },
+          { "alt": "The mangal zone" },
+          { "alt": "Plating" },
+          { "alt": "Drinks" },
+          { "alt": "Desserts" },
+          { "alt": "The chef's special" }
+        ]
+      },
+      "pages": {
+        "haqqimizda": {
+          "title": "About us",
+          "subtitle": "By the fire since 2014",
+          "lead": "We are not just a restaurant. We are a story of smoke, iron skewers and patience.",
+          "blocks": [
+            { "title": "It starts with the meat", "text": "Every week we work with the same farms. The meat arrives as whole cuts and is butchered here by our own master. Steaks are dry-aged for 28 days in our own ageing room, the only way to give the meat its rich, nutty flavour and tenderness." },
+            { "title": "Fire and patience", "text": "There is no gas-cooked steak in our kitchen. Only oak and mulberry charcoal. Our chefs turn every piece by hand and follow the temperature like a heartbeat. That's why you may sometimes wait a few minutes. And it's worth it." },
+            { "title": "The tradition of the table", "text": "The Azerbaijani table is about sharing. We built our menu so that the big platters in the middle of the table are enough for everyone. The tomahawk is for two, while the cheese board and the mangal set are for the whole table." }
+          ],
+          "stats": [
+            { "label": "years of experience" },
+            { "label": "days dry-aged" },
+            { "label": "seats" },
+            { "label": "average rating" }
+          ]
+        },
+        "tedbirler": {
+          "title": "Events & Banquets",
+          "subtitle": "For your special days",
+          "lead": "For birthdays, engagements, anniversaries and corporate events we have a separate hall and a custom menu.",
+          "packages": [
+            { "name": "Family celebration", "capacity": "10-25 guests", "price": "45 ₼ / guest", "features": ["Set menu (5 courses)", "Reserved seating area", "Cake service", "Unlimited tea and lemonade"] },
+            { "name": "Corporate evening", "capacity": "25-60 guests", "price": "65 ₼ / guest", "features": ["Steak and mangal buffet", "Projector and sound system", "Separate entrance and cloakroom", "Dedicated waiting staff"] },
+            { "name": "Whole restaurant", "capacity": "60-140 guests", "price": "Custom price", "features": ["The entire dining room is yours", "Custom menu", "Live music arranged", "Decoration support"] }
+          ]
+        },
+        "elaqe": {
+          "title": "Contact",
+          "subtitle": "Find us",
+          "lead": "Have a question? Call, write or just come by. We are open every day."
+        },
+        "qalereya": {
+          "title": "Gallery",
+          "subtitle": "A few shots"
+        },
+        "menyu": {
+          "title": "Menu",
+          "subtitle": "From the charcoal to your table"
+        },
+        "zallar": {
+          "title": "Halls",
+          "subtitle": "Steak · Ocakbashi · Milli"
+        },
+        "rezervasiya": {
+          "title": "Reservation",
+          "subtitle": "Three simple steps",
+          "lead": "Fill in the form: your request goes straight into the restaurant's booking system and our team will contact you to confirm.",
+          "steps": [
+            { "title": "Fill in the form", "text": "Enter the date, time, number of guests and your phone number." },
+            { "title": "Request recorded", "text": "Your request lands in our booking system right away and you get a code." },
+            { "title": "Confirmation call", "text": "Our team will call you within 15 minutes to confirm the table." }
+          ],
+          "rules": [
+            "Tables are held for 15 minutes after the booking time.",
+            "A pre-order may be required for groups of 6 or more.",
+            "To cancel or change a booking, please call us.",
+            "There is no charge for bringing your own birthday cake."
+          ]
+        }
+      }
+    }
+  }
+}

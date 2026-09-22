@@ -353,6 +353,76 @@
       }
     ]
   },
+  "halls": {
+    "subtitle": "Üç zal, üç ab-hava",
+    "title": "Zallarımız",
+    "text": "Steyk, ocaqbaşı və milli süfrə: hər zalın öz ab-havası və öz menyusu var. Şəkillərə baxın, sizə uyğun olanı seçin.",
+    "items": [
+      {
+        "id": "steak",
+        "name": "Steak zalı",
+        "tagline": "Premium steyklər",
+        "text": "Dry-aged steyklər üçün ayrılmış sakit, loş işıqlı zal. Ət 28 gün öz soyuducu otağımızda dinləndirilir və palıd kömürü üzərində bişirilir.",
+        "capacity": "",
+        "images": [
+          {
+            "src": "hero-slider-2.jpg",
+            "alt": "Steak zalında premium kəsimlər"
+          },
+          {
+            "src": "special-dish-banner.jpg",
+            "alt": "Dry-aged tomahawk"
+          },
+          {
+            "src": "about-banner.jpg",
+            "alt": "Steak zalının süfrəsi"
+          }
+        ]
+      },
+      {
+        "id": "ocakbasi",
+        "name": "Ocakbaşı",
+        "tagline": "Közün düz yanında",
+        "text": "Ocağın yanında oturun: usta kababı gözünüzün qarşısında bişirir. Tüstünün qoxusu, közün istisi və canlı, səmimi ab-hava.",
+        "capacity": "",
+        "images": [
+          {
+            "src": "about-abs-image.jpg",
+            "alt": "Ocakbaşı: açıq mangal"
+          },
+          {
+            "src": "hero-slider-3.jpg",
+            "alt": "Közdə bişən kabablar"
+          },
+          {
+            "src": "hero-slider-1.jpg",
+            "alt": "Közün üzərində ət"
+          }
+        ]
+      },
+      {
+        "id": "milli",
+        "name": "Milli zal",
+        "tagline": "Azərbaycan süfrəsi",
+        "text": "Milli mətbəx və süfrə ənənəsi üçün zal: ailəvi məclislər, böyük qonaqlıqlar və masanın ortasında paylaşılan tabaqlar.",
+        "capacity": "",
+        "images": [
+          {
+            "src": "event-1.jpg",
+            "alt": "Milli zalın ümumi görünüşü"
+          },
+          {
+            "src": "event-2.jpg",
+            "alt": "Axşam süfrəsi"
+          },
+          {
+            "src": "service-1.jpg",
+            "alt": "Milli süfrə"
+          }
+        ]
+      }
+    ]
+  },
   "gallery": {
     "subtitle": "Obyektivdən",
     "title": "Qalereya",
@@ -527,6 +597,10 @@
         "Ləğv və ya dəyişiklik üçün telefonla əlaqə saxlayın.",
         "Ad günü tortu gətirmək üçün əlavə ödəniş yoxdur."
       ]
+    },
+    "zallar": {
+      "title": "Zallar",
+      "subtitle": "Steak · Ocakbaşı · Milli"
     }
   }
 }

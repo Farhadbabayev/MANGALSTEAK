@@ -125,7 +125,8 @@
    *  Vəziyyət
    * ================================================================ */
 
-  const state = { site: null, content: null, theme: null, images: [], fonts: [], reservations: [],
+  const state = { site: null, content: null, theme: null, i18n: {}, images: [], fonts: [], reservations: [],
+    menus: {}, menuLimit: 0, trLang: null,
     integration: null, siteUrl: '', ready: false, blocked: null,
     caps: { mode: 'server', build: true, journal: true, integrationWrite: true, imageWrite: true, configWrite: true } };
   const dirty = new Set();
@@ -305,7 +306,8 @@
       ],
     },
     {
-      title: 'Rezervasiya zonaları',
+      title: 'Rezervasiya zonaları (zallar)',
+      hint: 'Kod zalın kodu ilə eyni olsa, «Bu zalda masa ayır» düyməsi həmin zalı formada özü seçir',
       array: 'reservation.areas',
       label: (item) => item.label || 'Zona',
       blank: { value: '', label: '' },
@@ -1010,6 +1012,396 @@
   };
 
   /* ================================================================ *
+   *  Zallar və PDF menyular
+   * ================================================================ */
+
+  const LANGS = () => {
+    const list = get(state.site, 'site.languages');
+    return Array.isArray(list) && list.length ? list : [{ code: 'az', label: 'AZ', name: 'Azərbaycanca' }];
+  };
+
+  const HALL_FIELDS = [
+    f('name', 'Zalın adı'),
+    f('tagline', 'Kiçik etiket', 'text', { help: 'Məs. «Premium steyklər»' }),
+    f('capacity', 'Tutum', 'text', { help: 'Məs. «40 nəfər». Boş qalsa göstərilmir' }),
+    f('id', 'Kod', 'text', { help: 'Latın hərfləri, boşluqsuz (steak, ocakbasi, milli). PDF faylının adı və rezervasiya zonası bununla bağlıdır' }),
+    f('text', 'Təsvir', 'textarea', { full: true }),
+  ];
+
+  const HALLS_INTRO = {
+    title: 'Zallar bölməsinin başlığı',
+    hint: 'Ana səhifədə və Zallar səhifəsində',
+    fields: [
+      f('halls.subtitle', 'Kiçik etiket'),
+      f('halls.title', 'Başlıq'),
+      f('halls.text', 'Giriş mətni', 'textarea', { full: true }),
+      f('pages.zallar.title', 'Səhifə başlığı'),
+      f('pages.zallar.subtitle', 'Səhifə alt başlığı'),
+    ],
+  };
+
+  const pdfSlot = (hall, lang) => {
+    const info = (state.menus[hall.id] || {})[lang.code] || null;
+    const slot = el('div', 'pdf-slot' + (info ? '' : ' is-empty'));
+
+    const head = el('div', 'pdf-slot-head');
+    head.appendChild(el('span', 'pdf-lang', lang.label || lang.code.toUpperCase()));
+    head.appendChild(el('span', 'pdf-state', info ? '✓ ' + fmtSize(info.size) : 'yüklənməyib'));
+    slot.appendChild(head);
+    slot.appendChild(el('span', 'help', lang.name || lang.code));
+
+    const actions = el('div', 'media-actions');
+
+    const upload = el('label', 'btn btn-sm upload-label', info ? 'Əvəz et' : 'PDF yüklə');
+    const input = el('input');
+    input.type = 'file';
+    input.accept = 'application/pdf,.pdf';
+    input.hidden = true;
+    input.addEventListener('change', () => {
+      const file = input.files && input.files[0];
+      input.value = '';
+      if (file) uploadMenu(hall, lang, file, upload);
+    });
+    upload.appendChild(input);
+    actions.appendChild(upload);
+
+    if (info) {
+      const view = el('a', 'btn btn-sm', 'Bax');
+      view.href = '/assets/menus/' + info.name + '?t=' + Date.now();
+      view.target = '_blank';
+      view.rel = 'noopener';
+      actions.appendChild(view);
+
+      const del = el('button', 'btn btn-sm btn-danger', 'Sil');
+      del.type = 'button';
+      del.addEventListener('click', () => deleteMenu(hall, lang, del));
+      actions.appendChild(del);
+    }
+
+    slot.appendChild(actions);
+    return slot;
+  };
+
+  const savedHallIds = () => new Set(Object.keys(state.menus || {}));
+
+  const uploadMenu = async (hall, lang, file, button) => {
+    if (denyWrite()) return;
+
+    if (!savedHallIds().has(hall.id)) {
+      toast('Bu zal hələ yadda saxlanmayıb. Əvvəlcə «Yadda saxla» düyməsini basın, sonra PDF yükləyin.', 'bad');
+      return;
+    }
+
+    if (!/\.pdf$/i.test(file.name) && file.type !== 'application/pdf') {
+      toast('Yalnız PDF faylı yükləmək olar.', 'bad');
+      return;
+    }
+
+    if (state.menuLimit && file.size > state.menuLimit) {
+      toast('PDF çox böyükdür (' + fmtSize(file.size) + ', maksimum ' + fmtSize(state.menuLimit) + '). ' +
+        'Faylı sıxın: məs. ilovepdf.com/compress_pdf.', 'bad');
+      return;
+    }
+
+    await withBusy(button, 'Yüklənir…', async () => {
+      try {
+        const result = await api('/api/admin/menus', {
+          method: 'POST',
+          body: JSON.stringify({ hall: hall.id, lang: lang.code, data: await readFileAsDataUrl(file) }),
+        });
+        state.menus = result.menus || state.menus;
+        toast(hall.name + ' · ' + (lang.label || lang.code) + ' menyusu yükləndi' +
+          (result.deploy === 'queued' ? ' — sayt 1–2 dəqiqəyə yenilənəcək.' : '.'), 'ok');
+        if (result.log) setLog(result.log);
+      } catch (err) {
+        toast(err.message, 'bad');
+        reportWriteError(err);
+      }
+    });
+
+    renderHalls();
+  };
+
+  const deleteMenu = async (hall, lang, button) => {
+    if (denyWrite()) return;
+    if (!confirm(hall.name + ' — ' + (lang.label || lang.code) + ' menyusu silinsin?')) return;
+
+    await withBusy(button, 'Silinir…', async () => {
+      try {
+        const result = await api('/api/admin/menus?action=delete', {
+          method: 'POST',
+          body: JSON.stringify({ hall: hall.id, lang: lang.code }),
+        });
+        state.menus = result.menus || state.menus;
+        toast('Silindi.', 'ok');
+      } catch (err) {
+        toast(err.message, 'bad');
+        reportWriteError(err);
+      }
+    });
+
+    renderHalls();
+  };
+
+  const renderHalls = () => {
+    const host = $('[data-halls-editor]');
+    if (!host || !state.content) return;
+    host.innerHTML = '';
+
+    if (!state.content.halls || typeof state.content.halls !== 'object') state.content.halls = {};
+    if (!Array.isArray(state.content.halls.items)) state.content.halls.items = [];
+    if (!state.content.pages.zallar) state.content.pages.zallar = { title: '', subtitle: '' };
+
+    const halls = state.content.halls.items;
+
+    host.appendChild(buildGroup(HALLS_INTRO, 'content', true));
+
+    halls.forEach((hall, hi) => {
+      const base = 'halls.items.' + hi;
+      const box = el('section', 'group cat');
+
+      const head = el('div', 'group-head');
+      const left = el('div');
+      left.appendChild(el('h2', null, hall.name || 'Zal'));
+      const count = LANGS().filter((l) => (state.menus[hall.id] || {})[l.code]).length;
+      left.appendChild(el('span', 'hint', (hall.images || []).length + ' şəkil · PDF menyu: ' + count + ' / ' + LANGS().length + ' dil · kod: ' + hall.id));
+      head.appendChild(left);
+
+      const tools = el('div', 'item-tools');
+      const up = el('button', 'icon-btn', '↑');
+      up.type = 'button'; up.title = 'Yuxarı';
+      up.addEventListener('click', () => {
+        if (hi === 0) return;
+        halls.splice(hi - 1, 0, halls.splice(hi, 1)[0]);
+        markDirty('content'); renderHalls();
+      });
+      const down = el('button', 'icon-btn', '↓');
+      down.type = 'button'; down.title = 'Aşağı';
+      down.addEventListener('click', () => {
+        if (hi === halls.length - 1) return;
+        halls.splice(hi + 1, 0, halls.splice(hi, 1)[0]);
+        markDirty('content'); renderHalls();
+      });
+      const fold = el('button', 'icon-btn', '▾');
+      fold.type = 'button'; fold.title = 'Aç / bağla';
+      fold.addEventListener('click', () => box.classList.toggle('is-closed'));
+      const del = el('button', 'icon-btn danger', '×');
+      del.type = 'button'; del.title = 'Zalı sil';
+      del.addEventListener('click', () => {
+        if (!confirm('«' + (hall.name || hall.id) + '» zalı silinsin? Yüklənmiş PDF-lər qalır, sonra ayrıca silə bilərsiniz.')) return;
+        halls.splice(hi, 1);
+        markDirty('content'); renderHalls();
+      });
+      tools.appendChild(up); tools.appendChild(down); tools.appendChild(fold); tools.appendChild(del);
+      head.appendChild(tools);
+      box.appendChild(head);
+
+      const body = el('div', 'group-body');
+
+      const grid = el('div', 'grid-2');
+      HALL_FIELDS.forEach((field) => grid.appendChild(buildField(field, 'content', base)));
+      body.appendChild(grid);
+
+      body.appendChild(el('h3', 'sub-h', 'Menyu (PDF) — hər dil üçün ayrıca'));
+      const pdfs = el('div', 'pdf-grid');
+      LANGS().forEach((lang) => pdfs.appendChild(pdfSlot(hall, lang)));
+      body.appendChild(pdfs);
+
+      body.appendChild(el('h3', 'sub-h', 'Zalın şəkilləri'));
+      if (!Array.isArray(hall.images)) hall.images = [];
+      body.appendChild(buildArray({
+        array: base + '.images',
+        label: (item) => item.alt || item.src || 'Şəkil',
+        blank: { src: '', alt: '' },
+        fields: [
+          f('src', 'Şəkil', 'image', { help: 'Birinci şəkil böyük göstərilir və zalın kartında işlənir' }),
+          f('alt', 'Təsvir', 'text', { help: 'Şəkil böyüdüləndə altında yazılır' }),
+        ],
+      }, 'content'));
+
+      box.appendChild(body);
+      host.appendChild(box);
+    });
+  };
+
+  /* ================================================================ *
+   *  Tərcümələr
+   *
+   *  i18n.config.json:  { ru: { site: {...}, content: {...} }, en: {...} }
+   *  Yalnız mətnlər yazılır; quruluş (siyahılar, şəkillər, qiymətlər)
+   *  həmişə əsas dildən gəlir. Boş xana = əsas dildəki mətn.
+   * ================================================================ */
+
+  const TR_TYPES = ['text', 'textarea', 'html'];
+  const TR_SKIP = /(^|\.)(id|value|image|src|date|dateText|num|buttonLink|oldPrice|newPrice)$/;
+
+  const trStats = { total: 0, done: 0 };
+
+  const trRow = (label, config, path, multiline) => {
+    const lang = state.trLang;
+    const original = get(state[config], path);
+    if (typeof original !== 'string' || !original.trim()) return null;
+
+    if (!state.i18n[lang]) state.i18n[lang] = {};
+    if (!state.i18n[lang][config]) state.i18n[lang][config] = {};
+    const store = state.i18n[lang][config];
+    const current = get(store, path);
+
+    trStats.total++;
+    if (typeof current === 'string' && current.trim()) trStats.done++;
+
+    const row = el('div', 'tr-row' + (current ? '' : ' is-missing'));
+
+    const left = el('div');
+    left.appendChild(el('span', 'tr-label', label));
+    left.appendChild(el('div', 'tr-orig', original));
+    row.appendChild(left);
+
+    const input = multiline || original.length > 70 ? el('textarea') : el('input');
+    if (input.tagName === 'INPUT') input.type = 'text';
+    input.value = typeof current === 'string' ? current : '';
+    input.placeholder = original.replace(/<br>\s*/g, ' ').slice(0, 120);
+    input.lang = lang;
+    input.addEventListener('input', () => {
+      set(store, path, input.value);
+      row.classList.toggle('is-missing', !input.value.trim());
+      markDirty('i18n');
+    });
+    row.appendChild(input);
+    return row;
+  };
+
+  /** Sxem qrupunu tərcümə sətirlərinə çevirir */
+  const trFromSchema = (group, config, host) => {
+    const box = el('div');
+
+    const addField = (field, basePath) => {
+      if (!TR_TYPES.includes(field.t) && field.t !== 'stringlist') return;
+      const path = basePath ? basePath + '.' + field.p : field.p;
+      if (TR_SKIP.test(path)) return;
+
+      if (field.t === 'stringlist') {
+        (get(state[config], path) || []).forEach((line, li) => {
+          const row = trRow(field.l + ' ' + (li + 1), config, path + '.' + li);
+          if (row) box.appendChild(row);
+        });
+        return;
+      }
+
+      const row = trRow(field.l, config, path, field.t !== 'text');
+      if (row) box.appendChild(row);
+    };
+
+    if (group.array) {
+      (get(state[config], group.array) || []).forEach((item, i) => {
+        box.appendChild(el('div', 'tr-item-h', (i + 1) + '. ' + (group.label ? group.label(item, i) : '')));
+        group.fields.forEach((field) => addField(field, group.array + '.' + i));
+      });
+    } else if (group.stringArray) {
+      (get(state[config], group.stringArray) || []).forEach((line, i) => {
+        const row = trRow('Sətir ' + (i + 1), config, group.stringArray + '.' + i);
+        if (row) box.appendChild(row);
+      });
+    } else {
+      (group.fields || []).forEach((field) => addField(field, ''));
+    }
+
+    if (!box.children.length) return;
+
+    const section = el('section', 'group is-closed');
+    const head = el('button', 'group-head');
+    head.type = 'button';
+    const titleWrap = el('div');
+    titleWrap.appendChild(el('h2', null, group.title));
+    head.appendChild(titleWrap);
+    head.appendChild(el('span', 'chev', '▾'));
+    head.addEventListener('click', () => section.classList.toggle('is-closed'));
+    section.appendChild(head);
+    const body = el('div', 'group-body');
+    body.appendChild(box);
+    section.appendChild(body);
+    host.appendChild(section);
+  };
+
+  const TR_SITE_GROUPS = () => [
+    { title: 'Ümumi', fields: [f('site.tagline', 'Şüar'), f('site.description', 'Axtarış sistemləri üçün təsvir', 'textarea')] },
+    { title: 'Ünvan', fields: [f('contact.addressShort', 'Qısa ünvan'), f('contact.addressOneLine', 'Ünvan (bir sətir)'), f('contact.addressFull', 'Ünvan (çox sətir)', 'html')] },
+    SITE_SCHEMA.find((g) => g.title === 'İş saatları'),
+    SITE_SCHEMA.find((g) => g.array === 'reservation.areas'),
+    SITE_SCHEMA.find((g) => g.array === 'reservation.occasions'),
+    { title: 'Footer', fields: [f('footer.newsletterTitle', 'Abunəlik başlığı'), f('footer.newsletterText', 'Abunəlik mətni', 'html')] },
+  ].filter(Boolean);
+
+  const TR_CONTENT_GROUPS = () => {
+    const groups = [HALLS_INTRO];
+
+    (get(state.content, 'halls.items') || []).forEach((hall, hi) => {
+      groups.push({
+        title: 'Zal: ' + (hall.name || hall.id),
+        fields: [
+          f('halls.items.' + hi + '.name', 'Zalın adı'),
+          f('halls.items.' + hi + '.tagline', 'Kiçik etiket'),
+          f('halls.items.' + hi + '.capacity', 'Tutum'),
+          f('halls.items.' + hi + '.text', 'Təsvir', 'textarea'),
+        ].concat((hall.images || []).map((img, ii) =>
+          f('halls.items.' + hi + '.images.' + ii + '.alt', 'Şəkil ' + (ii + 1) + ' təsviri'))),
+      });
+    });
+
+    (get(state.content, 'menu.categories') || []).forEach((cat, ci) => {
+      const base = 'menu.categories.' + ci;
+      groups.push({
+        title: 'Menyu: ' + (cat.name || cat.id),
+        fields: [f(base + '.name', 'Kateqoriya'), f(base + '.subtitle', 'Alt başlıq')].concat(
+          (cat.items || []).reduce((acc, dish, di) => acc.concat([
+            f(base + '.items.' + di + '.name', (di + 1) + '. Yemək'),
+            f(base + '.items.' + di + '.badge', (di + 1) + '. Nişan'),
+            f(base + '.items.' + di + '.text', (di + 1) + '. Təsvir', 'textarea'),
+          ]), [])),
+      });
+    });
+
+    return groups.concat(CONTENT_SCHEMA);
+  };
+
+  const renderTranslations = () => {
+    const host = $('[data-tr-editor]');
+    const select = $('[data-tr-lang]');
+    if (!host || !select || !state.content || !state.site) return;
+
+    const others = LANGS().slice(1);
+    if (!others.length) {
+      host.innerHTML = '';
+      host.appendChild(el('p', 'muted', 'Saytda yalnız bir dil var (site.config.json → site.languages).'));
+      return;
+    }
+
+    if (!state.trLang || !others.some((l) => l.code === state.trLang)) state.trLang = others[0].code;
+
+    select.innerHTML = '';
+    others.forEach((l) => select.appendChild(new Option((l.name || l.code) + ' (' + (l.label || l.code) + ')', l.code)));
+    select.value = state.trLang;
+
+    if (!state.i18n || typeof state.i18n !== 'object' || Array.isArray(state.i18n)) state.i18n = {};
+
+    host.innerHTML = '';
+    trStats.total = 0;
+    trStats.done = 0;
+
+    const progress = el('p', 'tr-progress');
+    host.appendChild(progress);
+
+    host.appendChild(el('h3', 'sys-h', 'Restoran məlumatları'));
+    TR_SITE_GROUPS().forEach((group) => trFromSchema(group, 'site', host));
+
+    host.appendChild(el('h3', 'sys-h', 'Zallar, menyu və səhifə mətnləri'));
+    TR_CONTENT_GROUPS().forEach((group) => trFromSchema(group, 'content', host));
+
+    progress.textContent = 'Tərcümə olunub: ' + trStats.done + ' / ' + trStats.total +
+      ' mətn. Sarı çərçivəli xanalar hələ boşdur — saytda Azərbaycan dilində görünür.';
+  };
+
+  /* ================================================================ *
    *  Şəkillər
    * ================================================================ */
 
@@ -1103,6 +1495,7 @@
     }
 
     renderImages();
+    renderHalls();
     renderForm('[data-form="content"]', CONTENT_SCHEMA, 'content');
     renderForm('[data-form="theme"]', THEME_SCHEMA, 'theme');
   };
@@ -1178,6 +1571,15 @@
           'ok'
         );
         if (name === 'site') refreshBrand();
+
+        /* Yeni və ya adı dəyişmiş zal üçün PDF yeri dərhal görünsün */
+        if (name === 'content') {
+          await safe('Menyular', async () => {
+            const result = await api('/api/admin/menus');
+            state.menus = result.menus || state.menus;
+            renderHalls();
+          });
+        }
       } catch (err) {
         setLog((err.payload && err.payload.log) || err.message);
         toast(err.message, 'bad');
@@ -1627,6 +2029,8 @@
         $$('.tab').forEach((panel) => panel.classList.toggle('is-active', panel.dataset.panel === name));
         window.scrollTo(0, 0);
         if (name === 'dizayn') updatePreview();
+        if (name === 'tercume') safeSync('Tərcümələr', renderTranslations);
+        if (name === 'zallar') safeSync('Zallar', renderHalls);
       });
     });
   };
@@ -1671,6 +2075,25 @@
       state.content.menu.categories.push({ id: slugify(name), name, subtitle: '', items: [] });
       markDirty('content');
       renderMenu();
+    });
+
+    on('[data-add-hall]', 'click', () => {
+      if (!requireReady()) return;
+      const name = prompt('Yeni zalın adı:');
+      if (!name) return;
+      if (!state.content.halls || typeof state.content.halls !== 'object') state.content.halls = {};
+      if (!Array.isArray(state.content.halls.items)) state.content.halls.items = [];
+      let id = slugify(name);
+      while (state.content.halls.items.some((h) => h.id === id)) id += '-2';
+      state.content.halls.items.push({ id, name, tagline: '', text: '', capacity: '', images: [] });
+      markDirty('content');
+      renderHalls();
+      toast('Zal əlavə olundu. Yadda saxlayın, sonra PDF menyuları yükləyin.', 'info');
+    });
+
+    on('[data-tr-lang]', 'change', (event) => {
+      state.trLang = event.target.value;
+      renderTranslations();
     });
 
     on('[data-upload]', 'change', (event) => {
@@ -1782,6 +2205,9 @@
     state.site = data.site;
     state.content = data.content;
     state.theme = data.theme;
+    state.i18n = data.i18n && typeof data.i18n === 'object' && !Array.isArray(data.i18n) ? data.i18n : {};
+    state.menus = data.menus || {};
+    state.menuLimit = data.menuLimit || 0;
     state.images = data.images || [];
     state.fonts = data.fonts || [];
     state.siteUrl = data.site_url || '';
@@ -1794,6 +2220,8 @@
     safeSync('Səhifə mətnləri', () => renderForm('[data-form="content"]', CONTENT_SCHEMA, 'content'));
     safeSync('Dizayn', () => renderForm('[data-form="theme"]', THEME_SCHEMA, 'theme'));
     safeSync('Menyu', renderMenu);
+    safeSync('Zallar', renderHalls);
+    safeSync('Tərcümələr', renderTranslations);
     safeSync('Şəkillər', renderImages);
     safeSync('Önizləmə', updatePreview);
 

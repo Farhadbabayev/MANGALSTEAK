@@ -105,12 +105,12 @@ export const handleBooking = async (input, ip) => {
   const phone = normalizePhone(input && input.phone);
 
   if (!CODE.test(code)) {
-    return { status: 400, body: { ok: false, field: 'code', error: 'Bron kodunu düzgün yazın.' } };
+    return { status: 400, body: { ok: false, code: 'invalid_code', field: 'code', error: 'Bron kodunu düzgün yazın.' } };
   }
   if (!phone) {
     return {
       status: 400,
-      body: { ok: false, field: 'phone', error: 'Rezervasiyadakı telefon nömrəsini yazın. Nümunə: +994 50 123 45 67' },
+      body: { ok: false, code: 'invalid_phone', field: 'phone', error: 'Rezervasiyadakı telefon nömrəsini yazın. Nümunə: +994 50 123 45 67' },
     };
   }
 
@@ -121,17 +121,17 @@ export const handleBooking = async (input, ip) => {
     const hasDate = Boolean(input.date || input.time);
     const hasGuests = input.guests !== undefined && input.guests !== null && input.guests !== '';
     if (!hasDate && !hasGuests) {
-      return { status: 400, body: { ok: false, error: 'Yeni vaxt və ya nəfər sayı seçin.' } };
+      return { status: 400, body: { ok: false, code: 'no_change', error: 'Yeni vaxt və ya nəfər sayı seçin.' } };
     }
     if (hasDate) {
       slot = validateSlot(input.date, input.time);
-      if (!slot.ok) return { status: 400, body: { ok: false, field: slot.field, error: slot.error } };
+      if (!slot.ok) return { status: 400, body: { ok: false, code: 'invalid_slot', field: slot.field, error: slot.error } };
     }
     if (hasGuests) {
       guests = Number(input.guests);
       const max = reservationRules.maxGuests + 1;
       if (!Number.isInteger(guests) || guests < reservationRules.minGuests || guests > max) {
-        return { status: 400, body: { ok: false, field: 'guests', error: 'Nəfər sayı düzgün deyil.' } };
+        return { status: 400, body: { ok: false, code: 'invalid_guests', field: 'guests', error: 'Nəfər sayı düzgün deyil.' } };
       }
     }
   }
@@ -139,25 +139,25 @@ export const handleBooking = async (input, ip) => {
   if (rateLimited(ip)) {
     return {
       status: 429,
-      body: { ok: false, error: 'Çox sayda sorğu göndərildi. Bir az sonra yenidən yoxlayın və ya bizə zəng edin.' },
+      body: { ok: false, code: 'rate_limited', error: 'Çox sayda sorğu göndərildi. Bir az sonra yenidən yoxlayın və ya bizə zəng edin.' },
     };
   }
 
   if (!vilkaLookupEnabled()) {
-    return { status: 503, body: { ok: false, error: UNAVAILABLE } };
+    return { status: 503, body: { ok: false, code: 'unavailable', error: UNAVAILABLE } };
   }
 
   const found = await fetchVilkaReservation(code);
   if (!found.ok) {
-    if (found.status === 404) return { status: 404, body: { ok: false, error: NOT_FOUND } };
+    if (found.status === 404) return { status: 404, body: { ok: false, code: 'not_found', error: NOT_FOUND } };
     console.warn('[bron] Vilka oxunmadı: ' + found.error);
-    return { status: 502, body: { ok: false, error: UNAVAILABLE } };
+    return { status: 502, body: { ok: false, code: 'unavailable', error: UNAVAILABLE } };
   }
 
   /* Nömrə uyğun deyilsə «tapılmadı» deyirik — kodun mövcudluğu bildirilmir */
   const guestPhone = found.data.guest && found.data.guest.phone;
   if (!samePhone(guestPhone, phone)) {
-    return { status: 404, body: { ok: false, error: NOT_FOUND } };
+    return { status: 404, body: { ok: false, code: 'not_found', error: NOT_FOUND } };
   }
 
   const current = publicView(found.data);
@@ -171,6 +171,7 @@ export const handleBooking = async (input, ip) => {
         status: 409,
         body: {
           ok: false,
+          code: 'not_changeable',
           error: 'Bu rezervasiyanı artıq onlayn dəyişmək mümkün deyil. Zəhmət olmasa bizə zəng edin.',
           reservation: current,
         },
@@ -185,17 +186,17 @@ export const handleBooking = async (input, ip) => {
     }
     if (guests !== null && guests !== current.guests) changes.party_size = guests;
     if (!Object.keys(changes).length) {
-      return { status: 400, body: { ok: false, error: 'Heç nə dəyişməyib — yeni vaxt və ya nəfər sayı seçin.' } };
+      return { status: 400, body: { ok: false, code: 'no_change', error: 'Heç nə dəyişməyib — yeni vaxt və ya nəfər sayı seçin.' } };
     }
 
     const changed = await changeVilkaReservation(found.data.ref || code, changes);
     if (!changed.ok) {
       /* 400/409: Vilka səbəbi deyir (boş masa yoxdur, restoran bağlıdır…) */
       if ((changed.status === 400 || changed.status === 409) && changed.message) {
-        return { status: 409, body: { ok: false, error: changed.message, reservation: current } };
+        return { status: 409, body: { ok: false, code: 'rejected', error: changed.message, reservation: current } };
       }
       console.warn('[bron] Vilka-da rezerv dəyişmədi: ' + changed.error);
-      return { status: 502, body: { ok: false, error: UNAVAILABLE } };
+      return { status: 502, body: { ok: false, code: 'unavailable', error: UNAVAILABLE } };
     }
 
     console.log('[bron] qonaq rezervi dəyişdi: ' + (found.data.ref || code) + ' → ' + JSON.stringify(changes));
@@ -207,6 +208,7 @@ export const handleBooking = async (input, ip) => {
       status: 409,
       body: {
         ok: false,
+        code: 'not_cancellable',
         error: 'Bu rezervasiyanı artıq onlayn ləğv etmək mümkün deyil. Zəhmət olmasa bizə zəng edin.',
         reservation: current,
       },
@@ -219,11 +221,11 @@ export const handleBooking = async (input, ip) => {
     if (cancelled.status === 404) {
       return {
         status: 409,
-        body: { ok: false, error: 'Bu rezervasiyanı artıq onlayn ləğv etmək mümkün deyil. Zəhmət olmasa bizə zəng edin.' },
+        body: { ok: false, code: 'not_cancellable', error: 'Bu rezervasiyanı artıq onlayn ləğv etmək mümkün deyil. Zəhmət olmasa bizə zəng edin.' },
       };
     }
     console.warn('[bron] Vilka-da ləğv olunmadı: ' + cancelled.error);
-    return { status: 502, body: { ok: false, error: UNAVAILABLE } };
+    return { status: 502, body: { ok: false, code: 'unavailable', error: UNAVAILABLE } };
   }
 
   console.log('[bron] qonaq saytdan ləğv etdi: ' + (found.data.ref || code));

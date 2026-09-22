@@ -3,25 +3,30 @@
 
       {{> logo}}
 
-      <nav class="navbar" data-navbar aria-label="Əsas menyu">
+      <nav class="navbar" data-navbar aria-label="{{t.nav.label}}">
         <ul class="navbar-list">
-          <li><a href="index.html" class="navbar-link {{nav.index}}">Ana Səhifə</a></li>
-          <li><a href="menyu.html" class="navbar-link {{nav.menyu}}">Menyu</a></li>
-          <li><a href="haqqimizda.html" class="navbar-link {{nav.haqqimizda}}">Haqqımızda</a></li>
-          <li><a href="qalereya.html" class="navbar-link {{nav.qalereya}}">Qalereya</a></li>
-          <li><a href="tedbirler.html" class="navbar-link {{nav.tedbirler}}">Tədbirlər</a></li>
-          <li><a href="elaqe.html" class="navbar-link {{nav.elaqe}}">Əlaqə</a></li>
+          <li><a href="index.html" class="navbar-link {{nav.index}}">{{t.nav.home}}</a></li>
+          <li><a href="menyu.html" class="navbar-link {{nav.menyu}}">{{t.nav.menu}}</a></li>
+          <li><a href="zallar.html" class="navbar-link {{nav.zallar}}">{{t.nav.halls}}</a></li>
+          <li><a href="haqqimizda.html" class="navbar-link {{nav.haqqimizda}}">{{t.nav.about}}</a></li>
+          <li><a href="qalereya.html" class="navbar-link {{nav.qalereya}}">{{t.nav.gallery}}</a></li>
+          <li><a href="tedbirler.html" class="navbar-link {{nav.tedbirler}}">{{t.nav.events}}</a></li>
+          <li><a href="elaqe.html" class="navbar-link {{nav.elaqe}}">{{t.nav.contact}}</a></li>
         </ul>
 
         <div class="navbar-foot">
           <a href="tel:{{contact.phoneHref}}">{{icons.phone}} {{contact.phone}}</a>
           <span>{{icons.clock}} {{hours.short}}</span>
+          <ul class="lang-switch" aria-label="{{t.nav.language}}">{{lang.switcher}}</ul>
         </div>
       </nav>
 
-      <a href="rezervasiya.html" class="header-cta btn btn-solid" data-rez-open>Masa ayır</a>
+      <ul class="lang-switch" aria-label="{{t.nav.language}}">{{lang.switcher}}</ul>
 
-      <button class="nav-toggle" data-nav-toggler aria-label="Menyunu aç" aria-expanded="false">
+      <a href="rezervasiya.html" class="header-cta btn btn-solid" data-rez-open>{{t.common.reserve}}</a>
+
+      <button class="nav-toggle" data-nav-toggler aria-label="{{t.nav.open}}" data-label-open="{{t.nav.open}}"
+        data-label-close="{{t.nav.close}}" aria-expanded="false">
         <span></span><span></span>
       </button>
 

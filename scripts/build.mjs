@@ -4,10 +4,17 @@
  *
  * src/pages + src/partials + *.config.json  ->  public/*.html
  *
+ * Sayt bir neçə dildə yığılır (site.config.json → site.languages):
+ *   əsas dil (az)   ->  public/menyu.html
+ *   digər dillər    ->  public/ru/menyu.html, public/en/menyu.html
+ *
+ * Sabit mətnlər (düymələr, forma) src/i18n/<dil>.json-dadır, redaktə
+ * olunan məzmunun tərcüməsi isə i18n.config.json-da (admin → Tərcümələr).
+ *
  * İstifadə:  npm run build
  */
 
-import { readFileSync, writeFileSync, readdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync, statSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,9 +23,14 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = join(ROOT, 'src');
 const OUT = join(ROOT, 'public');
 
+const readJson = (path, fallback) =>
+  existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : fallback;
+
 const site = JSON.parse(readFileSync(join(ROOT, 'site.config.json'), 'utf8'));
 const content = JSON.parse(readFileSync(join(ROOT, 'content.config.json'), 'utf8'));
 const theme = JSON.parse(readFileSync(join(ROOT, 'theme.config.json'), 'utf8'));
+const translations = readJson(join(ROOT, 'i18n.config.json'), {});
+
 
 /* ------------------------------------------------------------------ *
  *  Partial-lar
@@ -113,42 +125,110 @@ const logoInner = (() => {
 
 blocks.logoInner = logoInner;
 
-/* --- Hero --- */
 
-blocks.heroSlides = content.hero.slides
-  .map(
-    (s, i) => `
+/* ------------------------------------------------------------------ *
+ *  Dillər
+ * ------------------------------------------------------------------ */
+
+const LANGS = (Array.isArray(site.site.languages) && site.site.languages.length
+  ? site.site.languages
+  : [{ code: site.site.lang || 'az', label: 'AZ', name: 'Azərbaycanca', locale: site.site.locale || 'az_AZ' }]
+).filter((l) => l && /^[a-z]{2}$/.test(l.code));
+
+const DEFAULT_LANG = LANGS[0].code;
+
+/**
+ * Tərcüməni əsas məlumatın üzərinə qoyur.
+ *
+ * Quruluş HƏMİŞƏ əsas fayldan gəlir: tərcümədə yalnız mətnlər (string)
+ * nəzərə alınır, rəqəm, bayraq, şəkil adı və s. əsas dildən qalır.
+ * Siyahılar sıra ilə birləşir; tərcüməsi olmayan (boş) mətn əsas dildə qalır.
+ */
+const overlay = (base, over) => {
+  if (over === undefined || over === null) return base;
+  if (Array.isArray(base)) return Array.isArray(over) ? base.map((b, i) => overlay(b, over[i])) : base;
+  if (base && typeof base === 'object') {
+    if (typeof over !== 'object' || Array.isArray(over)) return base;
+    const out = {};
+    for (const key of Object.keys(base)) out[key] = overlay(base[key], over[key]);
+    return out;
+  }
+  if (typeof base === 'string' || base === undefined) {
+    return typeof over === 'string' && over.trim() ? over : base;
+  }
+  return base;
+};
+
+const uiBase = readJson(join(SRC, 'i18n', DEFAULT_LANG + '.json'), {});
+const uiFor = (code) => overlay(uiBase, code === DEFAULT_LANG ? {} : readJson(join(SRC, 'i18n', code + '.json'), {}));
+
+/** Dilin qovluğu: əsas dil kökdə, digərləri öz qovluğunda */
+const prefixOf = (code) => (code === DEFAULT_LANG ? '' : code + '/');
+
+/* --- Zalların PDF menyuları: public/assets/menus/<zal>-<dil>.pdf --- */
+
+const MENU_DIR = join(OUT, 'assets', 'menus');
+const menuFile = (hallId, code) => `${hallId}-${code}.pdf`;
+const hasMenu = (hallId, code) => existsSync(join(MENU_DIR, menuFile(hallId, code)));
+
+/** Faylın dəyişdiyini brauzerə bildirmək üçün (köhnə PDF keşdə qalmasın) */
+const menuVersion = (hallId, code) => {
+  const stats = statSync(join(MENU_DIR, menuFile(hallId, code)));
+  return Math.round(stats.mtimeMs / 1000).toString(36) + stats.size.toString(36);
+};
+
+const menuUrl = (hallId, code) => `./assets/menus/${menuFile(hallId, code)}?v=${menuVersion(hallId, code)}`;
+
+const slugAscii = (text) =>
+  String(text || '')
+    .replace(/ə/gi, 'e').replace(/ı/g, 'i').replace(/İ/g, 'I').replace(/[öÖ]/g, 'o').replace(/[üÜ]/g, 'u')
+    .replace(/[şŞ]/g, 's').replace(/[çÇ]/g, 'c').replace(/[ğĞ]/g, 'g')
+    .replace(/[^A-Za-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+
+/* ------------------------------------------------------------------ *
+ *  Dilə görə bloklar
+ * ------------------------------------------------------------------ */
+
+const buildBlocks = (S, C, T, code) => {
+  const b = { ...blocks };
+
+  /* --- Hero --- */
+
+  b.heroSlides = C.hero.slides
+    .map(
+      (s, i) => `
         <div class="hero-slide${i === 0 ? ' active' : ''}" data-hero-slide
           data-label="${attr(s.subtitle)}" data-title="${attr(s.title)}" data-text="${attr(s.text)}">
           <img src="${img(s.image)}" width="1880" height="950" alt=""${i === 0 ? '' : ' loading="lazy"'}>
         </div>`
-  )
-  .join('');
+    )
+    .join('');
 
-blocks.heroDots = content.hero.slides
-  .map(
-    (s, i) => `
+  b.heroDots = C.hero.slides
+    .map(
+      (s, i) => `
           <button type="button" data-hero-dot class="${i === 0 ? 'active' : ''}"
-            aria-label="Slayd ${i + 1}"></button>`
-  )
-  .join('');
+            aria-label="${esc(T.home.slide)} ${i + 1}"></button>`
+    )
+    .join('');
 
-/* --- Üstünlüklər (hairline şəbəkə) --- */
+  /* --- Üstünlüklər (hairline şəbəkə) --- */
 
-blocks.featureCards = content.features.cards
-  .map(
-    (c) => `
+  b.featureCards = C.features.cards
+    .map(
+      (c) => `
             <li class="virtue">
               <span class="gol-mark" aria-hidden="true"></span>
               <h3>${esc(c.title)}</h3>
               <p>${esc(c.text)}</p>
             </li>`
-  )
-  .join('');
+    )
+    .join('');
 
-/* --- Menyu --- */
+  /* --- Menyu --- */
 
-const menuItem = (item, indent = '            ') => `
+  const menuItem = (item, indent = '            ') => `
 ${indent}<div class="menu-item">
 ${indent}  <div class="menu-item-top">
 ${indent}    <h3>${esc(item.name)}</h3>
@@ -158,26 +238,26 @@ ${indent}  </div>
 ${indent}  <p>${item.badge ? `<span class="tag">${esc(item.badge)}</span>` : ''}${esc(item.text)}</p>
 ${indent}</div>`;
 
-/* İlk iki kateqoriyadan 3-3 yemək, hər biri öz sütununda */
-blocks.menuPreviewItems = content.menu.categories
-  .slice(0, 2)
-  .map(
-    (c) => `
+  /* İlk iki kateqoriyadan 3-3 yemək, hər biri öz sütununda */
+  b.menuPreviewItems = C.menu.categories
+    .slice(0, 2)
+    .map(
+      (c) => `
             <div class="menu-col">
               <h3 class="menu-col-title"><a href="menyu.html#${c.id}">${esc(c.name)}</a></h3>
 ${c.items.slice(0, 3).map((i) => menuItem(i, '              ')).join('')}
             </div>`
-  )
-  .join('');
+    )
+    .join('');
 
-blocks.menuNav = content.menu.categories
-  .map((c) => `
+  b.menuNav = C.menu.categories
+    .map((c) => `
             <a href="#${c.id}">${esc(c.name)}</a>`)
-  .join('');
+    .join('');
 
-blocks.menuCategories = content.menu.categories
-  .map(
-    (c) => `
+  b.menuCategories = C.menu.categories
+    .map(
+      (c) => `
           <div class="menu-category reveal" id="${c.id}">
 
             <div class="menu-category-head">
@@ -190,14 +270,123 @@ ${c.items.map((i) => menuItem(i, '              ')).join('')}
             </div>
 
           </div>`
-  )
-  .join('');
+    )
+    .join('');
 
-/* --- Tədbirlər --- */
+  /* --- Zallar --- */
 
-blocks.eventCards = content.events.cards
-  .map(
-    (c, i) => `
+  const halls = (C.halls && Array.isArray(C.halls.items) ? C.halls.items : [])
+    .filter((h) => h && /^[a-z0-9-]+$/.test(h.id || ''));
+  const areaValues = new Set((S.reservation.areas || []).map((a) => a.value));
+
+  /** Zalın menyusu: bu dildə PDF varsa aç/yüklə, yoxdursa digər dillərdəkini təklif et */
+  const hallMenuLinks = (h, indent) => {
+    if (hasMenu(h.id, code)) {
+      const download = `${slugAscii(S.site.shortName || 'menu')}-${slugAscii(h.name)}-${code}.pdf`;
+      return `
+${indent}<div class="hall-menu">
+${indent}  <a href="${menuUrl(h.id, code)}" class="btn btn-solid" target="_blank" rel="noopener" type="application/pdf">
+${indent}    ${icons['file-pdf']} ${esc(T.halls.menuOpen)}
+${indent}  </a>
+${indent}  <a href="${menuUrl(h.id, code)}" class="btn-text" download="${attr(download)}">
+${indent}    ${esc(T.halls.menuDownload)} ${icons['download-simple']}
+${indent}  </a>
+${indent}</div>`;
+    }
+
+    const others = LANGS.filter((l) => l.code !== code && hasMenu(h.id, l.code))
+      .map((l) => `<a href="${menuUrl(h.id, l.code)}" target="_blank" rel="noopener" hreflang="${l.code}" lang="${l.code}">${esc(l.label)} · ${esc(T.halls.pdf)}</a>`);
+
+    return `
+${indent}<div class="hall-menu is-empty">
+${indent}  <p class="hall-menu-soon">${esc(T.halls.menuSoon)}</p>${others.length ? `
+${indent}  <p class="hall-menu-other">${esc(T.halls.menuOther)} ${others.join(' ')}</p>` : ''}
+${indent}</div>`;
+  };
+
+  const cover = (h) => (Array.isArray(h.images) && h.images[0] ? h.images[0] : { src: 'hero-slider-1.jpg', alt: '' });
+
+  /* Menyu səhifəsi: hər zal üçün menyu kartı */
+  b.hallMenuCards = halls
+    .map((h) => `
+            <li class="hall-card" id="menyu-${h.id}">
+              <a href="zallar.html#${h.id}" class="hall-card-media frame" tabindex="-1" aria-hidden="true">
+                <img src="${img(cover(h).src)}" width="640" height="480" loading="lazy" alt="">
+              </a>
+              <div class="hall-card-body">
+                <p class="label">${esc(h.tagline)}</p>
+                <h3><a href="zallar.html#${h.id}">${esc(h.name)}</a></h3>
+${hallMenuLinks(h, '                ')}
+              </div>
+            </li>`)
+    .join('');
+
+  /* Ana səhifə: zallara giriş */
+  b.hallTeasers = halls
+    .map((h) => `
+            <li class="hall-card">
+              <a href="zallar.html#${h.id}" class="hall-card-media frame" tabindex="-1" aria-hidden="true">
+                <img src="${img(cover(h).src)}" width="640" height="480" loading="lazy" alt="">
+              </a>
+              <div class="hall-card-body">
+                <p class="label">${esc(h.tagline)}</p>
+                <h3><a href="zallar.html#${h.id}">${esc(h.name)}</a></h3>
+                <p class="dim">${esc(h.text)}</p>
+                <a href="zallar.html#${h.id}" class="btn-text">${esc(T.halls.viewHall)} ${icons['arrow-right']}</a>
+              </div>
+            </li>`)
+    .join('');
+
+  /* Zallar səhifəsinin üst naviqasiyası */
+  b.hallNav = halls
+    .map((h) => `
+            <a href="#${h.id}">${esc(h.name)}</a>`)
+    .join('');
+
+  /* Zallar səhifəsi: hər zal ayrıca bölmə — şəkillər, mətn, menyu, rezerv */
+  b.hallSections = halls
+    .map((h, i) => {
+      const images = (Array.isArray(h.images) ? h.images : []).filter((g) => g && g.src);
+      const photos = images
+        .map((g, gi) => `
+                <li class="hall-photo${gi === 0 ? ' is-lead' : ''}">
+                  <button type="button" class="hall-photo-btn" data-lightbox-item="${h.id}"
+                    data-src="${img(g.src)}" data-caption="${attr(esc(g.alt || h.name))}"
+                    aria-label="${attr(esc(T.halls.openPhoto))}: ${attr(esc(g.alt || h.name))}">
+                    <img src="${img(g.src)}" width="${gi === 0 ? 1200 : 600}" height="${gi === 0 ? 900 : 450}"
+                      loading="lazy" alt="${esc(g.alt || h.name)}">
+                  </button>
+                </li>`)
+        .join('');
+
+      const reserveArea = areaValues.has(h.id) ? ` data-rez-area="${h.id}"` : '';
+
+      return `
+      <section class="section hall${i % 2 ? ' section-alt' : ''}" id="${h.id}" aria-labelledby="hall-${h.id}-title">
+        <div class="wrap hall-grid">
+
+          <div class="hall-body reveal">
+            <p class="label">${esc(h.tagline)}</p>
+            <h2 class="display-2" id="hall-${h.id}-title">${esc(h.name)}</h2>
+            <p class="lede">${esc(h.text)}</p>${h.capacity ? `
+            <p class="hall-capacity">${icons['users-three']} <span>${esc(T.halls.capacity)}:</span> ${esc(h.capacity)}</p>` : ''}
+${hallMenuLinks(h, '            ')}
+            <a href="rezervasiya.html" class="btn hall-reserve" data-rez-open${reserveArea}>${esc(T.halls.reserveHere)}</a>
+          </div>
+
+          <ul class="hall-photos reveal" aria-label="${attr(esc(h.name))} · ${attr(esc(T.halls.photos))}">${photos}
+          </ul>
+
+        </div>
+      </section>`;
+    })
+    .join('\n');
+
+  /* --- Tədbirlər --- */
+
+  b.eventCards = C.events.cards
+    .map(
+      (c, i) => `
             <li class="event${i === 0 ? ' is-lead' : ''}">
               <article>
                 <figure class="frame">
@@ -209,210 +398,154 @@ blocks.eventCards = content.events.cards
                 </div>
               </article>
             </li>`
-  )
-  .join('');
+    )
+    .join('');
 
-/* --- Qalereya --- */
+  /* --- Qalereya --- */
 
-blocks.galleryItems = content.gallery.images
-  .map(
-    (g, i) => `
+  b.galleryItems = C.gallery.images
+    .map(
+      (g, i) => `
             <li class="gallery-item${i % 5 === 0 ? ' tall' : ''}">
               <figure>
                 <img src="${img(g.src)}" width="500" height="500" loading="lazy" alt="${esc(g.alt)}">
                 <figcaption>${esc(g.alt)}</figcaption>
               </figure>
             </li>`
-  )
-  .join('');
+    )
+    .join('');
 
-/* --- Haqqımızda --- */
+  /* --- Haqqımızda --- */
 
-blocks.statCards = content.pages.haqqimizda.stats
-  .map(
-    (s) => `
+  b.statCards = C.pages.haqqimizda.stats
+    .map(
+      (s) => `
             <li>
               <p class="value">${esc(s.value)}</p>
               <span class="label">${esc(s.label)}</span>
             </li>`
-  )
-  .join('');
+    )
+    .join('');
 
-blocks.storyBlocks = content.pages.haqqimizda.blocks
-  .map(
-    (b) => `
+  b.storyBlocks = C.pages.haqqimizda.blocks
+    .map(
+      (x) => `
             <li class="story-item">
               <span class="gol-mark" aria-hidden="true"></span>
-              <h3>${esc(b.title)}</h3>
-              <p>${esc(b.text)}</p>
+              <h3>${esc(x.title)}</h3>
+              <p>${esc(x.text)}</p>
             </li>`
-  )
-  .join('');
+    )
+    .join('');
 
-/* --- Banket paketləri --- */
+  /* --- Banket paketləri --- */
 
-blocks.packageCards = content.pages.tedbirler.packages
-  .map(
-    (p) => `
+  b.packageCards = C.pages.tedbirler.packages
+    .map(
+      (p) => `
             <li class="package-card${p.featured ? ' is-featured' : ''}">
-              ${p.featured ? '<span class="package-badge">Ən çox seçilən</span>' : ''}
+              ${p.featured ? `<span class="package-badge">${esc(T.events.popular)}</span>` : ''}
               <h3>${esc(p.name)}</h3>
               <p class="package-capacity">${esc(p.capacity)}</p>
               <p class="package-price">${esc(p.price)}</p>
 
               <ul class="package-features">
-${p.features.map((f) => `                <li>${esc(f)}</li>`).join('\n')}
+${p.features.map((x) => `                <li>${esc(x)}</li>`).join('\n')}
               </ul>
 
-              <a href="rezervasiya.html" class="btn${p.featured ? ' btn-solid' : ''}">Sorğu göndər</a>
+              <a href="rezervasiya.html" class="btn${p.featured ? ' btn-solid' : ''}">${esc(T.events.request)}</a>
             </li>`
-  )
-  .join('');
+    )
+    .join('');
 
-/* --- Rezervasiya səhifəsi --- */
+  /* --- Rezervasiya səhifəsi --- */
 
-blocks.stepCards = content.pages.rezervasiya.steps
-  .map(
-    (s) => `
+  b.stepCards = C.pages.rezervasiya.steps
+    .map(
+      (s) => `
             <li class="step">
               <h3>${esc(s.title)}</h3>
               <p>${esc(s.text)}</p>
             </li>`
-  )
-  .join('');
+    )
+    .join('');
 
-blocks.ruleItems = content.pages.rezervasiya.rules
-  .map((r) => `
+  b.ruleItems = C.pages.rezervasiya.rules
+    .map((r) => `
               <li>${esc(r)}</li>`)
-  .join('');
+    .join('');
 
-/* --- Forma seçimləri --- */
+  /* --- Forma seçimləri --- */
 
-const r = site.reservation;
+  const r = S.reservation;
 
-blocks.guestOptions = (() => {
-  const out = [];
-  for (let n = r.minGuests; n <= r.maxGuests; n++) {
-    out.push(`                  <option value="${n}"${n === 2 ? ' selected' : ''}>${n} nəfər</option>`);
-  }
-  out.push(`                  <option value="${r.maxGuests + 1}">${r.maxGuests}+ nəfər (qrup)</option>`);
-  return out.join('\n');
-})();
-
-blocks.timeOptions = (() => {
-  const out = ['                  <option value="" disabled selected>Saat seçin</option>'];
-  for (let h = r.openHour; h <= r.closeHour; h++) {
-    for (let m = 0; m < 60; m += r.slotMinutes) {
-      if (h === r.closeHour && m > 0) break;
-      const t = `${pad(h)}:${pad(m)}`;
-      out.push(`                  <option value="${t}">${t}</option>`);
+  b.guestOptions = (() => {
+    const out = [];
+    for (let n = r.minGuests; n <= r.maxGuests; n++) {
+      out.push(`                  <option value="${n}"${n === 2 ? ' selected' : ''}>${n} ${esc(T.form.guestUnit)}</option>`);
     }
-  }
-  return out.join('\n');
-})();
+    out.push(`                  <option value="${r.maxGuests + 1}">${r.maxGuests}+ ${esc(T.form.guestGroup)}</option>`);
+    return out.join('\n');
+  })();
 
-blocks.areaOptions = r.areas
-  .map(
-    (a) =>
-      `                  <option value="${a.value}"${a.value === 'any' ? ' selected' : ''}>${esc(a.label)}</option>`
-  )
-  .join('\n');
+  b.timeOptions = (() => {
+    const out = [`                  <option value="" disabled selected>${esc(T.form.chooseTime)}</option>`];
+    for (let h = r.openHour; h <= r.closeHour; h++) {
+      for (let m = 0; m < 60; m += r.slotMinutes) {
+        if (h === r.closeHour && m > 0) break;
+        const t = `${pad(h)}:${pad(m)}`;
+        out.push(`                  <option value="${t}">${t}</option>`);
+      }
+    }
+    return out.join('\n');
+  })();
 
-blocks.occasionOptions = r.occasions
-  .map((o) => `                  <option value="${o.value}">${esc(o.label)}</option>`)
-  .join('\n');
+  b.areaOptions = r.areas
+    .map(
+      (a) =>
+        `                  <option value="${a.value}"${a.value === 'any' ? ' selected' : ''}>${esc(a.label)}</option>`
+    )
+    .join('\n');
+
+  b.occasionOptions = r.occasions
+    .map((o) => `                  <option value="${o.value}">${esc(o.label)}</option>`)
+    .join('\n');
+
+  return b;
+};
 
 /* ------------------------------------------------------------------ *
  *  Səhifələr
  * ------------------------------------------------------------------ */
 
-const N = site.site.name;
+const pagesFor = (S, C, T, code) => {
+  const N = S.site.name;
+  const P = C.pages;
 
-const pages = [
-  {
-    file: 'index.html',
-    nav: 'index',
-    title: `${N} | ${site.site.tagline}`,
-    description: site.site.description,
-    preload: ['hero-slider-1.jpg'],
-  },
-  {
-    file: 'menyu.html',
-    nav: 'menyu',
-    title: `Menyu | ${N}`,
-    description:
-      'Steyklər, mangal və kabablar, başlanğıclar, salatlar, şirniyyat və içkilər. Qiymətlər və təsvirlər.',
-    heroTitle: content.pages.menyu.title,
-    heroSubtitle: content.pages.menyu.subtitle,
-    heroImage: 'hero-slider-2.jpg',
-  },
-  {
-    file: 'haqqimizda.html',
-    nav: 'haqqimizda',
-    title: `Haqqımızda | ${N}`,
-    description:
-      'Mangal Steak House-un hekayəsi: 28 gün dinləndirilmiş ət, palıd kömürü və Azərbaycan süfrə ənənəsi.',
-    heroTitle: content.pages.haqqimizda.title,
-    heroSubtitle: content.pages.haqqimizda.subtitle,
-    heroImage: 'about-banner.jpg',
-  },
-  {
-    file: 'qalereya.html',
-    nav: 'qalereya',
-    title: `Qalereya | ${N}`,
-    description: 'Restoranımızdan, mətbəximizdən və yeməklərimizdən fotolar.',
-    heroTitle: content.pages.qalereya.title,
-    heroSubtitle: content.pages.qalereya.subtitle,
-    heroImage: 'event-2.jpg',
-  },
-  {
-    file: 'tedbirler.html',
-    nav: 'tedbirler',
-    title: `Tədbirlər və Banket | ${N}`,
-    description: 'Ad günü, korporativ tədbir və banketlər üçün paketlər, zal imkanları və fərdi menyu.',
-    heroTitle: content.pages.tedbirler.title,
-    heroSubtitle: content.pages.tedbirler.subtitle,
-    heroImage: 'event-1.jpg',
-  },
-  {
-    file: 'rezervasiya.html',
-    nav: 'rezervasiya',
-    title: `Onlayn Rezervasiya | ${N}`,
-    description:
-      'Masanızı onlayn ayırın: tarix, saat və nəfər sayını seçin. Sorğunuz birbaşa restoranın sisteminə düşür.',
-    heroTitle: content.pages.rezervasiya.title,
-    heroSubtitle: content.pages.rezervasiya.subtitle,
-    heroImage: 'hero-slider-3.jpg',
-  },
-  {
-    file: 'bron.html',
-    nav: '',
-    title: `Bronu yoxla | ${N}`,
-    description: 'Bron kodunuzla rezervasiyanızın vəziyyətini yoxlayın, vaxtını və nəfər sayını dəyişin və ya onu ləğv edin.',
-    heroTitle: 'Bronu yoxla',
-    heroSubtitle: 'Bron kodunuz və telefon nömrənizlə rezervasiyanın vəziyyətinə baxın, vaxtını və nəfər sayını dəyişin və ya onu ləğv edin.',
-    heroImage: 'hero-slider-3.jpg',
-    noIndex: true,
-  },
-  {
-    file: 'elaqe.html',
-    nav: 'elaqe',
-    title: `Əlaqə | ${N}`,
-    description: 'Ünvan, telefon, e-mail və iş saatları. Bakının mərkəzində, xəritədə bax.',
-    heroTitle: content.pages.elaqe.title,
-    heroSubtitle: content.pages.elaqe.subtitle,
-    heroImage: 'service-2.jpg',
-  },
-  {
-    file: '404.html',
-    nav: '',
-    title: `Səhifə tapılmadı | ${N}`,
-    description: 'Axtardığınız səhifə tapılmadı.',
-    noIndex: true,
-  },
-];
-
-const navKeys = pages.map((p) => p.nav).filter(Boolean);
+  return [
+    { file: 'index.html', nav: 'index', title: `${N} | ${S.site.tagline}`, description: S.site.description, preload: ['hero-slider-1.jpg'] },
+    { file: 'menyu.html', nav: 'menyu', title: `${T.meta.menu} | ${N}`, description: T.meta.menuDesc,
+      heroTitle: P.menyu.title, heroSubtitle: P.menyu.subtitle, heroImage: 'hero-slider-2.jpg' },
+    { file: 'zallar.html', nav: 'zallar', title: `${T.meta.halls} | ${N}`, description: T.meta.hallsDesc,
+      heroTitle: (P.zallar || {}).title || T.nav.halls, heroSubtitle: (P.zallar || {}).subtitle || '', heroImage: 'event-1.jpg' },
+    { file: 'haqqimizda.html', nav: 'haqqimizda', title: `${T.meta.about} | ${N}`, description: T.meta.aboutDesc,
+      heroTitle: P.haqqimizda.title, heroSubtitle: P.haqqimizda.subtitle, heroImage: 'about-banner.jpg' },
+    { file: 'qalereya.html', nav: 'qalereya', title: `${T.meta.gallery} | ${N}`, description: T.meta.galleryDesc,
+      heroTitle: P.qalereya.title, heroSubtitle: P.qalereya.subtitle, heroImage: 'event-2.jpg' },
+    { file: 'tedbirler.html', nav: 'tedbirler', title: `${T.meta.events} | ${N}`, description: T.meta.eventsDesc,
+      heroTitle: P.tedbirler.title, heroSubtitle: P.tedbirler.subtitle, heroImage: 'event-1.jpg' },
+    { file: 'rezervasiya.html', nav: 'rezervasiya', title: `${T.meta.reservation} | ${N}`, description: T.meta.reservationDesc,
+      heroTitle: P.rezervasiya.title, heroSubtitle: P.rezervasiya.subtitle, heroImage: 'hero-slider-3.jpg' },
+    { file: 'bron.html', nav: '', title: `${T.meta.booking} | ${N}`, description: T.meta.bookingDesc,
+      heroTitle: T.booking.title, heroSubtitle: T.booking.subtitle, heroImage: 'hero-slider-3.jpg', noIndex: true },
+    { file: 'elaqe.html', nav: 'elaqe', title: `${T.meta.contact} | ${N}`, description: T.meta.contactDesc,
+      heroTitle: P.elaqe.title, heroSubtitle: P.elaqe.subtitle, heroImage: 'service-2.jpg' },
+    /* 404 yalnız əsas dildə: hostinq hər ünvan üçün kökdəki 404.html-i göstərir */
+    ...(code === DEFAULT_LANG
+      ? [{ file: '404.html', nav: '', title: `${T.meta.notFound} | ${N}`, description: T.meta.notFoundDesc, noIndex: true }]
+      : []),
+  ];
+};
 
 /* ------------------------------------------------------------------ *
  *  Render
@@ -433,6 +566,7 @@ const render = (template, data) => {
   });
   return { html, missing: [...missing] };
 };
+
 
 /* ------------------------------------------------------------------ *
  *  theme.css — rəng, şrift və ölçü dəyişənləri
@@ -475,7 +609,6 @@ const themeCss = `/*-----------------------------------*\\
 writeFileSync(join(OUT, 'assets', 'css', 'theme.css'), themeCss, 'utf8');
 
 console.log('  ✓ public/assets/css/theme.css');
-
 /* ------------------------------------------------------------------ *
  *  Fayl versiyaları
  * ------------------------------------------------------------------ */
@@ -492,7 +625,7 @@ const shortHash = (text) => createHash('sha1').update(text).digest('hex').slice(
 
 const assetVersions = { 'css/theme.css': shortHash(themeCss) };
 
-for (const rel of ['css/site.css', 'css/fonts.css', 'js/script.js', 'js/reservation.js', 'js/booking.js']) {
+for (const rel of ['css/site.css', 'css/fonts.css', 'css/fonts-cyrillic.css', 'js/script.js', 'js/reservation.js', 'js/booking.js']) {
   const file = join(OUT, 'assets', ...rel.split('/'));
   if (existsSync(file)) assetVersions[rel] = shortHash(readFileSync(file, 'utf8'));
 }
@@ -503,53 +636,117 @@ const withVersions = (html) =>
     return version ? `${match}?v=${version}` : match;
   });
 
+/**
+ * Alt qovluqdakı (ru/, en/) səhifələr.
+ *
+ * Fayllar bir pillə yuxarıdan yüklənir. Səhifə keçidləri isə MÜTLƏQ
+ * (/ru/menyu.html) olur: Vercel «cleanUrls» ilə /ru/index.html-i /ru-ya
+ * (sonda «/» olmadan) yönləndirir və oradan nisbi «menyu.html» brauzerdə
+ * /menyu.html, yəni Azərbaycan dilinə açılırdı — dil itirdi.
+ */
+const rebase = (html, code) =>
+  html
+    .replace(/(["'(])\.\/(assets\/|favicon\.svg)/g, '$1../$2')
+    .replace(/href="([a-z0-9-]+\.html)((?:#[^"]*)?)"/g, (m, file, hash) => `href="/${prefixOf(code)}${file}${hash}"`);
+
+const base = site.site.url.replace(/\/$/, '');
+const localeOf = (l) => l.locale || l.code;
+
 let failed = false;
+const sitemap = [];
 
-for (const page of pages) {
-  const body = readFileSync(join(SRC, 'pages', page.file), 'utf8');
+for (const lang of LANGS) {
+  const code = lang.code;
+  const isDefault = code === DEFAULT_LANG;
+  const tr = isDefault ? {} : translations[code] || {};
 
-  const raw = [
-    partials.head,
-    partials.header,
-    '\n  <main>\n',
-    body,
-    '\n  </main>\n',
-    partials.footer,
-    partials.scripts,
-  ].join('\n');
+  const S = overlay(site, tr.site);
+  const C = overlay(content, tr.content);
+  const T = uiFor(code);
 
-  const nav = Object.fromEntries(navKeys.map((k) => [k, k === page.nav ? 'active' : '']));
+  const langBlocks = buildBlocks(S, C, T, code);
+  const pages = pagesFor(S, C, T, code);
+  const navKeys = pages.map((p) => p.nav).filter(Boolean);
 
-  const preload = (page.preload || [])
-    .map((i) => `  <link rel="preload" as="image" href="${img(i)}">`)
-    .join('\n');
+  const dir = join(OUT, prefixOf(code));
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 
-  const data = {
-    ...site,
-    ...content,
-    blocks,
-    icons,
-    nav,
-    page: {
-      ...page,
-      preload: preload ? preload + '\n' : '',
-      heroTitle: page.heroTitle || '',
-      heroSubtitle: page.heroSubtitle || '',
-      heroImage: page.heroImage || 'hero-slider-1.jpg',
-    },
-  };
+  /* Brauzer skriptləri üçün mətnlər */
+  const jsI18n = `<script>window.MANGAL_LANG = ${JSON.stringify(code)}; window.MANGAL_T = ${JSON.stringify(T.js).replace(/</g, '\\u003c')};</script>`;
 
-  const { html, missing } = render(expandPartials(raw), data);
+  for (const page of pages) {
+    const body = readFileSync(join(SRC, 'pages', page.file), 'utf8');
 
-  if (missing.length) {
-    failed = true;
-    console.error(`  ✗ ${page.file}: tapılmayan dəyər(lər): ${missing.join(', ')}`);
+    const raw = [
+      partials.head,
+      partials.header,
+      '\n  <main>\n',
+      body,
+      '\n  </main>\n',
+      partials.footer,
+      partials.scripts,
+    ].join('\n');
+
+    const nav = Object.fromEntries(navKeys.map((k) => [k, k === page.nav ? 'active' : '']));
+
+    const preload = (page.preload || [])
+      .map((i) => `  <link rel="preload" as="image" href="${img(i)}">`)
+      .join('\n');
+
+    /* Dil keçidləri: eyni səhifənin digər dillərdəki nüsxəsi */
+    const hasPage = (l) => l.code === DEFAULT_LANG || page.file !== '404.html';
+
+    const switcher = LANGS.filter(hasPage)
+      .map((l) => l.code === code
+        ? `<li><a href="${page.file}" class="lang-link is-active" aria-current="true" lang="${l.code}" title="${attr(l.name)}">${esc(l.label)}</a></li>`
+        : `<li><a href="/${prefixOf(l.code)}${page.file}" class="lang-link" hreflang="${l.code}" lang="${l.code}" title="${attr(l.name)}" data-lang-link="${l.code}">${esc(l.label)}</a></li>`)
+      .join('');
+
+    const pagePath = (l) => prefixOf(l) + (page.file === 'index.html' ? '' : page.file);
+
+    const alternates = page.noIndex ? '' : LANGS
+      .map((l) => `  <link rel="alternate" hreflang="${l.code}" href="${base}/${pagePath(l.code)}">`)
+      .concat(`  <link rel="alternate" hreflang="x-default" href="${base}/${pagePath(DEFAULT_LANG)}">`)
+      .join('\n') + '\n';
+
+    const extraCss = lang.cyrillic ? '  <link rel="stylesheet" href="./assets/css/fonts-cyrillic.css">\n' : '';
+
+    const data = {
+      ...S,
+      ...C,
+      blocks: langBlocks,
+      icons,
+      nav,
+      t: T,
+      lang: { ...lang, prefix: prefixOf(code), locale: localeOf(lang), switcher, jsI18n },
+      page: {
+        ...page,
+        path: pagePath(code),
+        alternates,
+        extraCss,
+        robots: page.noIndex ? '  <meta name="robots" content="noindex">\n' : '',
+        preload: preload ? preload + '\n' : '',
+        heroTitle: page.heroTitle || '',
+        heroSubtitle: page.heroSubtitle || '',
+        heroImage: page.heroImage || 'hero-slider-1.jpg',
+      },
+    };
+
+    const { html, missing } = render(expandPartials(raw), data);
+
+    if (missing.length) {
+      failed = true;
+      console.error(`  ✗ ${prefixOf(code)}${page.file}: tapılmayan dəyər(lər): ${missing.join(', ')}`);
+    }
+
+    let out = withVersions(html);
+    if (!isDefault) out = rebase(out, code);
+
+    writeFileSync(join(dir, page.file), out, 'utf8');
+    console.log(`  ✓ public/${prefixOf(code)}${page.file}  (${(out.length / 1024).toFixed(1)} KB)`);
+
+    if (!page.noIndex) sitemap.push({ page, path: pagePath(code), alternates: LANGS.map((l) => [l.code, pagePath(l.code)]) });
   }
-
-  const versioned = withVersions(html);
-
-  writeFileSync(join(OUT, page.file), versioned, 'utf8');
-  console.log(`  ✓ public/${page.file}  (${(versioned.length / 1024).toFixed(1)} KB)`);
 }
 
 
@@ -625,25 +822,25 @@ npm start</pre>
 
 console.log('  ✓ public/admin-info.html');
 
+
 /* ------------------------------------------------------------------ *
  *  robots.txt + sitemap.xml
  * ------------------------------------------------------------------ */
 
-const base = site.site.url.replace(/\/$/, '');
 const today = new Date().toISOString().slice(0, 10);
 
 writeFileSync(
   join(OUT, 'sitemap.xml'),
   `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages
-  .filter((p) => !p.noIndex)
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${sitemap
   .map(
-    (p) => `  <url>
-    <loc>${base}/${p.file === 'index.html' ? '' : p.file}</loc>
+    (s) => `  <url>
+    <loc>${base}/${s.path}</loc>
+${s.alternates.map(([l, p]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${base}/${p}"/>`).join('\n')}
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>${p.file === 'index.html' ? '1.0' : '0.8'}</priority>
+    <priority>${s.page.file === 'index.html' ? '1.0' : '0.8'}</priority>
   </url>`
   )
   .join('\n')}

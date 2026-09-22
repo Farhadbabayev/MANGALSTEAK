@@ -18,7 +18,8 @@
     document.body.classList.toggle('nav-open', open);
     if (navToggler) {
       navToggler.setAttribute('aria-expanded', String(open));
-      navToggler.setAttribute('aria-label', open ? 'Menyunu bağla' : 'Menyunu aç');
+      const label = open ? navToggler.dataset.labelClose : navToggler.dataset.labelOpen;
+      navToggler.setAttribute('aria-label', label || (open ? 'Menyunu bağla' : 'Menyunu aç'));
     }
   };
 
@@ -154,7 +155,7 @@
   const menuLinks = document.querySelectorAll('.menu-nav a');
 
   if (menuLinks.length && 'IntersectionObserver' in window) {
-    const categories = document.querySelectorAll('.menu-category');
+    const categories = document.querySelectorAll('.menu-category, .hall');
 
     const observer = new IntersectionObserver(
       function (entries) {
@@ -265,6 +266,14 @@
 
       btn.addEventListener('click', function (event) {
         event.preventDefault();
+
+        /* «Bu zalda masa ayır»: zal formada əvvəlcədən seçilir */
+        const area = btn.getAttribute('data-rez-area');
+        const areaSelect = rezPanel.querySelector('[data-field="area"]');
+        if (area && areaSelect && areaSelect.querySelector('option[value="' + area + '"]')) {
+          areaSelect.value = area;
+        }
+
         openRez();
       });
     });
@@ -299,6 +308,83 @@
         event.preventDefault();
         first.focus();
       }
+    });
+  }
+
+
+
+  /* ---------------------------------------------------------------- *
+   *  Şəkil baxışı (zalların şəkilləri)
+   *
+   *  Hər zalın şəkilləri öz qrupudur: oxlarla yalnız həmin zalın
+   *  şəkilləri arasında keçilir. <dialog> fokusu və Esc-i özü idarə edir.
+   * ---------------------------------------------------------------- */
+
+  const lightbox = document.querySelector('[data-lightbox]');
+  const lightboxItems = document.querySelectorAll('[data-lightbox-item]');
+
+  if (lightbox && lightboxItems.length && typeof lightbox.showModal === 'function') {
+    const lbImg = lightbox.querySelector('[data-lightbox-img]');
+    const lbCaption = lightbox.querySelector('[data-lightbox-caption]');
+    const lbCount = lightbox.querySelector('[data-lightbox-count]');
+    const lbPrev = lightbox.querySelector('[data-lightbox-prev]');
+    const lbNext = lightbox.querySelector('[data-lightbox-next]');
+
+    let group = [];
+    let index = 0;
+
+    const showItem = function (i) {
+      index = (i + group.length) % group.length;
+      const item = group[index];
+      lbImg.src = item.getAttribute('data-src');
+      lbImg.alt = item.getAttribute('data-caption') || '';
+      lbCaption.textContent = item.getAttribute('data-caption') || '';
+      lbCount.textContent = group.length > 1 ? (index + 1) + ' / ' + group.length : '';
+      lbPrev.hidden = lbNext.hidden = group.length < 2;
+    };
+
+    lightboxItems.forEach(function (item) {
+      item.addEventListener('click', function () {
+        const name = item.getAttribute('data-lightbox-item');
+        group = Array.prototype.filter.call(lightboxItems, function (el) {
+          return el.getAttribute('data-lightbox-item') === name;
+        });
+        showItem(group.indexOf(item));
+        lightbox.showModal();
+        document.body.classList.add('lightbox-open');
+      });
+    });
+
+    lbPrev.addEventListener('click', function () { showItem(index - 1); });
+    lbNext.addEventListener('click', function () { showItem(index + 1); });
+    lightbox.querySelector('[data-lightbox-close]').addEventListener('click', function () { lightbox.close(); });
+
+    lightbox.addEventListener('close', function () {
+      document.body.classList.remove('lightbox-open');
+      lbImg.removeAttribute('src');
+    });
+
+    /* Şəklin kənarına (qaranlıq fona) basanda bağlanır */
+    lightbox.addEventListener('click', function (event) {
+      if (event.target === lightbox) lightbox.close();
+    });
+
+    lightbox.addEventListener('keydown', function (event) {
+      if (group.length < 2) return;
+      if (event.key === 'ArrowLeft') showItem(index - 1);
+      if (event.key === 'ArrowRight') showItem(index + 1);
+    });
+
+    /* Toxunma ekranında sola / sağa sürüşdürmə */
+    let touchX = null;
+    lightbox.addEventListener('touchstart', function (event) {
+      touchX = event.touches.length === 1 ? event.touches[0].clientX : null;
+    }, { passive: true });
+    lightbox.addEventListener('touchend', function (event) {
+      if (touchX === null || group.length < 2) return;
+      const dx = event.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 50) showItem(index + (dx < 0 ? 1 : -1));
+      touchX = null;
     });
   }
 

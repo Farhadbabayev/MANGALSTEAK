@@ -1,43 +1,217 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://mangalsteakhouse.az/</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/"/>
     <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://mangalsteakhouse.az/menyu.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/menyu.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/menyu.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/menyu.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/zallar.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/zallar.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/zallar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/zallar.html"/>
     <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mangalsteakhouse.az/haqqimizda.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/haqqimizda.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/haqqimizda.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/haqqimizda.html"/>
     <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mangalsteakhouse.az/qalereya.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/qalereya.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/qalereya.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/qalereya.html"/>
     <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mangalsteakhouse.az/tedbirler.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/tedbirler.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/tedbirler.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/tedbirler.html"/>
     <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mangalsteakhouse.az/rezervasiya.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/rezervasiya.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/rezervasiya.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/rezervasiya.html"/>
     <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://mangalsteakhouse.az/elaqe.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/elaqe.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/elaqe.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/elaqe.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/ru/</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/ru/menyu.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/menyu.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/menyu.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/menyu.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/ru/zallar.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/zallar.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/zallar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/zallar.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/ru/haqqimizda.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/haqqimizda.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/haqqimizda.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/haqqimizda.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/ru/qalereya.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/qalereya.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/qalereya.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/qalereya.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/ru/tedbirler.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/tedbirler.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/tedbirler.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/tedbirler.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/ru/rezervasiya.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/rezervasiya.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/rezervasiya.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/rezervasiya.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/ru/elaqe.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/elaqe.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/elaqe.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/elaqe.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/en/</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/en/menyu.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/menyu.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/menyu.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/menyu.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/en/zallar.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/zallar.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/zallar.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/zallar.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/en/haqqimizda.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/haqqimizda.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/haqqimizda.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/haqqimizda.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/en/qalereya.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/qalereya.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/qalereya.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/qalereya.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/en/tedbirler.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/tedbirler.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/tedbirler.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/tedbirler.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/en/rezervasiya.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/rezervasiya.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/rezervasiya.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/rezervasiya.html"/>
+    <lastmod>2026-09-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://mangalsteakhouse.az/en/elaqe.html</loc>
+    <xhtml:link rel="alternate" hreflang="az" href="https://mangalsteakhouse.az/elaqe.html"/>
+    <xhtml:link rel="alternate" hreflang="ru" href="https://mangalsteakhouse.az/ru/elaqe.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://mangalsteakhouse.az/en/elaqe.html"/>
     <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>

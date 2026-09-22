@@ -11,11 +11,8 @@
         <div class="narrow">
 
           <div class="booking-head reveal">
-            <h2 class="display-2" id="bron-basliq">Rezervasiyanızı tapın</h2>
-            <p class="lede">
-              Bron kodu rezervasiyadan sonra ekranda göstərilir. Kodu və rezervasiyada
-              yazdığınız telefon nömrəsini daxil edin.
-            </p>
+            <h2 class="display-2" id="bron-basliq">{{t.booking.headTitle}}</h2>
+            <p class="lede">{{t.booking.lede}}</p>
           </div>
 
           <div class="carpet">
@@ -24,13 +21,13 @@
             <div class="fields">
 
               <div class="field">
-                <label for="bron-code">Bron kodu</label>
+                <label for="bron-code">{{t.booking.code}}</label>
                 <input type="text" id="bron-code" name="code" data-field="code" required maxlength="24"
                   autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="27BDF7B6A1C4">
               </div>
 
               <div class="field">
-                <label for="bron-phone">Telefon</label>
+                <label for="bron-phone">{{t.booking.phone}}</label>
                 <input type="tel" id="bron-phone" name="phone" data-field="phone" required maxlength="25"
                   autocomplete="tel" placeholder="+994 50 123 45 67">
               </div>
@@ -40,7 +37,7 @@
             <div class="form-status" data-form-status role="status" aria-live="polite"></div>
 
             <div class="form-actions">
-              <button type="submit" class="btn btn-solid" data-submit-btn>Yoxla</button>
+              <button type="submit" class="btn btn-solid" data-submit-btn>{{t.booking.submit}}</button>
             </div>
 
           </form>
@@ -48,7 +45,7 @@
           <div class="form-success" data-lookup-result hidden>
 
             <div class="success-code">
-              <span class="label">Bron kodu</span>
+              <span class="label">{{t.booking.code}}</span>
               <strong data-result-code></strong>
             </div>
 
@@ -59,48 +56,45 @@
             <div class="form-status" data-result-status role="status" aria-live="polite"></div>
 
             <form class="reschedule" data-reschedule-form novalidate hidden>
-              <p class="reschedule-title">Yeni tarix, saat və nəfər sayı</p>
+              <p class="reschedule-title">{{t.booking.changeTitle}}</p>
 
               <div class="fields">
                 <div class="field">
-                  <label for="bron-new-date">Tarix</label>
+                  <label for="bron-new-date">{{t.booking.date}}</label>
                   <input type="date" id="bron-new-date" name="date" data-field="date" required>
                 </div>
 
                 <div class="field">
-                  <label for="bron-new-time">Saat</label>
+                  <label for="bron-new-time">{{t.booking.time}}</label>
                   <select id="bron-new-time" name="time" data-field="time" required>
                   {{blocks.timeOptions}}
                   </select>
                 </div>
 
                 <div class="field">
-                  <label for="bron-new-guests">Nəfər sayı</label>
+                  <label for="bron-new-guests">{{t.booking.guests}}</label>
                   <select id="bron-new-guests" name="guests" data-field="guests">
                   {{blocks.guestOptions}}
                   </select>
                 </div>
               </div>
 
-              <p class="form-hint">
-                Yeni vaxt və nəfər sayı üçün boş masa yoxlanılır. Masa olmasa, rezervasiyanız
-                olduğu kimi qalır.
-              </p>
+              <p class="form-hint">{{t.booking.changeHint}}</p>
 
               <div class="form-actions">
-                <button type="submit" class="btn btn-solid" data-reschedule-save>Yadda saxla</button>
-                <button type="button" class="btn-text" data-reschedule-close>İmtina</button>
+                <button type="submit" class="btn btn-solid" data-reschedule-save>{{t.booking.save}}</button>
+                <button type="button" class="btn-text" data-reschedule-close>{{t.booking.close}}</button>
               </div>
             </form>
 
             <div class="form-actions" data-result-actions>
-              <button type="button" class="btn btn-solid" data-reschedule-btn hidden>Vaxtı və ya nəfər sayını dəyiş</button>
-              <button type="button" class="btn" data-cancel-btn hidden>Rezervasiyanı ləğv et</button>
-              <button type="button" class="btn-text" data-lookup-again>Başqa kod yoxla</button>
+              <button type="button" class="btn btn-solid" data-reschedule-btn hidden>{{t.booking.change}}</button>
+              <button type="button" class="btn" data-cancel-btn hidden>{{t.booking.cancel}}</button>
+              <button type="button" class="btn-text" data-lookup-again>{{t.booking.again}}</button>
             </div>
 
             <p class="dim small">
-              Başqa dəyişikliklər üçün:
+              {{t.booking.otherChanges}}
               <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
             </p>
 
