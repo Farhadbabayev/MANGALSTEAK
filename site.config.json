@@ -63,10 +63,10 @@
   "reservation": {
     "minGuests": 1,
     "maxGuests": 20,
-    "openHour": 11,
+    "openHour": 10,
     "closeHour": 23,
     "slotMinutes": 30,
-    "maxDaysAhead": 90,
+    "maxDaysAhead": 30,
     "timezoneOffset": "+04:00",
     "areas": [
       {
@@ -80,10 +80,6 @@
       {
         "value": "milli",
         "label": "Milli zal"
-      },
-      {
-        "value": "any",
-        "label": "Fərqi yoxdur"
       }
     ],
     "occasions": [
@@ -115,7 +111,7 @@
   },
   "footer": {
     "newsletterTitle": "Xəbər və kampaniyalar",
-    "newsletterText": "Abunə olun, ilk sifarişinizə <span class=\"span\">10% endirim</span> qazanın.",
+    "newsletterText": "",
     "copyrightYear": "2026"
   }
 }
