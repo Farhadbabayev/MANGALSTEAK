@@ -40,43 +40,18 @@ const clean = (value, max) =>
     .slice(0, max);
 
 /**
- * @returns {{ ok: true, data: object } | { ok: false, error: string, field?: string }}
+ * Tarix və saat: formatı, keçmiş olmaması, maksimum irəli günlər və iş saatı.
+ * Həm yeni rezerv, həm də vaxt dəyişmə (server/lib/booking.mjs) bunu çağırır.
+ * @returns {{ ok: true, date: string, time: string, when: Date, localIso: string }
+ *   | { ok: false, error: string, field: string }}
  */
-export const validateReservation = (input) => {
-  if (!input || typeof input !== 'object') {
-    return { ok: false, error: 'Məlumat düzgün göndərilmədi.' };
-  }
-
-  /* Bot tələsi */
-  if (clean(input.website, 100)) {
-    return { ok: false, error: 'Sorğu qəbul edilmədi.' };
-  }
-
-  const name = clean(input.name, 80);
-  if (name.length < 2) {
-    return { ok: false, field: 'name', error: 'Zəhmət olmasa adınızı yazın.' };
-  }
-
-  const phone = normalizePhone(input.phone);
-  if (!phone) {
-    return {
-      ok: false,
-      field: 'phone',
-      error: 'Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67',
-    };
-  }
-
-  const guests = Number(input.guests);
-  if (!Number.isInteger(guests) || guests < rules.minGuests || guests > rules.maxGuests + 1) {
-    return { ok: false, field: 'guests', error: 'Nəfər sayı düzgün deyil.' };
-  }
-
-  const date = clean(input.date, 10);
+export const validateSlot = (rawDate, rawTime) => {
+  const date = clean(rawDate, 10);
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     return { ok: false, field: 'date', error: 'Tarix düzgün deyil.' };
   }
 
-  const time = clean(input.time, 5);
+  const time = clean(rawTime, 5);
   if (!/^\d{2}:\d{2}$/.test(time)) {
     return { ok: false, field: 'time', error: 'Saat düzgün deyil.' };
   }
@@ -108,6 +83,45 @@ export const validateReservation = (input) => {
     const to = String(rules.closeHour).padStart(2, '0');
     return { ok: false, field: 'time', error: 'Rezervasiya saatları: ' + from + ':00 – ' + to + ':00' };
   }
+
+  return { ok: true, date, time, when, localIso };
+};
+
+/**
+ * @returns {{ ok: true, data: object } | { ok: false, error: string, field?: string }}
+ */
+export const validateReservation = (input) => {
+  if (!input || typeof input !== 'object') {
+    return { ok: false, error: 'Məlumat düzgün göndərilmədi.' };
+  }
+
+  /* Bot tələsi */
+  if (clean(input.website, 100)) {
+    return { ok: false, error: 'Sorğu qəbul edilmədi.' };
+  }
+
+  const name = clean(input.name, 80);
+  if (name.length < 2) {
+    return { ok: false, field: 'name', error: 'Zəhmət olmasa adınızı yazın.' };
+  }
+
+  const phone = normalizePhone(input.phone);
+  if (!phone) {
+    return {
+      ok: false,
+      field: 'phone',
+      error: 'Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67',
+    };
+  }
+
+  const guests = Number(input.guests);
+  if (!Number.isInteger(guests) || guests < rules.minGuests || guests > rules.maxGuests + 1) {
+    return { ok: false, field: 'guests', error: 'Nəfər sayı düzgün deyil.' };
+  }
+
+  const slot = validateSlot(input.date, input.time);
+  if (!slot.ok) return slot;
+  const { date, time, when, localIso } = slot;
 
   const area = clean(input.area, 30);
   const lang = clean(input.lang, 5).toLowerCase();

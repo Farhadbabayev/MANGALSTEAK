@@ -34,7 +34,7 @@
   <script>document.documentElement.classList.add('js');</script>
 
   <link rel="stylesheet" href="./assets/css/fonts.css?v=57540acc">
-  <link rel="stylesheet" href="./assets/css/site.css?v=e998cc49">
+  <link rel="stylesheet" href="./assets/css/site.css?v=9d04e05c">
   <link rel="stylesheet" href="./assets/css/theme.css?v=a0731467">
 
 
@@ -640,6 +640,7 @@
             <li><a href="qalereya.html">Qalereya</a></li>
             <li><a href="tedbirler.html">Tədbirlər</a></li>
             <li><a href="rezervasiya.html">Rezervasiya</a></li>
+            <li><a href="bron.html">Bronu yoxla</a></li>
             <li><a href="elaqe.html">Əlaqə</a></li>
           </ul>
         </div>
@@ -866,8 +867,8 @@
           <ul class="success-list" data-success-summary></ul>
 
           <p class="rez-modal-note">
-            Dəyişiklik və ya ləğv üçün:
-            <a href="tel:+994502281011">+994 12 5051011</a>
+            Bronu yoxlamaq, dəyişmək və ya ləğv etmək üçün:
+            <a href="bron.html" data-success-manage>Bronu yoxla</a> · <a href="tel:+994502281011">+994 12 5051011</a>
           </p>
 
           <div class="form-actions">
@@ -901,10 +902,10 @@
   </dialog>
 
 
-  <script>window.MANGAL_LANG = "az"; window.MANGAL_T = {"nameRequired":"Zəhmət olmasa adınızı yazın.","nameLong":"Ad çox uzundur (maksimum 80 simvol).","phoneInvalid":"Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67","dateRequired":"Tarix seçin.","timeRequired":"Saat seçin.","dateInvalid":"Tarix və ya saat düzgün deyil.","past":"Keçmiş vaxt üçün rezervasiya etmək olmur. Başqa saat seçin.","tooFar":"Rezervasiya ən çox {days} gün əvvəlcədən edilə bilər.","guestsRequired":"Nəfər sayını seçin.","guestsInvalid":"Nəfər sayı düzgün deyil.","sending":"Rezervasiya göndərilir…","failed":"Rezervasiyanı qeyd edə bilmədik. Zəhmət olmasa bir az sonra yenidən yoxlayın və ya bizə zəng edin.","timeout":"Server cavab vermədi. Zəhmət olmasa telefonla əlaqə saxlayın.","network":"Bağlantı xətası oldu. İnternet bağlantınızı yoxlayın və ya bizə zəng edin.","sumName":"Ad","sumPhone":"Telefon","sumDate":"Tarix","sumTime":"Saat","sumGuests":"Nəfər","sumArea":"Zal","emailInvalid":"E-mail ünvanı düzgün deyil.","subscribed":"Təşəkkürlər! Abunəliyiniz qeyd olundu.","subscribeFailed":"Alınmadı. Bir az sonra yenidən yoxlayın.","subscribeNetwork":"Bağlantı xətası. Bir az sonra yenidən yoxlayın."};</script>
+  <script>window.MANGAL_LANG = "az"; window.MANGAL_T = {"nameRequired":"Zəhmət olmasa adınızı yazın.","nameLong":"Ad çox uzundur (maksimum 80 simvol).","phoneInvalid":"Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67","dateRequired":"Tarix seçin.","timeRequired":"Saat seçin.","dateInvalid":"Tarix və ya saat düzgün deyil.","past":"Keçmiş vaxt üçün rezervasiya etmək olmur. Başqa saat seçin.","tooFar":"Rezervasiya ən çox {days} gün əvvəlcədən edilə bilər.","guestsRequired":"Nəfər sayını seçin.","guestsInvalid":"Nəfər sayı düzgün deyil.","sending":"Rezervasiya göndərilir…","failed":"Rezervasiyanı qeyd edə bilmədik. Zəhmət olmasa bir az sonra yenidən yoxlayın və ya bizə zəng edin.","timeout":"Server cavab vermədi. Zəhmət olmasa telefonla əlaqə saxlayın.","network":"Bağlantı xətası oldu. İnternet bağlantınızı yoxlayın və ya bizə zəng edin.","sumName":"Ad","sumPhone":"Telefon","sumDate":"Tarix","sumTime":"Saat","sumGuests":"Nəfər","sumArea":"Zal","emailInvalid":"E-mail ünvanı düzgün deyil.","subscribed":"Təşəkkürlər! Abunəliyiniz qeyd olundu.","subscribeFailed":"Alınmadı. Bir az sonra yenidən yoxlayın.","subscribeNetwork":"Bağlantı xətası. Bir az sonra yenidən yoxlayın.","bkCodeRequired":"Bron kodunu yazın.","bkChecking":"Yoxlanılır…","bkLookupFailed":"Yoxlamaq alınmadı. Bir az sonra yenidən cəhd edin.","bkNotFound":"Bu kod və telefon nömrəsi ilə rezervasiya tapılmadı. Kodu və nömrəni yoxlayın.","bkUnavailable":"Rezervasiyanı hazırda onlayn yoxlamaq mümkün olmadı. Zəhmət olmasa bizə zəng edin.","bkRateLimited":"Çox sayda sorğu göndərildi. Bir az sonra yenidən yoxlayın və ya bizə zəng edin.","bkNotCancellable":"Bu rezervasiyanı artıq onlayn ləğv etmək mümkün deyil. Zəhmət olmasa bizə zəng edin.","bkNotChangeable":"Bu rezervasiyanı artıq onlayn dəyişmək mümkün deyil. Zəhmət olmasa bizə zəng edin.","bkRejected":"Seçdiyiniz vaxta və ya nəfər sayına boş masa yoxdur, ya da restoran həmin vaxt bağlıdır. Başqa vaxt seçin və ya bizə zəng edin.","bkNoChange":"Heç nə dəyişməyib — yeni vaxt və ya nəfər sayı seçin.","bkCancelConfirm":"Rezervasiyanı ləğv etmək istədiyinizə əminsiniz? Bunu geri qaytarmaq olmur.","bkCancelling":"Ləğv edilir…","bkCancelled":"Rezervasiyanız ləğv olundu.","bkCancelFailed":"Ləğv etmək alınmadı. Zəhmət olmasa bizə zəng edin.","bkUpdating":"Rezervasiya yenilənir…","bkUpdated":"Rezervasiyanız yeniləndi: {when}.","bkChangeFailed":"Dəyişmək alınmadı. Zəhmət olmasa bizə zəng edin.","bkSumName":"Ad","bkSumPlace":"Yer","bkStatus":{"hold":"Gözləmədə","pending":"Təsdiq gözləyir","confirmed":"Təsdiqlənib","seated":"Qonaq restoranda","completed":"Başa çatıb","cancelled":"Ləğv olunub","no_show":"Gəlmədi","walkin":"Yerində qeydiyyat"},"guestUnit":"nəfər"};</script>
 
   <script src="./assets/js/script.js?v=3d6ca77f"></script>
-  <script src="./assets/js/reservation.js?v=bddfc89b"></script>
+  <script src="./assets/js/reservation.js?v=747a8fcb"></script>
 
 </body>
 

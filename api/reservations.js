@@ -144,14 +144,20 @@ export default async function handler(req, res) {
   }
 
   console.log(
-    '[rezervasiya] ' + reservation.code + ' · ' + reservation.date + ' ' + reservation.time +
+    '[rezervasiya] ' + reservation.code +
+    (delivery.reference ? ' (Vilka: ' + delivery.reference + ')' : '') + ' · ' + reservation.date + ' ' + reservation.time +
     ' · ' + reservation.guests + ' nəfər · vilka: ' + delivery.status +
     ' · telegram: ' + (notified ? 'göndərildi' : 'yox')
   );
 
+  /* Qonağa Vilka-nın kodu verilir — Vilka panelində və qonaq səhifəsində görünən eyni kod.
+     Vilka-ya çatmayıbsa (yalnız Telegram) və ya webhook rejimidirsə,
+     saytın öz kodu qalır. */
+  const vilkaCode = delivery.status === 'sent' ? delivery.code : null;
+
   res.status(201).json({
     ok: true,
-    code: reservation.code,
+    code: vilkaCode || reservation.code,
     delivery: delivery.status,
   });
 }

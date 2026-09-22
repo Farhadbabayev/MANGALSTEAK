@@ -34,7 +34,7 @@
   <script>document.documentElement.classList.add('js');</script>
 
   <link rel="stylesheet" href="../assets/css/fonts.css?v=57540acc">
-  <link rel="stylesheet" href="../assets/css/site.css?v=e998cc49">
+  <link rel="stylesheet" href="../assets/css/site.css?v=9d04e05c">
   <link rel="stylesheet" href="../assets/css/theme.css?v=a0731467">
   <link rel="stylesheet" href="../assets/css/fonts-cyrillic.css?v=fa3f5ff2">
 
@@ -248,6 +248,7 @@
             <li><a href="/ru/qalereya.html">Галерея</a></li>
             <li><a href="/ru/tedbirler.html">События</a></li>
             <li><a href="/ru/rezervasiya.html">Бронирование</a></li>
+            <li><a href="/ru/bron.html">Проверить бронь</a></li>
             <li><a href="/ru/elaqe.html">Контакты</a></li>
           </ul>
         </div>
@@ -474,8 +475,8 @@
           <ul class="success-list" data-success-summary></ul>
 
           <p class="rez-modal-note">
-            Для изменения или отмены:
-            <a href="tel:+994502281011">+994 12 5051011</a>
+            Проверить, изменить или отменить бронь:
+            <a href="/ru/bron.html" data-success-manage>Проверить бронь</a> · <a href="tel:+994502281011">+994 12 5051011</a>
           </p>
 
           <div class="form-actions">
@@ -509,10 +510,10 @@
   </dialog>
 
 
-  <script>window.MANGAL_LANG = "ru"; window.MANGAL_T = {"nameRequired":"Пожалуйста, укажите ваше имя.","nameLong":"Имя слишком длинное (максимум 80 символов).","phoneInvalid":"Неверный номер телефона. Пример: +994 50 123 45 67","dateRequired":"Выберите дату.","timeRequired":"Выберите время.","dateInvalid":"Неверная дата или время.","past":"Нельзя забронировать на прошедшее время. Выберите другое время.","tooFar":"Бронировать можно не более чем за {days} дней.","guestsRequired":"Выберите количество гостей.","guestsInvalid":"Неверное количество гостей.","sending":"Отправляем заявку…","failed":"Не удалось оформить бронь. Пожалуйста, попробуйте позже или позвоните нам.","timeout":"Сервер не ответил. Пожалуйста, свяжитесь с нами по телефону.","network":"Ошибка соединения. Проверьте интернет или позвоните нам.","sumName":"Имя","sumPhone":"Телефон","sumDate":"Дата","sumTime":"Время","sumGuests":"Гостей","sumArea":"Зал","emailInvalid":"Неверный e-mail.","subscribed":"Спасибо! Вы подписались.","subscribeFailed":"Не получилось. Попробуйте позже.","subscribeNetwork":"Ошибка соединения. Попробуйте позже."};</script>
+  <script>window.MANGAL_LANG = "ru"; window.MANGAL_T = {"nameRequired":"Пожалуйста, укажите ваше имя.","nameLong":"Имя слишком длинное (максимум 80 символов).","phoneInvalid":"Неверный номер телефона. Пример: +994 50 123 45 67","dateRequired":"Выберите дату.","timeRequired":"Выберите время.","dateInvalid":"Неверная дата или время.","past":"Нельзя забронировать на прошедшее время. Выберите другое время.","tooFar":"Бронировать можно не более чем за {days} дней.","guestsRequired":"Выберите количество гостей.","guestsInvalid":"Неверное количество гостей.","sending":"Отправляем заявку…","failed":"Не удалось оформить бронь. Пожалуйста, попробуйте позже или позвоните нам.","timeout":"Сервер не ответил. Пожалуйста, свяжитесь с нами по телефону.","network":"Ошибка соединения. Проверьте интернет или позвоните нам.","sumName":"Имя","sumPhone":"Телефон","sumDate":"Дата","sumTime":"Время","sumGuests":"Гостей","sumArea":"Зал","emailInvalid":"Неверный e-mail.","subscribed":"Спасибо! Вы подписались.","subscribeFailed":"Не получилось. Попробуйте позже.","subscribeNetwork":"Ошибка соединения. Попробуйте позже.","bkCodeRequired":"Введите код брони.","bkChecking":"Проверяем…","bkLookupFailed":"Не удалось проверить. Попробуйте чуть позже.","bkNotFound":"Бронь с таким кодом и номером телефона не найдена. Проверьте код и номер.","bkUnavailable":"Сейчас не удаётся проверить бронь онлайн. Пожалуйста, позвоните нам.","bkRateLimited":"Слишком много запросов. Попробуйте чуть позже или позвоните нам.","bkNotCancellable":"Эту бронь уже нельзя отменить онлайн. Пожалуйста, позвоните нам.","bkNotChangeable":"Эту бронь уже нельзя изменить онлайн. Пожалуйста, позвоните нам.","bkRejected":"На выбранное время или число гостей нет свободного стола, либо ресторан в это время закрыт. Выберите другое время или позвоните нам.","bkNoChange":"Ничего не изменилось — выберите новое время или число гостей.","bkCancelConfirm":"Вы уверены, что хотите отменить бронь? Это нельзя вернуть.","bkCancelling":"Отменяем…","bkCancelled":"Ваша бронь отменена.","bkCancelFailed":"Не удалось отменить. Пожалуйста, позвоните нам.","bkUpdating":"Обновляем бронь…","bkUpdated":"Бронь обновлена: {when}.","bkChangeFailed":"Не удалось изменить. Пожалуйста, позвоните нам.","bkSumName":"Имя","bkSumPlace":"Место","bkStatus":{"hold":"Ожидание","pending":"Ожидает подтверждения","confirmed":"Подтверждена","seated":"Гость в ресторане","completed":"Завершена","cancelled":"Отменена","no_show":"Гость не пришёл","walkin":"Без брони"},"guestUnit":"чел."};</script>
 
   <script src="../assets/js/script.js?v=3d6ca77f"></script>
-  <script src="../assets/js/reservation.js?v=bddfc89b"></script>
+  <script src="../assets/js/reservation.js?v=747a8fcb"></script>
 
 </body>
 

@@ -146,6 +146,7 @@
     const successBox = root.querySelector('[data-form-success]');
     const successCode = root.querySelector('[data-success-code]');
     const successSummary = root.querySelector('[data-success-summary]');
+    const successManage = root.querySelector('[data-success-manage]');
     const newReservationBtn = root.querySelector('[data-new-reservation]');
 
     const dateInput = form.querySelector('[data-field="date"]');
@@ -277,6 +278,9 @@
       successBox.hidden = false;
 
       if (successCode) successCode.textContent = code;
+      if (successManage && code && code !== '—') {
+        successManage.href = 'bron.html?kod=' + encodeURIComponent(code);
+      }
 
       if (successSummary) {
         const rows = [

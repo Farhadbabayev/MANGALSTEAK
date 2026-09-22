@@ -14,7 +14,8 @@
     "open": "Menyunu aç",
     "close": "Menyunu bağla",
     "language": "Dil seçimi",
-    "breadcrumb": "Naviqasiya"
+    "breadcrumb": "Naviqasiya",
+    "checkBooking": "Bronu yoxla"
   },
   "common": {
     "reserve": "Masa ayır",
@@ -62,7 +63,9 @@
     "codeLabel": "Rezervasiya kodunuz",
     "changeCall": "Dəyişiklik və ya ləğv üçün:",
     "newReservation": "Yeni rezervasiya",
-    "closeDialog": "Pəncərəni bağla"
+    "closeDialog": "Pəncərəni bağla",
+    "manageText": "Bronu yoxlamaq, dəyişmək və ya ləğv etmək üçün:",
+    "manageLink": "Bronu yoxla"
   },
   "home": {
     "heroLabel": "Ana səhifə",
@@ -145,7 +148,9 @@
     "notFound": "Səhifə tapılmadı",
     "notFoundDesc": "Axtardığınız səhifə tapılmadı.",
     "cuisine": "Azərbaycan mətbəxi",
-    "city": "Bakı"
+    "city": "Bakı",
+    "booking": "Bronu yoxla",
+    "bookingDesc": "Bron kodunuzla rezervasiyanızın vəziyyətini yoxlayın, vaxtını və nəfər sayını dəyişin və ya onu ləğv edin."
   },
   "js": {
     "nameRequired": "Zəhmət olmasa adınızı yazın.",
@@ -171,6 +176,56 @@
     "emailInvalid": "E-mail ünvanı düzgün deyil.",
     "subscribed": "Təşəkkürlər! Abunəliyiniz qeyd olundu.",
     "subscribeFailed": "Alınmadı. Bir az sonra yenidən yoxlayın.",
-    "subscribeNetwork": "Bağlantı xətası. Bir az sonra yenidən yoxlayın."
+    "subscribeNetwork": "Bağlantı xətası. Bir az sonra yenidən yoxlayın.",
+    "bkCodeRequired": "Bron kodunu yazın.",
+    "bkChecking": "Yoxlanılır…",
+    "bkLookupFailed": "Yoxlamaq alınmadı. Bir az sonra yenidən cəhd edin.",
+    "bkNotFound": "Bu kod və telefon nömrəsi ilə rezervasiya tapılmadı. Kodu və nömrəni yoxlayın.",
+    "bkUnavailable": "Rezervasiyanı hazırda onlayn yoxlamaq mümkün olmadı. Zəhmət olmasa bizə zəng edin.",
+    "bkRateLimited": "Çox sayda sorğu göndərildi. Bir az sonra yenidən yoxlayın və ya bizə zəng edin.",
+    "bkNotCancellable": "Bu rezervasiyanı artıq onlayn ləğv etmək mümkün deyil. Zəhmət olmasa bizə zəng edin.",
+    "bkNotChangeable": "Bu rezervasiyanı artıq onlayn dəyişmək mümkün deyil. Zəhmət olmasa bizə zəng edin.",
+    "bkRejected": "Seçdiyiniz vaxta və ya nəfər sayına boş masa yoxdur, ya da restoran həmin vaxt bağlıdır. Başqa vaxt seçin və ya bizə zəng edin.",
+    "bkNoChange": "Heç nə dəyişməyib — yeni vaxt və ya nəfər sayı seçin.",
+    "bkCancelConfirm": "Rezervasiyanı ləğv etmək istədiyinizə əminsiniz? Bunu geri qaytarmaq olmur.",
+    "bkCancelling": "Ləğv edilir…",
+    "bkCancelled": "Rezervasiyanız ləğv olundu.",
+    "bkCancelFailed": "Ləğv etmək alınmadı. Zəhmət olmasa bizə zəng edin.",
+    "bkUpdating": "Rezervasiya yenilənir…",
+    "bkUpdated": "Rezervasiyanız yeniləndi: {when}.",
+    "bkChangeFailed": "Dəyişmək alınmadı. Zəhmət olmasa bizə zəng edin.",
+    "bkSumName": "Ad",
+    "bkSumPlace": "Yer",
+    "bkStatus": {
+      "hold": "Gözləmədə",
+      "pending": "Təsdiq gözləyir",
+      "confirmed": "Təsdiqlənib",
+      "seated": "Qonaq restoranda",
+      "completed": "Başa çatıb",
+      "cancelled": "Ləğv olunub",
+      "no_show": "Gəlmədi",
+      "walkin": "Yerində qeydiyyat"
+    },
+    "guestUnit": "nəfər"
+  },
+  "booking": {
+    "title": "Bronu yoxla",
+    "subtitle": "Bron kodunuz və telefon nömrənizlə rezervasiyanın vəziyyətinə baxın, vaxtını və nəfər sayını dəyişin və ya onu ləğv edin.",
+    "headTitle": "Rezervasiyanızı tapın",
+    "lede": "Bron kodu rezervasiyadan sonra ekranda göstərilir. Kodu və rezervasiyada yazdığınız telefon nömrəsini daxil edin.",
+    "code": "Bron kodu",
+    "phone": "Telefon",
+    "submit": "Yoxla",
+    "changeTitle": "Yeni tarix, saat və nəfər sayı",
+    "date": "Tarix",
+    "time": "Saat",
+    "guests": "Nəfər sayı",
+    "changeHint": "Yeni vaxt və nəfər sayı üçün boş masa yoxlanılır. Masa olmasa, rezervasiyanız olduğu kimi qalır.",
+    "save": "Yadda saxla",
+    "close": "İmtina",
+    "change": "Vaxtı və ya nəfər sayını dəyiş",
+    "cancel": "Rezervasiyanı ləğv et",
+    "again": "Başqa kod yoxla",
+    "otherChanges": "Başqa dəyişikliklər üçün:"
   }
 }

@@ -59,6 +59,7 @@ export const notifyReservation = async (reservation) => {
   if (reservation.lang && reservation.lang !== 'az') lines.push('🌐 Dil: ' + escapeHtml(reservation.lang.toUpperCase()));
 
   lines.push('');
+  if (delivery.code) lines.push('Vilka kodu: ' + escapeHtml(delivery.code));
   lines.push('Status: ' + escapeHtml(deliveryLabels[delivery.status] || delivery.status || '—'));
   if (delivery.status === 'failed' && delivery.lastError) {
     lines.push('Səbəb: ' + escapeHtml(String(delivery.lastError).slice(0, 200)));

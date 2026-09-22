@@ -13,7 +13,8 @@
     "open": "Open menu",
     "close": "Close menu",
     "language": "Language",
-    "breadcrumb": "Breadcrumb"
+    "breadcrumb": "Breadcrumb",
+    "checkBooking": "Check booking"
   },
   "common": {
     "reserve": "Book a table",
@@ -61,7 +62,9 @@
     "codeLabel": "Your booking code",
     "changeCall": "To change or cancel:",
     "newReservation": "New booking",
-    "closeDialog": "Close"
+    "closeDialog": "Close",
+    "manageText": "To check, change or cancel your booking:",
+    "manageLink": "Check booking"
   },
   "home": {
     "heroLabel": "Home",
@@ -144,7 +147,9 @@
     "notFound": "Page not found",
     "notFoundDesc": "The page you are looking for was not found.",
     "cuisine": "Azerbaijani cuisine",
-    "city": "Baku"
+    "city": "Baku",
+    "booking": "Check booking",
+    "bookingDesc": "Check your booking status with your code, change the time and party size, or cancel it."
   },
   "js": {
     "nameRequired": "Please enter your name.",
@@ -170,6 +175,56 @@
     "emailInvalid": "The e-mail address is not valid.",
     "subscribed": "Thank you! You're subscribed.",
     "subscribeFailed": "That didn't work. Please try again later.",
-    "subscribeNetwork": "Connection error. Please try again later."
+    "subscribeNetwork": "Connection error. Please try again later.",
+    "bkCodeRequired": "Enter your booking code.",
+    "bkChecking": "Checking…",
+    "bkLookupFailed": "Could not check. Please try again shortly.",
+    "bkNotFound": "No booking found with this code and phone number. Please check both.",
+    "bkUnavailable": "We can’t check bookings online right now. Please call us.",
+    "bkRateLimited": "Too many requests. Please try again shortly or call us.",
+    "bkNotCancellable": "This booking can no longer be cancelled online. Please call us.",
+    "bkNotChangeable": "This booking can no longer be changed online. Please call us.",
+    "bkRejected": "There is no free table for the chosen time or party size, or the restaurant is closed then. Pick another time or call us.",
+    "bkNoChange": "Nothing changed — pick a new time or party size.",
+    "bkCancelConfirm": "Are you sure you want to cancel this booking? This cannot be undone.",
+    "bkCancelling": "Cancelling…",
+    "bkCancelled": "Your booking was cancelled.",
+    "bkCancelFailed": "Could not cancel. Please call us.",
+    "bkUpdating": "Updating your booking…",
+    "bkUpdated": "Your booking was updated: {when}.",
+    "bkChangeFailed": "Could not change the booking. Please call us.",
+    "bkSumName": "Name",
+    "bkSumPlace": "Place",
+    "bkStatus": {
+      "hold": "On hold",
+      "pending": "Awaiting confirmation",
+      "confirmed": "Confirmed",
+      "seated": "Seated",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "no_show": "No-show",
+      "walkin": "Walk-in"
+    },
+    "guestUnit": "guests"
+  },
+  "booking": {
+    "title": "Check booking",
+    "subtitle": "Use your booking code and phone number to see the status, change the time and party size, or cancel.",
+    "headTitle": "Find your booking",
+    "lede": "The booking code is shown on screen after you book. Enter the code and the phone number you booked with.",
+    "code": "Booking code",
+    "phone": "Phone",
+    "submit": "Check",
+    "changeTitle": "New date, time and party size",
+    "date": "Date",
+    "time": "Time",
+    "guests": "Party size",
+    "changeHint": "We check for a free table at the new time and party size. If there is none, your booking stays as it is.",
+    "save": "Save",
+    "close": "Cancel",
+    "change": "Change time or party size",
+    "cancel": "Cancel booking",
+    "again": "Check another code",
+    "otherChanges": "For other changes:"
   }
 }

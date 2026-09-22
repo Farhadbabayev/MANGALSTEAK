@@ -41,17 +41,75 @@ const check = (name, condition, detail) => {
 
 const received = [];
 
+/* Vilka Partner API kimi: POST rezerv yaradır və «ref» qaytarır,
+   GET/DELETE /reservations/<ref> onu Vilka kodu və ya external_ref ilə tapır */
+const vilkaRows = [];
+const patches = [];
+const findRow = (ref) => vilkaRows.find((r) => r.ref === ref.toUpperCase() || r.external_ref === ref);
+
 const mock = createServer((req, res) => {
   let body = '';
   req.on('data', (chunk) => { body += chunk; });
   req.on('end', () => {
+    const reply = (status, data) => {
+      res.writeHead(status, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify(data));
+    };
+
+    const url = new URL(req.url, 'http://mock');
+    const single = /^\/reservations\/([^/]+)$/.exec(url.pathname);
+
+    if (single && (req.method === 'GET' || req.method === 'DELETE' || req.method === 'PATCH')) {
+      const row = findRow(decodeURIComponent(single[1]));
+      if (!row) return reply(404, { error: { code: 'NOT_FOUND', message: 'Rezervasiya tapılmadı.' } });
+      if (req.method === 'PATCH') {
+        const patch = (() => { try { return JSON.parse(body); } catch (_) { return {}; } })();
+        patches.push({ ref: row.ref, auth: req.headers.authorization || null, body: patch });
+        /* Vilka-nın öz yoxlamasını təqlid edir: 22:30-da və 12 nəfərə boş masa yoxdur */
+        if (patch.time === '22:30' || patch.party_size === 12) {
+          return reply(409, {
+            error: { code: 'NOT_CHANGEABLE', message: 'Seçdiyiniz vaxta boş masa yoxdur. Zəhmət olmasa başqa saat seçin' },
+          });
+        }
+        if (patch.date) {
+          row.date = patch.date;
+          row.time = patch.time;
+          row.starts_at = new Date(patch.date + 'T' + patch.time + ':00+04:00').toISOString();
+        }
+        if (patch.party_size) row.party_size = patch.party_size;
+        return reply(200, row);
+      }
+      if (req.method === 'DELETE') {
+        if (!['pending', 'confirmed'].includes(row.status)) {
+          return reply(404, { error: { code: 'NOT_FOUND', message: 'Ləğv edilə bilməz' } });
+        }
+        row.status = 'cancelled';
+        row.cancel_reason = url.searchParams.get('reason');
+      }
+      return reply(200, row);
+    }
+
     received.push({
       path: req.url,
       auth: req.headers.authorization || null,
       body: (() => { try { return JSON.parse(body); } catch (_) { return body; } })(),
     });
-    res.writeHead(201, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ id: 'VLK-' + received.length, status: 'accepted' }));
+
+    const sentBody = received[received.length - 1].body || {};
+    const row = {
+      id: '00000000-0000-0000-0000-00000000000' + received.length,
+      ref: 'A1B2C3D4E5F' + received.length,
+      status: 'pending',
+      date: sentBody.date,
+      time: sentBody.time,
+      starts_at: sentBody.date ? new Date(sentBody.date + 'T' + sentBody.time + ':00+04:00').toISOString() : null,
+      party_size: sentBody.party_size,
+      guest: { name: sentBody.guest_name, phone: sentBody.guest_phone, email: null },
+      place: 'Salon · Masa 4',
+      external_ref: sentBody.external_ref || null,
+    };
+    vilkaRows.push(row);
+    reply(201, row);
   });
 });
 
@@ -178,7 +236,7 @@ const run = async () => {
   const createdBody = await created.json();
   check('Düzgün rezervasiya qəbul olunur', created.status === 201 && createdBody.ok === true,
     'status ' + created.status + ' ' + JSON.stringify(createdBody));
-  check('Rezervasiya kodu verilir', /^MS-\d{6}-\d{4}$/.test(createdBody.code || ''), createdBody.code);
+  check('Qonağa Vilka-nın kodu verilir', createdBody.code === 'A1B2C3D4E5F1', createdBody.code);
   check('Vilka-ya göndərildi', createdBody.delivery === 'sent', createdBody.delivery);
 
   const sent = received[received.length - 1];
@@ -189,14 +247,14 @@ const run = async () => {
   check('Sahə adları dəyişdirilib (field map)', sent && sent.body.guest_name === 'Test Qonaq',
     sent && JSON.stringify(sent.body));
   check('Əlavə sabit sahə göndərilir', sent && sent.body.branch_id === 7);
-  check('Rezervasiya kodu Vilka-ya external_ref kimi ötürülür',
-    sent && sent.body.external_ref === createdBody.code, sent && JSON.stringify(sent.body));
+  check('Saytın kodu Vilka-ya external_ref kimi ötürülür',
+    sent && /^MS-\d{6}-\d{4}$/.test(sent.body.external_ref || ''), sent && JSON.stringify(sent.body));
   check('Nəfər sayı party_size (rəqəm) kimi gedir', sent && sent.body.party_size === 4);
   check('Vaxt starts_at kimi Bakı saatı ilə gedir',
     sent && /T19:00:00\+04:00$/.test(sent.body.starts_at || ''), sent && sent.body.starts_at);
   check('Zona, səbəb və qeyd Vilka qeydinə düşür',
     sent && /Zona: Steak zalı/.test(sent.body.note || '') && /Səbəb: Ad günü/.test(sent.body.note || '') &&
-      /Pəncərə kənarı olsun/.test(sent.body.note || '') && sent.body.note.includes(createdBody.code),
+      /Pəncərə kənarı olsun/.test(sent.body.note || '') && sent.body.note.includes(sent.body.external_ref),
     sent && sent.body.note);
   check('Qonağın dili Vilka qeydinə düşür (Dil: RU)', sent && /Dil: RU/.test(sent.body.note || ''),
     sent && sent.body.note);
@@ -223,6 +281,166 @@ const run = async () => {
   const honeypot = await post('/api/reservations', validReservation({ website: 'spam.example' }));
   check('Bot tələsi işləyir', honeypot.status === 400, 'status ' + honeypot.status);
 
+  console.log('\n  BRONU YOXLA\n');
+
+  const bronPage = await fetch(BASE + '/bron');
+  const bronHtml = await bronPage.text();
+  check('bron.html açılır və yoxlama forması var',
+    bronPage.status === 200 && bronHtml.includes('data-lookup-form'), 'status ' + bronPage.status);
+
+  const lookup = await post('/api/booking', { action: 'lookup', code: 'a1b2 c3d4 e5f1', phone: '050 123 45 67' });
+  const lookupBody = await lookup.json();
+  check('Kod və telefonla bron tapılır',
+    lookup.status === 200 && lookupBody.ok && lookupBody.reservation.code === 'A1B2C3D4E5F1',
+    'status ' + lookup.status + ' ' + JSON.stringify(lookupBody));
+  check('Bronun vəziyyəti və ləğv imkanı göstərilir',
+    lookupBody.reservation && lookupBody.reservation.statusLabel === 'Təsdiq gözləyir' &&
+      lookupBody.reservation.canCancel === true,
+    JSON.stringify(lookupBody.reservation));
+  check('Qonağın telefonu cavabda qaytarılmır',
+    !JSON.stringify(lookupBody).includes('501234567'), JSON.stringify(lookupBody));
+
+  const bySiteCode = await post('/api/booking', { action: 'lookup', code: sent.body.external_ref, phone: '+994501234567' });
+  const bySiteCodeBody = await bySiteCode.json();
+  check('Köhnə sayt kodu (MS-…) ilə də tapılır, Vilka kodu göstərilir',
+    bySiteCode.status === 200 && bySiteCodeBody.reservation.code === 'A1B2C3D4E5F1',
+    'status ' + bySiteCode.status + ' ' + JSON.stringify(bySiteCodeBody));
+
+  const wrongPhone = await post('/api/booking', { action: 'lookup', code: 'A1B2C3D4E5F1', phone: '+994551112233' });
+  check('Başqa telefonla bron göstərilmir', wrongPhone.status === 404, 'status ' + wrongPhone.status);
+
+  const wrongPhoneCancel = await post('/api/booking', { action: 'cancel', code: 'A1B2C3D4E5F1', phone: '+994551112233' });
+  check('Başqa telefonla bron ləğv olunmur',
+    wrongPhoneCancel.status === 404 && findRow('A1B2C3D4E5F1').status === 'pending',
+    'status ' + wrongPhoneCancel.status);
+
+  const unknown = await post('/api/booking', { action: 'lookup', code: 'FFFFFFFF', phone: '+994501234567' });
+  check('Olmayan kod «tapılmadı» qaytarır', unknown.status === 404, 'status ' + unknown.status);
+
+  const badCode = await post('/api/booking', { action: 'lookup', code: '<x>', phone: '+994501234567' });
+  const badCodeBody = await badCode.json();
+  check('Yanlış kod formatı rədd olunur', badCode.status === 400 && badCodeBody.field === 'code',
+    JSON.stringify(badCodeBody));
+
+  check('Vaxtı və nəfər sayını dəyişmək mümkün göstərilir', lookupBody.reservation && lookupBody.reservation.canChange === true);
+
+  const later = new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+
+  const moved = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '20:30',
+  });
+  const movedBody = await moved.json();
+  check('Qonaq vaxtı dəyişir',
+    moved.status === 200 && movedBody.changed === true &&
+      movedBody.reservation.date === later && movedBody.reservation.time === '20:30',
+    'status ' + moved.status + ' ' + JSON.stringify(movedBody));
+  const lastPatch = patches[patches.length - 1];
+  check('Vilka-ya yalnız yeni vaxt PATCH ilə gedir',
+    lastPatch && lastPatch.ref === 'A1B2C3D4E5F1' && lastPatch.auth === 'Bearer test-acar' &&
+      JSON.stringify(lastPatch.body) === JSON.stringify({ date: later, time: '20:30' }),
+    lastPatch && JSON.stringify(lastPatch));
+
+  const patchCount = patches.length;
+  const moveWrongPhone = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994551112233', date: later, time: '19:00',
+  });
+  check('Başqa telefonla vaxt dəyişmir',
+    moveWrongPhone.status === 404 && patches.length === patchCount && findRow('A1B2C3D4E5F1').time === '20:30',
+    'status ' + moveWrongPhone.status);
+
+  const moveBadHour = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '04:00',
+  });
+  const moveBadHourBody = await moveBadHour.json();
+  check('İş saatından kənar yeni vaxt rədd olunur',
+    moveBadHour.status === 400 && moveBadHourBody.field === 'time' && patches.length === patchCount,
+    JSON.stringify(moveBadHourBody));
+
+  const movePast = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: '2020-01-01', time: '19:00',
+  });
+  check('Keçmiş tarixə köçürmək olmur', movePast.status === 400, 'status ' + movePast.status);
+
+  const moveFull = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '22:30',
+  });
+  const moveFullBody = await moveFull.json();
+  check('Vilka-nın səbəbi qonağa çatır (boş masa yoxdur)',
+    moveFull.status === 409 && /boş masa yoxdur/.test(moveFullBody.error || '') &&
+      findRow('A1B2C3D4E5F1').time === '20:30',
+    'status ' + moveFull.status + ' ' + JSON.stringify(moveFullBody));
+
+  const party = await post('/api/booking', {
+    action: 'change', code: 'A1B2C3D4E5F1', phone: '+994501234567', guests: 6,
+  });
+  const partyBody = await party.json();
+  check('Qonaq nəfər sayını dəyişir',
+    party.status === 200 && partyBody.changed === true && partyBody.reservation.guests === 6 &&
+      partyBody.reservation.time === '20:30',
+    'status ' + party.status + ' ' + JSON.stringify(partyBody));
+  const partyPatch = patches[patches.length - 1];
+  check('Vilka-ya yalnız yeni nəfər sayı gedir (vaxt yox)',
+    partyPatch && JSON.stringify(partyPatch.body) === JSON.stringify({ party_size: 6 }),
+    partyPatch && JSON.stringify(partyPatch.body));
+
+  const both = await post('/api/booking', {
+    action: 'change', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '19:30', guests: 3,
+  });
+  const bothBody = await both.json();
+  check('Vaxt və nəfər sayı birlikdə dəyişir',
+    both.status === 200 && bothBody.reservation.time === '19:30' && bothBody.reservation.guests === 3 &&
+      JSON.stringify(patches[patches.length - 1].body) === JSON.stringify({ date: later, time: '19:30', party_size: 3 }),
+    'status ' + both.status + ' ' + JSON.stringify(patches[patches.length - 1]));
+
+  const beforeSame = patches.length;
+  const same = await post('/api/booking', {
+    action: 'change', code: 'A1B2C3D4E5F1', phone: '+994501234567', guests: 3,
+  });
+  check('Dəyişiklik yoxdursa Vilka-ya sorğu getmir', same.status === 400 && patches.length === beforeSame,
+    'status ' + same.status);
+
+  const tooMany = await post('/api/booking', {
+    action: 'change', code: 'A1B2C3D4E5F1', phone: '+994501234567', guests: 99,
+  });
+  const tooManyBody = await tooMany.json();
+  check('Həddən çox nəfər rədd olunur', tooMany.status === 400 && tooManyBody.field === 'guests',
+    JSON.stringify(tooManyBody));
+
+  const noTable = await post('/api/booking', {
+    action: 'change', code: 'A1B2C3D4E5F1', phone: '+994501234567', guests: 12,
+  });
+  const noTableBody = await noTable.json();
+  check('Böyük qrupa masa yoxdursa səbəb qonağa çatır və rezerv dəyişmir',
+    noTable.status === 409 && /boş masa yoxdur/.test(noTableBody.error || '') && findRow('A1B2C3D4E5F1').party_size === 3,
+    'status ' + noTable.status + ' ' + JSON.stringify(noTableBody));
+
+  const partyWrongPhone = await post('/api/booking', {
+    action: 'change', code: 'A1B2C3D4E5F1', phone: '+994551112233', guests: 5,
+  });
+  check('Başqa telefonla nəfər sayı dəyişmir',
+    partyWrongPhone.status === 404 && findRow('A1B2C3D4E5F1').party_size === 3, 'status ' + partyWrongPhone.status);
+
+  const cancel = await post('/api/booking', { action: 'cancel', code: 'A1B2C3D4E5F1', phone: '+994501234567' });
+  const cancelBody = await cancel.json();
+  check('Qonaq bronu ləğv edir',
+    cancel.status === 200 && cancelBody.cancelled === true && cancelBody.reservation.status === 'cancelled' &&
+      cancelBody.reservation.canCancel === false,
+    'status ' + cancel.status + ' ' + JSON.stringify(cancelBody));
+  check('Ləğv Vilka-da qeyd olunur',
+    findRow('A1B2C3D4E5F1').status === 'cancelled' && Boolean(findRow('A1B2C3D4E5F1').cancel_reason));
+
+  const cancelAgain = await post('/api/booking', { action: 'cancel', code: 'A1B2C3D4E5F1', phone: '+994501234567' });
+  check('Ləğv olunmuş bron təkrar ləğv olunmur', cancelAgain.status === 409, 'status ' + cancelAgain.status);
+
+  const moveCancelled = await post('/api/booking', {
+    action: 'reschedule', code: 'A1B2C3D4E5F1', phone: '+994501234567', date: later, time: '19:00',
+  });
+  check('Ləğv olunmuş bronun vaxtı dəyişmir', moveCancelled.status === 409, 'status ' + moveCancelled.status);
+
+  const bronHasChange = bronHtml.includes('data-reschedule-form') && bronHtml.includes('value="20:30"') &&
+    bronHtml.includes('id="bron-new-guests"');
+  check('bron.html-də vaxt və nəfər dəyişmə forması var', bronHasChange);
+
   console.log('\n  ADMIN PANELİ\n');
 
   const noAuth = await fetch(BASE + '/api/admin/reservations');
@@ -240,7 +458,7 @@ const run = async () => {
 
   const record = adminBody.reservations[0];
   check('Qeyd mətni saxlanılıb', record && record.note === 'Pəncərə kənarı olsun');
-  check('Vilka istinadı yazılıb', record && record.delivery.reference === 'VLK-1',
+  check('Vilka istinadı yazılıb', record && record.delivery.reference === 'A1B2C3D4E5F1',
     record && record.delivery.reference);
 
   const resolved = await post('/api/admin/resolve', { id: record.id, status: 'manual' }, adminAuth);

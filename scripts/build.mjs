@@ -536,6 +536,8 @@ const pagesFor = (S, C, T, code) => {
       heroTitle: P.tedbirler.title, heroSubtitle: P.tedbirler.subtitle, heroImage: 'event-1.jpg' },
     { file: 'rezervasiya.html', nav: 'rezervasiya', title: `${T.meta.reservation} | ${N}`, description: T.meta.reservationDesc,
       heroTitle: P.rezervasiya.title, heroSubtitle: P.rezervasiya.subtitle, heroImage: 'hero-slider-3.jpg' },
+    { file: 'bron.html', nav: '', title: `${T.meta.booking} | ${N}`, description: T.meta.bookingDesc,
+      heroTitle: T.booking.title, heroSubtitle: T.booking.subtitle, heroImage: 'hero-slider-3.jpg', noIndex: true },
     { file: 'elaqe.html', nav: 'elaqe', title: `${T.meta.contact} | ${N}`, description: T.meta.contactDesc,
       heroTitle: P.elaqe.title, heroSubtitle: P.elaqe.subtitle, heroImage: 'service-2.jpg' },
     /* 404 yalnız əsas dildə: hostinq hər ünvan üçün kökdəki 404.html-i göstərir */
@@ -623,7 +625,7 @@ const shortHash = (text) => createHash('sha1').update(text).digest('hex').slice(
 
 const assetVersions = { 'css/theme.css': shortHash(themeCss) };
 
-for (const rel of ['css/site.css', 'css/fonts.css', 'css/fonts-cyrillic.css', 'js/script.js', 'js/reservation.js']) {
+for (const rel of ['css/site.css', 'css/fonts.css', 'css/fonts-cyrillic.css', 'js/script.js', 'js/reservation.js', 'js/booking.js']) {
   const file = join(OUT, 'assets', ...rel.split('/'));
   if (existsSync(file)) assetVersions[rel] = shortHash(readFileSync(file, 'utf8'));
 }

@@ -99,8 +99,9 @@ Qalanları istəyə bağlıdır:
 
 #### Vilka-ya qoşulma (rezerv birbaşa Mangal Steak House-un səhifəsinə düşür)
 
-1. Vilka super-admin panelində **İnteqrasiyalar (API)** → restoran: **Mangal Steak House** → yeni açar (yazma icazəsi,
-   `reservations:write`). Açar `vk_live_…` ilə başlayır və bir dəfə göstərilir.
+1. Vilka super-admin panelində **İnteqrasiyalar (API)** → restoran: **Mangal Steak House** → yeni açar (oxuma və
+   yazma icazəsi, `reservations:read` + `reservations:write` — standart belədir; «Bronu yoxla» səhifəsi oxumağa
+   və ləğvə ehtiyac duyur). Açar `vk_live_…` ilə başlayır və bir dəfə göstərilir.
 2. Vercel-ə yazın:
 
 ```env
@@ -112,6 +113,22 @@ VILKA_API_KEY=vk_live_...
 `VILKA_AUTH_HEADER` / `VILKA_AUTH_SCHEME` standart qalır (`Authorization: Bearer …`).
 Ünvandakı `mangal-steak-house` restoranın Vilka-dakı slug-udur: açar başqa
 restoranındırsa Vilka `403` qaytarır — səhv restorana rezerv düşə bilməz.
+
+**Bron kodu.** Qonağa rezervdən sonra Vilka-nın öz kodu (`ref`, məs. `27BDF7B6A1C4`)
+göstərilir — Vilka panelində görünən eyni kod. Saytın `MS-…` kodu Vilka-ya
+`external_ref` kimi gedir və qeyddə «Sayt kodu» kimi qalır; Vilka-ya
+çatmayan (yalnız Telegram-a düşən) rezervdə qonaq həmin `MS-…` kodunu görür.
+
+**Bronu yoxla** (`/bron`). Qonaq kodu və rezervdəki telefon nömrəsini yazıb
+rezervin vəziyyətinə baxır, vaxtını və/və ya nəfər sayını dəyişir və ya onu
+ləğv edir (`POST /api/booking`). Yeni vaxt və nəfər sayı əvvəl saytın
+qaydaları ilə (iş saatı, 90 gün, 1–21 nəfər), sonra Vilka-da yoxlanılır: boş
+masa yoxdursa, restoran bağlıdırsa və ya rezerv behlidirsə (nəfər sayı
+dəyişmir), Vilka-nın səbəbi qonağa göstərilir və rezerv olduğu kimi qalır.
+Vilka-ya yalnız dəyişən sahələr gedir. Dəyişiklik Vilka panelində rezervin
+qeydinə yazılır. Həm
+Vilka kodu, həm də köhnə `MS-…` kodu qəbul olunur. Nömrə uyğun gəlməsə
+«tapılmadı» deyilir. Bu, yalnız `VILKA_MODE=api` ilə işləyir.
 
 #### Sahə uyğunluğu (`VILKA_FIELD_MAP`)
 
