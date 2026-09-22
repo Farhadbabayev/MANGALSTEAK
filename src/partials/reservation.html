@@ -55,8 +55,19 @@
 
                 <div class="field">
                   <label for="rez-phone">Telefon</label>
-                  <input type="tel" id="rez-phone" name="phone" data-field="phone" required maxlength="25"
-                    autocomplete="tel" inputmode="tel" placeholder="+994 50 123 45 67">
+                  <div class="phone-input">
+                    <select name="phoneCode" data-field="phoneCode" aria-label="Ölkə kodu" autocomplete="tel-country-code">
+                      {{blocks.phoneCodeOptions}}
+                    </select>
+                    <input type="tel" id="rez-phone" name="phone" data-field="phone" required maxlength="25"
+                      autocomplete="tel-national" inputmode="tel" placeholder="50 123 45 67">
+                  </div>
+                </div>
+
+                <div class="field full">
+                  <label for="rez-email">E-poçt <span class="field-opt">istəyə bağlı</span></label>
+                  <input type="email" id="rez-email" name="email" data-field="email" maxlength="120"
+                    autocomplete="email" inputmode="email" placeholder="ad@mail.com">
                 </div>
 
               </div>

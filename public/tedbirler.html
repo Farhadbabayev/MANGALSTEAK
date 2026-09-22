@@ -30,7 +30,7 @@
   <script>document.documentElement.classList.add('js');</script>
 
   <link rel="stylesheet" href="./assets/css/fonts.css?v=57540acc">
-  <link rel="stylesheet" href="./assets/css/site.css?v=34b0c956">
+  <link rel="stylesheet" href="./assets/css/site.css?v=3df77c0e">
   <link rel="stylesheet" href="./assets/css/theme.css?v=a0731467">
 
 
@@ -464,8 +464,38 @@
 
               <div class="field">
                 <label for="rezm-phone">Telefon</label>
-                <input type="tel" id="rezm-phone" name="phone" data-field="phone" required maxlength="25"
-                  autocomplete="tel" inputmode="tel" placeholder="+994 50 123 45 67">
+                <div class="phone-input">
+                  <select name="phoneCode" data-field="phoneCode" aria-label="Ölkə kodu" autocomplete="tel-country-code">
+                                      <option value="+994" selected aria-label="Azərbaycan +994">🇦🇿 +994</option>
+                  <option value="+90" aria-label="Türkiyə +90">🇹🇷 +90</option>
+                  <option value="+7" aria-label="Rusiya / Qazaxıstan +7">🇷🇺 +7</option>
+                  <option value="+995" aria-label="Gürcüstan +995">🇬🇪 +995</option>
+                  <option value="+380" aria-label="Ukrayna +380">🇺🇦 +380</option>
+                  <option value="+998" aria-label="Özbəkistan +998">🇺🇿 +998</option>
+                  <option value="+996" aria-label="Qırğızıstan +996">🇰🇬 +996</option>
+                  <option value="+993" aria-label="Türkmənistan +993">🇹🇲 +993</option>
+                  <option value="+375" aria-label="Belarus +375">🇧🇾 +375</option>
+                  <option value="+98" aria-label="İran +98">🇮🇷 +98</option>
+                  <option value="+971" aria-label="BƏƏ +971">🇦🇪 +971</option>
+                  <option value="+966" aria-label="Səudiyyə Ərəbistanı +966">🇸🇦 +966</option>
+                  <option value="+974" aria-label="Qətər +974">🇶🇦 +974</option>
+                  <option value="+972" aria-label="İsrail +972">🇮🇱 +972</option>
+                  <option value="+44" aria-label="Böyük Britaniya +44">🇬🇧 +44</option>
+                  <option value="+49" aria-label="Almaniya +49">🇩🇪 +49</option>
+                  <option value="+33" aria-label="Fransa +33">🇫🇷 +33</option>
+                  <option value="+39" aria-label="İtaliya +39">🇮🇹 +39</option>
+                  <option value="+31" aria-label="Niderland +31">🇳🇱 +31</option>
+                  <option value="+1" aria-label="ABŞ / Kanada +1">🇺🇸 +1</option>
+                  </select>
+                  <input type="tel" id="rezm-phone" name="phone" data-field="phone" required maxlength="25"
+                    autocomplete="tel-national" inputmode="tel" placeholder="50 123 45 67">
+                </div>
+              </div>
+
+              <div class="field full">
+                <label for="rezm-email">E-poçt <span class="field-opt">istəyə bağlı</span></label>
+                <input type="email" id="rezm-email" name="email" data-field="email" maxlength="120"
+                  autocomplete="email" inputmode="email" placeholder="ad@mail.com">
               </div>
 
             </div>
@@ -558,7 +588,7 @@
 
 
   <script src="./assets/js/script.js?v=72d0dfda"></script>
-  <script src="./assets/js/reservation.js?v=50865c7d"></script>
+  <script src="./assets/js/reservation.js?v=40262b3a"></script>
 
 </body>
 

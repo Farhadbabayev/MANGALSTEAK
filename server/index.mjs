@@ -344,13 +344,13 @@ const handleAdminApi = async (req, res, url) => {
   if (path === '/api/admin/export.csv' && req.method === 'GET') {
     const all = await listReservations();
     const header = [
-      'Kod', 'Yaradılıb', 'Tarix', 'Saat', 'Ad', 'Telefon', 'Nəfər',
+      'Kod', 'Yaradılıb', 'Tarix', 'Saat', 'Ad', 'Telefon', 'E-poçt', 'Nəfər',
       'Zona', 'Səbəb', 'Qeyd', 'Status', 'Vilka', 'Vilka ID',
     ];
 
     const rows = all.map((r) =>
       [
-        r.code, r.createdAt, r.date, r.time, r.name, r.phone, r.guests,
+        r.code, r.createdAt, r.date, r.time, r.name, r.phone, r.email, r.guests,
         r.area, r.occasion, r.note, r.status, r.delivery?.status, r.delivery?.reference,
       ].map(csvEscape).join(',')
     );

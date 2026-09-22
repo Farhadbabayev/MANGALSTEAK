@@ -22,6 +22,7 @@ export const buildPayload = (reservation, settings) => {
     restaurant_id: vilka.restaurantId || undefined,
     name: reservation.name,
     phone: reservation.phone,
+    email: reservation.email || undefined,
     guests: reservation.guests,
     date: reservation.date,
     time: reservation.time,

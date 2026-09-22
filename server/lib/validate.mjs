@@ -13,18 +13,33 @@ const rules = siteConfig.reservation;
 const areaValues = new Set(rules.areas.map((a) => a.value));
 const occasionValues = new Set(rules.occasions.map((o) => o.value));
 
-/** Azərbaycan nömrəsini +994XXXXXXXXX formasına salır, yararsızdırsa null qaytarır. */
-export const normalizePhone = (raw) => {
-  let digits = String(raw || '').replace(/[^\d+]/g, '');
+/**
+ * Nömrəni beynəlxalq formaya (+XXXXXXXX) salır, yararsızdırsa null qaytarır.
+ * «code» formadakı ölkə kodudur (+994 standart). Nömrə «+» və ya «00» ilə
+ * yazılıbsa, ölkə kodu nömrənin özündən götürülür.
+ * Azərbaycan üçün sərt yoxlama (9 rəqəm), digər ölkələr üçün E.164 (maks. 15 rəqəm).
+ */
+export const normalizePhone = (raw, code) => {
+  let s = String(raw || '').replace(/[^\d+]/g, '');
+  if (s.startsWith('00')) s = '+' + s.slice(2);
 
-  if (digits.startsWith('00')) digits = '+' + digits.slice(2);
-  if (digits.startsWith('+')) digits = digits.slice(1);
+  let cc = String(code || '+994').replace(/\D/g, '').slice(0, 4) || '994';
+  let national;
 
-  if (digits.startsWith('994')) digits = digits.slice(3);
-  else if (digits.startsWith('0')) digits = digits.slice(1);
+  if (s.startsWith('+')) {
+    const full = s.slice(1).replace(/\+/g, '');
+    if (!full.startsWith('994')) return /^[1-9]\d{7,14}$/.test(full) ? '+' + full : null;
+    cc = '994';
+    national = full.slice(3);
+  } else {
+    national = s.replace(/\+/g, '');
+    if (cc === '994' && national.length === 12 && national.startsWith('994')) national = national.slice(3);
+    else national = national.replace(/^0/, '');
+  }
 
-  if (!/^\d{9}$/.test(digits)) return null;
-  return '+994' + digits;
+  if (cc === '994') return /^\d{9}$/.test(national) ? '+994' + national : null;
+  const full = cc + national;
+  return /^\d{5,14}$/.test(national) && full.length <= 15 ? '+' + full : null;
 };
 
 /** Görünməyən idarəetmə simvollarını təmizləyir və uzunluğu məhdudlaşdırır. */
@@ -57,13 +72,20 @@ export const validateReservation = (input) => {
     return { ok: false, field: 'name', error: 'Zəhmət olmasa adınızı yazın.' };
   }
 
-  const phone = normalizePhone(input.phone);
+  const phone = normalizePhone(input.phone, input.phoneCode);
   if (!phone) {
     return {
       ok: false,
       field: 'phone',
-      error: 'Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67',
+      error: 'Telefon nömrəsi düzgün deyil. Ölkə kodunu seçib nömrəni yazın, məsələn: 50 123 45 67',
     };
+  }
+
+  /* E-poçt istəyə bağlıdır, amma yazılıbsa düzgün olmalıdır */
+  let email = '';
+  if (clean(input.email, 120)) {
+    email = validateEmail(input.email);
+    if (!email) return { ok: false, field: 'email', error: 'E-poçt ünvanı düzgün deyil.' };
   }
 
   const guests = Number(input.guests);
@@ -117,6 +139,7 @@ export const validateReservation = (input) => {
     data: {
       name,
       phone,
+      email,
       guests,
       date,
       time,

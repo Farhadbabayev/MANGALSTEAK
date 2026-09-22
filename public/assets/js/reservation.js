@@ -26,25 +26,38 @@
 
 
   /* ---------------------------------------------------------------- *
-   *  Telefon nömrəsi (Azərbaycan)
+   *  Telefon nömrəsi (ölkə kodu + nömrə)
+   *  server/lib/validate.mjs-dəki normalizePhone ilə eyni qayda
    * ---------------------------------------------------------------- */
 
-  const normalizePhone = function (raw) {
-    let digits = String(raw || '').replace(/[^\d+]/g, '');
+  const normalizePhone = function (raw, code) {
+    let s = String(raw || '').replace(/[^\d+]/g, '');
+    if (s.startsWith('00')) s = '+' + s.slice(2);
 
-    if (digits.startsWith('00')) digits = '+' + digits.slice(2);
-    if (digits.startsWith('+')) digits = digits.slice(1);
+    let cc = String(code || '+994').replace(/\D/g, '').slice(0, 4) || '994';
+    let national;
 
-    if (digits.startsWith('994')) digits = digits.slice(3);
-    else if (digits.startsWith('0')) digits = digits.slice(1);
+    if (s.startsWith('+')) {
+      const full = s.slice(1).replace(/\+/g, '');
+      if (!full.startsWith('994')) return /^[1-9]\d{7,14}$/.test(full) ? '+' + full : null;
+      cc = '994';
+      national = full.slice(3);
+    } else {
+      national = s.replace(/\+/g, '');
+      if (cc === '994' && national.length === 12 && national.startsWith('994')) national = national.slice(3);
+      else national = national.replace(/^0/, '');
+    }
 
-    if (!/^\d{9}$/.test(digits)) return null;
-    return '+994' + digits;
+    if (cc === '994') return /^\d{9}$/.test(national) ? '+994' + national : null;
+    const full = cc + national;
+    return /^\d{5,14}$/.test(national) && full.length <= 15 ? '+' + full : null;
   };
 
   const prettyPhone = function (value) {
     return String(value || '').replace(/^\+994(\d{2})(\d{3})(\d{2})(\d{2})$/, '+994 $1 $2 $3 $4');
   };
+
+  const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 
   /* ---------------------------------------------------------------- *
@@ -60,11 +73,15 @@
       return { field: 'name', message: 'Ad çox uzundur (maksimum 80 simvol).' };
     }
 
-    if (!normalizePhone(data.phone)) {
+    if (!normalizePhone(data.phone, data.phoneCode)) {
       return {
         field: 'phone',
-        message: 'Telefon nömrəsi düzgün deyil. Nümunə: +994 50 123 45 67',
+        message: 'Telefon nömrəsi düzgün deyil. Ölkə kodunu seçib nömrəni yazın, məsələn: 50 123 45 67',
       };
+    }
+
+    if (data.email && !EMAIL_RE.test(data.email)) {
+      return { field: 'email', message: 'E-poçt ünvanı düzgün deyil. Nümunə: ad@mail.com' };
     }
 
     if (!data.date) {
@@ -220,10 +237,22 @@
      * -------------------------------------------------------------- */
 
     const phoneInput = form.querySelector('[data-field="phone"]');
+    const codeSelect = form.querySelector('[data-field="phoneCode"]');
     if (phoneInput) {
       phoneInput.addEventListener('blur', function () {
-        const normalized = normalizePhone(phoneInput.value);
-        if (normalized) phoneInput.value = prettyPhone(normalized);
+        const code = codeSelect ? codeSelect.value : '+994';
+        const normalized = normalizePhone(phoneInput.value, code);
+        if (!normalized) return;
+
+        // Seçilmiş ölkənin nömrəsidirsa, kodu xanada təkrarlamırıq
+        if (normalized.startsWith(code)) {
+          const national = normalized.slice(code.length);
+          phoneInput.value = code === '+994'
+            ? national.replace(/^(\d{2})(\d{3})(\d{2})(\d{2})$/, '$1 $2 $3 $4')
+            : national;
+        } else {
+          phoneInput.value = normalized;
+        }
       });
     }
 
@@ -251,6 +280,7 @@
         const rows = [
           ['Ad', data.name],
           ['Telefon', prettyPhone(data.phone)],
+          ['E-poçt', data.email],
           ['Tarix', data.date.split('-').reverse().join('.')],
           ['Saat', data.time],
           ['Nəfər', labelOf('guests') || data.guests],
@@ -301,6 +331,8 @@
       const data = {
         name: (fd.get('name') || '').toString().trim(),
         phone: (fd.get('phone') || '').toString().trim(),
+        phoneCode: (fd.get('phoneCode') || '+994').toString(),
+        email: (fd.get('email') || '').toString().trim(),
         guests: (fd.get('guests') || '').toString(),
         date: (fd.get('date') || '').toString(),
         time: (fd.get('time') || '').toString(),
@@ -319,7 +351,7 @@
         return;
       }
 
-      data.phone = normalizePhone(data.phone);
+      data.phone = normalizePhone(data.phone, data.phoneCode);
 
       setLoading(true);
       showStatus('Rezervasiya göndərilir…', 'info');

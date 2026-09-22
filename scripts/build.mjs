@@ -311,6 +311,13 @@ blocks.timeOptions = (() => {
   return out.join('\n');
 })();
 
+blocks.phoneCodeOptions = (r.phoneCodes || [{ code: 'AZ', flag: '🇦🇿', name: 'Azərbaycan', dial: '+994' }])
+  .map(
+    (c, i) =>
+      `                  <option value="${esc(c.dial)}"${i === 0 ? ' selected' : ''} aria-label="${esc(c.name)} ${esc(c.dial)}">${c.flag ? c.flag + ' ' : ''}${esc(c.dial)}</option>`
+  )
+  .join('\n');
+
 blocks.areaOptions = r.areas
   .map(
     (a) =>

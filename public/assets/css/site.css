@@ -1675,6 +1675,22 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 }
 
 .field textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+
+.field-opt { margin-left: 4px; font-size: 13px; color: color-mix(in srgb, var(--cream-dim) 75%, transparent); }
+
+/* ölkə kodu + nömrə: bir xana kimi görünür */
+.phone-input {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px;
+}
+
+.field .phone-input select {
+  width: auto;
+  min-width: 108px;
+  padding-left: 12px;
+  font-variant-numeric: tabular-nums;
+}
 .field input[type="date"] { color-scheme: dark; }
 
 /* əlavə istəklər: istəyə bağlı, bağlı gəlir */

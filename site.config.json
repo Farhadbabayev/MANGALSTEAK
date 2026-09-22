@@ -40,6 +40,128 @@
     "youtube": "https://youtube.com/@mangalsteakhouse"
   },
   "reservation": {
+    "phoneCodes": [
+      {
+        "code": "AZ",
+        "flag": "🇦🇿",
+        "name": "Azərbaycan",
+        "dial": "+994"
+      },
+      {
+        "code": "TR",
+        "flag": "🇹🇷",
+        "name": "Türkiyə",
+        "dial": "+90"
+      },
+      {
+        "code": "RU",
+        "flag": "🇷🇺",
+        "name": "Rusiya / Qazaxıstan",
+        "dial": "+7"
+      },
+      {
+        "code": "GE",
+        "flag": "🇬🇪",
+        "name": "Gürcüstan",
+        "dial": "+995"
+      },
+      {
+        "code": "UA",
+        "flag": "🇺🇦",
+        "name": "Ukrayna",
+        "dial": "+380"
+      },
+      {
+        "code": "UZ",
+        "flag": "🇺🇿",
+        "name": "Özbəkistan",
+        "dial": "+998"
+      },
+      {
+        "code": "KG",
+        "flag": "🇰🇬",
+        "name": "Qırğızıstan",
+        "dial": "+996"
+      },
+      {
+        "code": "TM",
+        "flag": "🇹🇲",
+        "name": "Türkmənistan",
+        "dial": "+993"
+      },
+      {
+        "code": "BY",
+        "flag": "🇧🇾",
+        "name": "Belarus",
+        "dial": "+375"
+      },
+      {
+        "code": "IR",
+        "flag": "🇮🇷",
+        "name": "İran",
+        "dial": "+98"
+      },
+      {
+        "code": "AE",
+        "flag": "🇦🇪",
+        "name": "BƏƏ",
+        "dial": "+971"
+      },
+      {
+        "code": "SA",
+        "flag": "🇸🇦",
+        "name": "Səudiyyə Ərəbistanı",
+        "dial": "+966"
+      },
+      {
+        "code": "QA",
+        "flag": "🇶🇦",
+        "name": "Qətər",
+        "dial": "+974"
+      },
+      {
+        "code": "IL",
+        "flag": "🇮🇱",
+        "name": "İsrail",
+        "dial": "+972"
+      },
+      {
+        "code": "GB",
+        "flag": "🇬🇧",
+        "name": "Böyük Britaniya",
+        "dial": "+44"
+      },
+      {
+        "code": "DE",
+        "flag": "🇩🇪",
+        "name": "Almaniya",
+        "dial": "+49"
+      },
+      {
+        "code": "FR",
+        "flag": "🇫🇷",
+        "name": "Fransa",
+        "dial": "+33"
+      },
+      {
+        "code": "IT",
+        "flag": "🇮🇹",
+        "name": "İtaliya",
+        "dial": "+39"
+      },
+      {
+        "code": "NL",
+        "flag": "🇳🇱",
+        "name": "Niderland",
+        "dial": "+31"
+      },
+      {
+        "code": "US",
+        "flag": "🇺🇸",
+        "name": "ABŞ / Kanada",
+        "dial": "+1"
+      }
+    ],
     "minGuests": 1,
     "maxGuests": 20,
     "openHour": 11,

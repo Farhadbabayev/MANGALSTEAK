@@ -45,6 +45,7 @@ export const notifyReservation = async (reservation) => {
     '',
     '👤 ' + escapeHtml(reservation.name),
     '📞 ' + escapeHtml(reservation.phone),
+    ...(reservation.email ? ['✉️ ' + escapeHtml(reservation.email)] : []),
     '📅 ' + escapeHtml(reservation.date.split('-').reverse().join('.')) + ' · ' + escapeHtml(reservation.time),
     '👥 ' + escapeHtml(reservation.guests) + ' nəfər',
     '📍 ' + escapeHtml(areaLabels[reservation.area] || reservation.area || '—'),

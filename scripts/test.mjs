@@ -156,6 +156,22 @@ const run = async () => {
   check('Yanlış telefon rədd olunur', badPhone.status === 400 && badPhoneBody.field === 'phone',
     JSON.stringify(badPhoneBody));
 
+  const { normalizePhone, validateReservation } = await import('../server/lib/validate.mjs');
+  check('Xarici nömrə ölkə kodu ilə qəbul olunur',
+    normalizePhone('0532 123 45 67', '+90') === '+905321234567', normalizePhone('0532 123 45 67', '+90'));
+  check('«+» ilə yazılan nömrə seçilmiş koddan üstündür',
+    normalizePhone('+44 7700 900123', '+994') === '+447700900123');
+  check('Azərbaycan nömrəsi əvvəlki kimi yoxlanılır',
+    normalizePhone('50 123 45 67', '+994') === '+994501234567' && normalizePhone('50 123', '+994') === null);
+  const withEmail = validateReservation(validReservation({ email: 'Qonaq@Mail.com' }));
+  check('E-poçt saxlanılır', withEmail.ok && withEmail.data.email === 'qonaq@mail.com',
+    JSON.stringify(withEmail));
+
+  const badEmail = await post('/api/reservations', validReservation({ email: 'yanlis-poct' }));
+  const badEmailBody = await badEmail.json();
+  check('Yanlış e-poçt rədd olunur', badEmail.status === 400 && badEmailBody.field === 'email',
+    JSON.stringify(badEmailBody));
+
   const pastDate = await post('/api/reservations', validReservation({ date: '2020-01-01' }));
   check('Keçmiş tarix rədd olunur', pastDate.status === 400, 'status ' + pastDate.status);
 

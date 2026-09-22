@@ -1331,7 +1331,7 @@
       if (delivery && status !== delivery) return false;
       if (from && r.date < from) return false;
       if (to && r.date > to) return false;
-      if (search && (r.name + ' ' + r.phone + ' ' + r.code).toLowerCase().indexOf(search) === -1) return false;
+      if (search && (r.name + ' ' + r.phone + ' ' + (r.email || '') + ' ' + r.code).toLowerCase().indexOf(search) === -1) return false;
       return true;
     });
 
@@ -1364,6 +1364,12 @@
       const tel = el('a', 'muted', r.phone);
       tel.href = 'tel:' + r.phone;
       guest.appendChild(tel);
+      if (r.email) {
+        guest.appendChild(el('br'));
+        const mail = el('a', 'muted', r.email);
+        mail.href = 'mailto:' + r.email;
+        guest.appendChild(mail);
+      }
       tr.appendChild(guest);
 
       tr.appendChild(el('td', 'nowrap', String(r.guests)));
