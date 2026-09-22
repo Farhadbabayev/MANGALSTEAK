@@ -1,28 +1,35 @@
       <!--
-        - #HERO
+        - #HERO: şəbəkə pəncərəsi
       -->
 
       <section class="hero" aria-label="Ana səhifə" data-hero>
-        {{blocks.heroSlides}}
+        <div class="wrap hero-grid">
 
-        <div class="hero-inner">
-          <p class="label" data-hero-label>{{hero.slides.0.subtitle}}</p>
+          <div class="hero-copy">
+            <h1 class="display-1" data-hero-title>{{hero.slides.0.title}}</h1>
 
-          <h1 class="display-1" data-hero-title>{{hero.slides.0.title}}</h1>
+            <p class="lede" data-hero-text>{{hero.slides.0.text}}</p>
 
-          <p class="lede" data-hero-text>{{hero.slides.0.text}}</p>
+            <div class="hero-actions">
+              <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>Masa ayır</a>
+              <a href="menyu.html" class="btn-text">Menyuya bax {{icons.arrow-right}}</a>
+            </div>
+          </div>
 
-          <a href="rezervasiya.html" class="btn">Masa ayır</a>
-        </div>
+          <figure class="hero-window">
+            <div class="window" data-window>
+              <div class="window-media">
+                {{blocks.heroSlides}}
+              </div>
+              {{blocks.heroLattice}}
+            </div>
 
-        <div class="hero-dots" data-hero-dots aria-label="Slaydlar">
-          {{blocks.heroDots}}
-        </div>
+            <figcaption class="window-caption">
+              <span data-hero-label>{{hero.slides.0.subtitle}}</span>
+              <span class="hero-dots" data-hero-dots aria-label="Slaydlar">{{blocks.heroDots}}</span>
+            </figcaption>
+          </figure>
 
-        <div class="hero-meta">
-          <span>Dry-aged 28 gün</span>
-          <span>Açıq mangal</span>
-          <span>{{hours.short}}</span>
         </div>
       </section>
 
@@ -31,16 +38,15 @@
         - #FƏLSƏFƏ
       -->
 
-      <section class="section text-center" aria-label="Fəlsəfəmiz">
-        <div class="wrap">
+      <section class="section" aria-labelledby="virtue-title">
+        <div class="wrap virtues">
 
-          <div class="section-head text-center reveal">
-            <p class="label">{{features.subtitle}}</p>
-            <h2 class="display-2">{{features.title}}</h2>
-            <p class="lede">{{services.text}}</p>
+          <div class="virtues-head reveal">
+            <h2 class="display-2" id="virtue-title">{{features.title}}</h2>
+            <p class="manifest">{{services.text}}</p>
           </div>
 
-          <ul class="grid-hair cols-4 reveal">
+          <ul class="virtue-grid reveal">
             {{blocks.featureCards}}
           </ul>
 
@@ -52,30 +58,30 @@
         - #ŞEFİN SEÇİMİ
       -->
 
-      <section class="section bg-2" aria-labelledby="dish-label">
-        <div class="wrap split reveal">
+      <section class="section dish" aria-labelledby="dish-label">
+        <div class="wrap dish-grid">
 
-          <div class="split-img">
-            <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
-              alt="{{specialDish.title}}">
-          </div>
-
-          <div class="split-body">
-            <div class="index-head">
-              <span class="num">№ 01</span>
-              <span class="label">{{specialDish.subtitle}}</span>
+          <figure class="dish-window reveal">
+            <div class="window window-still">
+              <div class="window-media">
+                <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
+                  alt="{{specialDish.title}}">
+              </div>
+              {{blocks.dishLattice}}
             </div>
+          </figure>
 
-            <h2 class="title-1" id="dish-label">{{specialDish.title}}</h2>
-
+          <div class="dish-body reveal">
+            <p class="label">{{specialDish.subtitle}}</p>
+            <h2 class="display-2" id="dish-label">{{specialDish.title}}</h2>
             <p>{{specialDish.text}}</p>
 
             <div class="price-row">
               <span class="now">{{specialDish.newPrice}}</span>
-              <span class="was">{{specialDish.oldPrice}}</span>
+              <s class="was">{{specialDish.oldPrice}}</s>
             </div>
 
-            <a href="rezervasiya.html" class="btn">Masa ayır</a>
+            <a href="{{specialDish.buttonLink}}" class="btn-text">{{specialDish.buttonText}} {{icons.arrow-right}}</a>
           </div>
 
         </div>
@@ -86,27 +92,23 @@
         - #MENYU
       -->
 
-      <section class="section" id="menyu" aria-label="Menyu">
+      <section class="section" id="menyu" aria-labelledby="menu-title">
         <div class="wrap">
 
-          <div class="section-head reveal">
-            <div class="index-head">
-              <span class="num">№ 02</span>
-              <span class="label">{{menuPreview.subtitle}}</span>
+          <div class="menu-card reveal">
+            <div class="menu-card-head">
+              <h2 class="display-2" id="menu-title">{{menuPreview.title}}</h2>
+              <p class="dim">{{menu.note}}</p>
             </div>
 
-            <h2 class="display-2">{{menuPreview.title}}</h2>
-            <p class="lede">{{menu.note}}</p>
-          </div>
+            <div class="menu-cols">
+              {{blocks.menuPreviewItems}}
+            </div>
 
-          <div class="menu-grid reveal">
-            {{blocks.menuPreviewItems}}
-          </div>
-
-          <p class="menu-note">{{hours.kitchenNote}}</p>
-
-          <div class="form-actions">
-            <a href="{{menuPreview.buttonLink}}" class="btn">{{menuPreview.buttonText}}</a>
+            <div class="menu-card-foot">
+              <p class="menu-note">{{hours.kitchenNote}}</p>
+              <a href="{{menuPreview.buttonLink}}" class="btn">{{menuPreview.buttonText}}</a>
+            </div>
           </div>
 
         </div>
@@ -117,25 +119,20 @@
         - #HEKAYƏ
       -->
 
-      <section class="section bg-2" aria-label="Haqqımızda">
-        <div class="wrap split reverse reveal">
+      <section class="section story" aria-labelledby="story-title">
+        <div class="wrap story-grid">
 
-          <div class="split-body">
-            <div class="index-head">
-              <span class="num">№ 03</span>
-              <span class="label">{{about.subtitle}}</span>
-            </div>
-
-            <h2 class="title-1">{{about.title}}</h2>
-
-            <p>{{about.text}}</p>
-
-            <a href="{{about.buttonLink}}" class="btn">{{about.buttonText}}</a>
+          <div class="story-body reveal">
+            <h2 class="display-2" id="story-title">{{about.title}}</h2>
+            <p class="lede">{{about.text}}</p>
+            <a href="{{about.buttonLink}}" class="btn-text">{{about.buttonText}} {{icons.arrow-right}}</a>
           </div>
 
-          <div class="split-img">
+          <div class="story-media reveal">
+            <figure class="story-img arch">
             <img src="./assets/images/about-banner.jpg" width="570" height="620" loading="lazy"
               alt="{{site.name}} mətbəxi">
+          </figure>
           </div>
 
         </div>
@@ -146,14 +143,16 @@
         - #RƏY
       -->
 
-      <section class="band" aria-label="Müştəri rəyi">
+      <section class="band" aria-label="Qonaq rəyi">
         <div class="band-bg">
           <img src="./assets/images/testimonial-bg.jpg" width="1880" height="900" loading="lazy" alt="">
         </div>
 
         <div class="wrap">
-          <blockquote>{{testimonial.text}}</blockquote>
-          <cite>{{testimonial.author}}</cite>
+          <blockquote>
+            <p>{{testimonial.text}}</p>
+            <cite>{{testimonial.author}}</cite>
+          </blockquote>
         </div>
       </section>
 
@@ -162,21 +161,17 @@
         - #TƏDBİRLƏR
       -->
 
-      <section class="section" aria-label="Tədbirlər">
+      <section class="section" aria-labelledby="events-title">
         <div class="wrap">
 
-          <div class="section-head text-center reveal">
-            <p class="label">{{events.subtitle}}</p>
-            <h2 class="display-2">{{events.title}}</h2>
+          <div class="events-head reveal">
+            <h2 class="display-2" id="events-title">{{events.title}}</h2>
+            <a href="{{events.buttonLink}}" class="btn-text">{{events.buttonText}} {{icons.arrow-right}}</a>
           </div>
 
-          <ul class="card-grid reveal">
+          <ul class="events reveal">
             {{blocks.eventCards}}
           </ul>
-
-          <div class="form-actions">
-            <a href="{{events.buttonLink}}" class="btn">{{events.buttonText}}</a>
-          </div>
 
         </div>
       </section>

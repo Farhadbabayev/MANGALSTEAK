@@ -59,6 +59,84 @@ const pad = (n) => String(n).padStart(2, '0');
 
 const blocks = {};
 
+/* --- İkonlar (Phosphor Icons, "light" çəkisi, MIT — src/icons/) --- */
+
+const icons = {};
+for (const file of readdirSync(join(SRC, 'icons'))) {
+  if (!file.endsWith('.svg')) continue;
+  icons[file.replace(/\.svg$/, '')] = readFileSync(join(SRC, 'icons', file), 'utf8')
+    .trim()
+    .replace('<svg ', '<svg class="icon" aria-hidden="true" focusable="false" ');
+}
+
+/* --- Şəbəkə (Şəki şəbəkəsi) --- *
+ *
+ * Səkkizguşəli ulduzlardan ibarət taxta tor. Ulduzlar "şüşə"dir: bəziləri
+ * yaqut, zəfəran və kobalt rəngində işıqlanır, arxadakı şəkil onlardan görünür.
+ * Ölçülər viewBox vahidindədir; SVG pəncərəyə "slice" ilə yerləşir.
+ */
+
+const GLASS = ['ruby', '', 'saffron', '', 'cobalt', '', '', 'ruby', '', 'saffron', 'cobalt', ''];
+
+const star = (cx, cy, R = 50) => {
+  const r = (R * Math.cos(Math.PI / 4)) / Math.cos(Math.PI / 8);
+  const pts = [];
+  for (let k = 0; k < 16; k++) {
+    const a = ((-90 + k * 22.5) * Math.PI) / 180;
+    const rad = k % 2 ? r : R;
+    pts.push(`${(cx + rad * Math.cos(a)).toFixed(2)},${(cy + rad * Math.sin(a)).toFixed(2)}`);
+  }
+  return pts.join(' ');
+};
+
+const lattice = ({ id, cols, rows, glass = true }) => {
+  const S = 100;
+  const W = cols * S;
+  const H = rows * S;
+  const stars = [];
+  const frame = [];
+  const d = Math.cos(Math.PI / 4) * 50;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const cx = col * S + 50;
+      const cy = row * S + 50;
+      const points = star(cx, cy);
+      frame.push(`M${points.split(' ').join('L')}Z`);
+      for (const [sx, sy] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) {
+        frame.push(`M${(cx + sx * d).toFixed(2)},${(cy + sy * d).toFixed(2)}L${cx + sx * 50},${cy + sy * 50}`);
+      }
+      const tone = GLASS[(row * 5 + col * 3) % GLASS.length];
+      /* İşıq aşağıdan yuxarı qalxır — köz pəncərənin altındadır */
+      const delay = (rows - 1 - row) * 90 + Math.abs(col - (cols - 1) / 2) * 45;
+      stars.push({ points, tone, delay: Math.round(delay) });
+    }
+  }
+
+  const panes = glass
+    ? stars
+        .filter((s) => s.tone)
+        .map((s) => `<polygon class="pane pane-${s.tone}" style="--d:${s.delay}ms" points="${s.points}"/>`)
+        .join('')
+    : '';
+
+  return `<svg class="lattice" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+            <defs>
+              <mask id="${id}-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="${W}" height="${H}">
+                <rect width="${W}" height="${H}" fill="#fff"/>
+                ${stars.map((s) => `<polygon points="${s.points}" fill="#000"/>`).join('')}
+              </mask>
+            </defs>
+            <rect class="lattice-veil" width="${W}" height="${H}" mask="url(#${id}-mask)"/>
+            <g class="lattice-glass">${panes}</g>
+            <path class="lattice-frame" d="${frame.join('')}"/>
+          </svg>`;
+};
+
+blocks.heroLattice = lattice({ id: 'hero-lat', cols: 4, rows: 6 });
+blocks.pageLattice = lattice({ id: 'page-lat', cols: 4, rows: 5 });
+blocks.dishLattice = lattice({ id: 'dish-lat', cols: 4, rows: 5 });
+
 /* --- Loqo --- */
 
 const MARKS = {
@@ -127,10 +205,10 @@ blocks.heroDots = content.hero.slides
 
 blocks.featureCards = content.features.cards
   .map(
-    (c, i) => `
-            <li>
-              <p class="label">${pad(i + 1)}</p>
-              <h3 class="title-2">${esc(c.title)}</h3>
+    (c) => `
+            <li class="virtue">
+              <span class="star-mark" aria-hidden="true"></span>
+              <h3>${esc(c.title)}</h3>
               <p>${esc(c.text)}</p>
             </li>`
   )
@@ -141,18 +219,24 @@ blocks.featureCards = content.features.cards
 const menuItem = (item, indent = '            ') => `
 ${indent}<div class="menu-item">
 ${indent}  <div class="menu-item-top">
-${indent}    <h3>${esc(item.name)}${item.badge ? `<span class="tag">${esc(item.badge)}</span>` : ''}</h3>
+${indent}    <h3>${esc(item.name)}</h3>
+${indent}    <span class="leader" aria-hidden="true"></span>
 ${indent}    <span class="cost">${esc(item.price)}</span>
 ${indent}  </div>
-${indent}  <p>${esc(item.text)}</p>
+${indent}  <p>${item.badge ? `<span class="tag">${esc(item.badge)}</span>` : ''}${esc(item.text)}</p>
 ${indent}</div>`;
 
-/* İlk iki kateqoriyadan 3-3 yemək — kateqoriya adlarından asılı deyil */
-const previewItems = content.menu.categories
+/* İlk iki kateqoriyadan 3-3 yemək, hər biri öz sütununda */
+blocks.menuPreviewItems = content.menu.categories
   .slice(0, 2)
-  .flatMap((c) => c.items.slice(0, 3));
-
-blocks.menuPreviewItems = previewItems.map((i) => menuItem(i)).join('');
+  .map(
+    (c) => `
+            <div class="menu-col">
+              <h3 class="menu-col-title"><a href="menyu.html#${c.id}">${esc(c.name)}</a></h3>
+${c.items.slice(0, 3).map((i) => menuItem(i, '              ')).join('')}
+            </div>`
+  )
+  .join('');
 
 blocks.menuNav = content.menu.categories
   .map((c) => `
@@ -181,14 +265,14 @@ ${c.items.map((i) => menuItem(i, '              ')).join('')}
 
 blocks.eventCards = content.events.cards
   .map(
-    (c) => `
-            <li>
-              <article class="event-card">
-                <figure>
-                  <img src="${img(c.image)}" width="350" height="300" loading="lazy" alt="${esc(c.title)}">
+    (c, i) => `
+            <li class="event${i === 0 ? ' is-lead' : ''}">
+              <article>
+                <figure class="arch">
+                  <img src="${img(c.image)}" width="700" height="800" loading="lazy" alt="${esc(c.title)}">
                 </figure>
                 <div class="event-body">
-                  <time datetime="${c.date}">${c.dateText} · ${esc(c.category)}</time>
+                  <p class="event-meta"><time datetime="${c.date}">${c.dateText}</time><span>${esc(c.category)}</span></p>
                   <h3>${esc(c.title)}</h3>
                 </div>
               </article>
@@ -201,7 +285,7 @@ blocks.eventCards = content.events.cards
 blocks.galleryItems = content.gallery.images
   .map(
     (g, i) => `
-            <li class="gallery-item${i % 5 === 0 ? ' tall' : ''}">
+            <li class="gallery-item${i % 5 === 0 ? ' tall' : ''}${i % 5 === 0 ? ' arch' : ''}">
               <figure>
                 <img src="${img(g.src)}" width="500" height="500" loading="lazy" alt="${esc(g.alt)}">
                 <figcaption>${esc(g.alt)}</figcaption>
@@ -224,13 +308,11 @@ blocks.statCards = content.pages.haqqimizda.stats
 
 blocks.storyBlocks = content.pages.haqqimizda.blocks
   .map(
-    (b, i) => `
+    (b) => `
             <li class="story-item">
-              <span class="num">№ ${pad(i + 1)}</span>
-              <div>
-                <h3>${esc(b.title)}</h3>
-                <p>${esc(b.text)}</p>
-              </div>
+              <span class="star-mark" aria-hidden="true"></span>
+              <h3>${esc(b.title)}</h3>
+              <p>${esc(b.text)}</p>
             </li>`
   )
   .join('');
@@ -250,7 +332,7 @@ blocks.packageCards = content.pages.tedbirler.packages
 ${p.features.map((f) => `                <li>${esc(f)}</li>`).join('\n')}
               </ul>
 
-              <a href="rezervasiya.html" class="btn">Sorğu göndər</a>
+              <a href="rezervasiya.html" class="btn${p.featured ? ' btn-solid' : ''}">Sorğu göndər</a>
             </li>`
   )
   .join('');
@@ -261,7 +343,6 @@ blocks.stepCards = content.pages.rezervasiya.steps
   .map(
     (s) => `
             <li class="step">
-              <span class="num">${esc(s.num)}</span>
               <h3>${esc(s.title)}</h3>
               <p>${esc(s.text)}</p>
             </li>`
@@ -319,14 +400,14 @@ const pages = [
   {
     file: 'index.html',
     nav: 'index',
-    title: `${N} — ${site.site.tagline}`,
+    title: `${N} | ${site.site.tagline}`,
     description: site.site.description,
     preload: ['hero-slider-1.jpg'],
   },
   {
     file: 'menyu.html',
     nav: 'menyu',
-    title: `Menyu — ${N}`,
+    title: `Menyu | ${N}`,
     description:
       'Steyklər, mangal və kabablar, başlanğıclar, salatlar, şirniyyat və içkilər. Qiymətlər və təsvirlər.',
     heroTitle: content.pages.menyu.title,
@@ -336,7 +417,7 @@ const pages = [
   {
     file: 'haqqimizda.html',
     nav: 'haqqimizda',
-    title: `Haqqımızda — ${N}`,
+    title: `Haqqımızda | ${N}`,
     description:
       'Mangal Steak House-un hekayəsi: 28 gün dinləndirilmiş ət, palıd kömürü və Azərbaycan süfrə ənənəsi.',
     heroTitle: content.pages.haqqimizda.title,
@@ -346,7 +427,7 @@ const pages = [
   {
     file: 'qalereya.html',
     nav: 'qalereya',
-    title: `Qalereya — ${N}`,
+    title: `Qalereya | ${N}`,
     description: 'Restoranımızdan, mətbəximizdən və yeməklərimizdən fotolar.',
     heroTitle: content.pages.qalereya.title,
     heroSubtitle: content.pages.qalereya.subtitle,
@@ -355,7 +436,7 @@ const pages = [
   {
     file: 'tedbirler.html',
     nav: 'tedbirler',
-    title: `Tədbirlər və Banket — ${N}`,
+    title: `Tədbirlər və Banket | ${N}`,
     description: 'Ad günü, korporativ tədbir və banketlər üçün paketlər, zal imkanları və fərdi menyu.',
     heroTitle: content.pages.tedbirler.title,
     heroSubtitle: content.pages.tedbirler.subtitle,
@@ -364,9 +445,9 @@ const pages = [
   {
     file: 'rezervasiya.html',
     nav: 'rezervasiya',
-    title: `Onlayn Rezervasiya — ${N}`,
+    title: `Onlayn Rezervasiya | ${N}`,
     description:
-      'Masanızı onlayn ayırın: tarix, saat və nəfər sayını seçin — sorğunuz birbaşa restoranın sisteminə düşür.',
+      'Masanızı onlayn ayırın: tarix, saat və nəfər sayını seçin. Sorğunuz birbaşa restoranın sisteminə düşür.',
     heroTitle: content.pages.rezervasiya.title,
     heroSubtitle: content.pages.rezervasiya.subtitle,
     heroImage: 'hero-slider-3.jpg',
@@ -374,7 +455,7 @@ const pages = [
   {
     file: 'elaqe.html',
     nav: 'elaqe',
-    title: `Əlaqə — ${N}`,
+    title: `Əlaqə | ${N}`,
     description: 'Ünvan, telefon, e-mail və iş saatları. Bakının mərkəzində, xəritədə bax.',
     heroTitle: content.pages.elaqe.title,
     heroSubtitle: content.pages.elaqe.subtitle,
@@ -383,7 +464,7 @@ const pages = [
   {
     file: '404.html',
     nav: '',
-    title: `Səhifə tapılmadı — ${N}`,
+    title: `Səhifə tapılmadı | ${N}`,
     description: 'Axtardığınız səhifə tapılmadı.',
     noIndex: true,
   },
@@ -437,9 +518,9 @@ const themeCss = `/*-----------------------------------*\\
   --brand: ${c.brand || '#4E0007'};
   --brand-2: ${c.brand2 || '#6B0A12'};
 
-  --display: ${fontStack(f.display || 'Cormorant Garamond', "Garamond, 'Times New Roman', serif")};
-  --body: ${fontStack(f.body || 'Inter', 'system-ui, -apple-system, sans-serif')};
-  --logo: ${fontStack(f.logo || 'Grenze Gotisch', "'Cormorant Garamond', serif")};
+  --display: ${fontStack(f.display || 'Archivo', 'system-ui, -apple-system, sans-serif')};
+  --body: ${fontStack(f.body || 'Archivo', 'system-ui, -apple-system, sans-serif')};
+  --logo: ${fontStack(f.logo || 'Grenze Gotisch', 'Georgia, serif')};
 
   --space: ${Number(l.sectionSpace) || 130}px;
 }
@@ -505,6 +586,7 @@ for (const page of pages) {
     ...site,
     ...content,
     blocks,
+    icons,
     nav,
     page: {
       ...page,

@@ -4,12 +4,11 @@
         - #QALEREYA
       -->
 
-      <section class="section" aria-label="Qalereya">
+      <section class="section" aria-labelledby="gallery-title">
         <div class="wrap">
 
-          <div class="section-head text-center reveal">
-            <p class="label">{{gallery.subtitle}}</p>
-            <h2 class="display-2">{{gallery.title}}</h2>
+          <div class="section-intro reveal">
+            <h2 class="display-2" id="gallery-title">{{gallery.title}}</h2>
             <p class="lede">{{gallery.text}}</p>
           </div>
 
@@ -25,13 +24,15 @@
         - #RƏY
       -->
 
-      <section class="band" aria-label="Müştəri rəyi">
+      <section class="band" aria-label="Qonaq rəyi">
         <div class="band-bg">
           <img src="./assets/images/testimonial-bg.jpg" width="1880" height="900" loading="lazy" alt="">
         </div>
 
         <div class="wrap">
-          <blockquote>{{testimonial.text}}</blockquote>
-          <cite>{{testimonial.author}}</cite>
+          <blockquote>
+            <p>{{testimonial.text}}</p>
+            <cite>{{testimonial.author}}</cite>
+          </blockquote>
         </div>
       </section>

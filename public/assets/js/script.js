@@ -38,29 +38,57 @@
 
 
   /* ---------------------------------------------------------------- *
-   *  Başlıq və "yuxarı qayıt"
+   *  Başlıq fonu, "yuxarı qayıt" və üzən rezervasiya düyməsi
+   *
+   *  Scroll hadisəsi əvəzinə səhifənin başındakı iki görünməz
+   *  "gözətçi" izlənir: biri çıxanda başlıq bərkiyir, digəri çıxanda
+   *  (hero keçildikdə) üzən düymələr görünür.
    * ---------------------------------------------------------------- */
 
-  const header = document.querySelector('[data-header]');
-  const backTop = document.querySelector('[data-back-top-btn]');
+  const sentinels = document.querySelectorAll('[data-sentinel]');
 
-  let lastScroll = 0;
+  if (sentinels.length && 'IntersectionObserver' in window) {
+    const stateFor = { header: 'is-scrolled', top: 'is-past-hero' };
 
-  window.addEventListener(
-    'scroll',
-    function () {
-      const y = window.scrollY;
+    const sentinelObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        const cls = stateFor[entry.target.getAttribute('data-sentinel')];
+        if (cls) document.body.classList.toggle(cls, !entry.isIntersecting);
+      });
+    });
 
-      if (backTop) backTop.classList.toggle('show', y > 600);
+    sentinels.forEach(function (el) { sentinelObserver.observe(el); });
+  } else {
+    document.body.classList.add('is-scrolled', 'is-past-hero');
+  }
 
-      if (header && !document.body.classList.contains('nav-open')) {
-        header.classList.toggle('hide', y > lastScroll && y > 320);
-      }
 
-      lastScroll = y;
-    },
-    { passive: true }
-  );
+  /* ---------------------------------------------------------------- *
+   *  Şəbəkə pəncərələri: şüşə görünəndə bir dəfə işıqlanır
+   * ---------------------------------------------------------------- */
+
+  const windows = document.querySelectorAll('.window');
+
+  if (windows.length) {
+    if (!('IntersectionObserver' in window)) {
+      windows.forEach(function (el) { el.classList.add('is-lit'); });
+    } else {
+      const windowObserver = new IntersectionObserver(
+        function (entries, obs) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            /* Tağ açılışı ilə üst-üstə düşməsin deyə bir az gözləyirik */
+            const el = entry.target;
+            window.setTimeout(function () { el.classList.add('is-lit'); }, 420);
+            obs.unobserve(el);
+          });
+        },
+        { threshold: 0.35 }
+      );
+
+      windows.forEach(function (el) { windowObserver.observe(el); });
+    }
+  }
 
 
   /* ---------------------------------------------------------------- *

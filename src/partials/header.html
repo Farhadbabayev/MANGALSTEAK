@@ -11,20 +11,22 @@
           <li><a href="qalereya.html" class="navbar-link {{nav.qalereya}}">Qalereya</a></li>
           <li><a href="tedbirler.html" class="navbar-link {{nav.tedbirler}}">Tədbirlər</a></li>
           <li><a href="elaqe.html" class="navbar-link {{nav.elaqe}}">Əlaqə</a></li>
-          <li class="nav-cta-item"><a href="rezervasiya.html" class="header-cta">Masa ayır</a></li>
         </ul>
 
         <div class="navbar-foot">
-          <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
-          <span>{{hours.short}}</span>
+          <a href="tel:{{contact.phoneHref}}">{{icons.phone}} {{contact.phone}}</a>
+          <span>{{icons.clock}} {{hours.short}}</span>
         </div>
       </nav>
 
-      <a href="rezervasiya.html" class="header-cta">Masa ayır</a>
+      <a href="rezervasiya.html" class="header-cta btn btn-solid" data-rez-open>Masa ayır</a>
 
       <button class="nav-toggle" data-nav-toggler aria-label="Menyunu aç" aria-expanded="false">
-        <span></span><span></span><span></span>
+        <span></span><span></span>
       </button>
 
     </div>
   </header>
+
+  <span class="sentinel sentinel-header" data-sentinel="header" aria-hidden="true"></span>
+  <span class="sentinel sentinel-top" data-sentinel="top" aria-hidden="true"></span>

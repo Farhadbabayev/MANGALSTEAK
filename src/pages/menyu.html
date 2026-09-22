@@ -4,20 +4,20 @@
         - #TAM MENYU
       -->
 
-      <section class="section" aria-label="Menyu">
+      <section class="section section-menu" aria-label="Menyu">
         <div class="wrap">
 
           <nav class="menu-nav" aria-label="Menyu bölmələri">
             {{blocks.menuNav}}
           </nav>
 
-          {{blocks.menuCategories}}
+          <div class="menu-book">
+            {{blocks.menuCategories}}
+          </div>
 
-          <p class="menu-note">{{menu.note}}</p>
-          <p class="menu-note">{{hours.kitchenNote}}</p>
-
-          <div class="form-actions">
-            <a href="rezervasiya.html" class="btn">Masa ayır</a>
+          <div class="menu-foot">
+            <p class="menu-note">{{menu.note}}</p>
+            <p class="menu-note">{{hours.kitchenNote}}</p>
           </div>
 
         </div>
@@ -28,30 +28,30 @@
         - #ŞEFİN SEÇİMİ
       -->
 
-      <section class="section bg-2" aria-labelledby="dish-label">
-        <div class="wrap split reveal">
+      <section class="section dish" aria-labelledby="dish-label">
+        <div class="wrap dish-grid">
 
-          <div class="split-img">
-            <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
-              alt="{{specialDish.title}}">
-          </div>
-
-          <div class="split-body">
-            <div class="index-head">
-              <span class="num">№ 01</span>
-              <span class="label">{{specialDish.subtitle}}</span>
+          <figure class="dish-window reveal">
+            <div class="window window-still">
+              <div class="window-media">
+                <img src="./assets/images/special-dish-banner.jpg" width="940" height="900" loading="lazy"
+                  alt="{{specialDish.title}}">
+              </div>
+              {{blocks.dishLattice}}
             </div>
+          </figure>
 
-            <h2 class="title-1" id="dish-label">{{specialDish.title}}</h2>
-
+          <div class="dish-body reveal">
+            <p class="label">{{specialDish.subtitle}}</p>
+            <h2 class="display-2" id="dish-label">{{specialDish.title}}</h2>
             <p>{{specialDish.text}}</p>
 
             <div class="price-row">
               <span class="now">{{specialDish.newPrice}}</span>
-              <span class="was">{{specialDish.oldPrice}}</span>
+              <s class="was">{{specialDish.oldPrice}}</s>
             </div>
 
-            <a href="rezervasiya.html" class="btn">Masa ayır</a>
+            <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>Masa ayır</a>
           </div>
 
         </div>

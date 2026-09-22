@@ -6,13 +6,13 @@
         "image": "hero-slider-1.jpg",
         "subtitle": "Odun közü & premium ət",
         "title": "Steykin əsl<br> ünvanı",
-        "text": "Ailənizlə gəlin — közün üzərində bişən ləzzəti birlikdə dadın."
+        "text": "Ailənizlə gəlin, közün üzərində bişən ləzzəti birlikdə dadın."
       },
       {
         "image": "hero-slider-2.jpg",
         "subtitle": "28 gün quru dinləndirmə",
         "title": "Hər tikədə<br> mükəmməl balans",
-        "text": "Dry-aged ribeye, tomahawk və fileminyon — ustadın əli ilə."
+        "text": "Dry-aged ribeye, tomahawk və fileminyon. Ustadın əli ilə."
       },
       {
         "image": "hero-slider-3.jpg",
@@ -25,7 +25,7 @@
   "services": {
     "subtitle": "Kral süfrəsinin ləzzəti",
     "title": "Sizə təklif edirik",
-    "text": "Açıq mangal zonası, premium steyk seçimi və hər zövqə uyğun Azərbaycan mətbəxi — hamısı bir ünvanda."
+    "text": "Açıq mangal zonası, premium steyk seçimi və hər zövqə uyğun Azərbaycan mətbəxi, hamısı bir ünvanda."
   },
   "about": {
     "subtitle": "Bizim hekayə",
@@ -38,7 +38,7 @@
   "specialDish": {
     "subtitle": "Şefin seçimi",
     "title": "Dry-Aged Tomahawk",
-    "text": "1 kq-lıq sümüklü ribeye, 28 gün quru dinləndirilmiş, palıd kömürü üzərində bişirilib. İki nəfər üçün ideal — közdə qovrulmuş tərəvəz və çimçiri sousu ilə təqdim olunur.",
+    "text": "1 kq-lıq sümüklü ribeye, 28 gün quru dinləndirilmiş, palıd kömürü üzərində bişirilib. İki nəfər üçün ideal, közdə qovrulmuş tərəvəz və çimçiri sousu ilə təqdim olunur.",
     "oldPrice": "120 ₼",
     "newPrice": "95 ₼",
     "buttonText": "Bütün menyu",
@@ -51,7 +51,7 @@
     "buttonLink": "menyu.html"
   },
   "testimonial": {
-    "text": "Bakıda yediyim ən yaxşı ribeye. Tüstünün qoxusu hələ də yadımdadır — mütləq qayıdacağıq.",
+    "text": "Bakıda yediyim ən yaxşı ribeye. Tüstünün qoxusu hələ də yadımdadır. Mütləq qayıdacağıq.",
     "author": "Elvin Məmmədov"
   },
   "features": {
@@ -87,7 +87,7 @@
         "date": "2026-10-04",
         "dateText": "04/10/2026",
         "category": "Dequstasiya",
-        "title": "Steyk dequstasiya axşamı — 5 fərqli kəsim"
+        "title": "Steyk dequstasiya axşamı: 5 fərqli kəsim"
       },
       {
         "image": "event-2.jpg",
@@ -335,7 +335,7 @@
             "name": "Təbii şirə",
             "price": "5 ₼",
             "badge": "",
-            "text": "Portağal, nar və ya alma — təzə sıxılmış."
+            "text": "Portağal, nar və ya alma. Təzə sıxılmış."
           },
           {
             "name": "Azərbaycan çay dəsti",
@@ -347,7 +347,7 @@
             "name": "Qırmızı şərab (bokal)",
             "price": "9 ₼",
             "badge": "18+",
-            "text": "Yerli və import seçimlər — steyklə mükəmməl uyum."
+            "text": "Yerli və import seçimlər, steyklə mükəmməl uyum."
           }
         ]
       }
@@ -412,15 +412,15 @@
     "haqqimizda": {
       "title": "Haqqımızda",
       "subtitle": "2014-cü ildən bəri közün başında",
-      "lead": "Biz sadəcə restoran deyilik — tüstünün, dəmir şişin və səbrin hekayəsiyik.",
+      "lead": "Biz sadəcə restoran deyilik, tüstünün, dəmir şişin və səbrin hekayəsiyik.",
       "blocks": [
         {
           "title": "Ət seçimindən başlayır",
-          "text": "Hər həftə eyni təsərrüfatlarla işləyirik. Ət restorana bütöv kəsim şəklində gəlir, burada öz ustamız tərəfindən parçalanır. Steyklər 28 gün ərzində öz soyuducu otağımızda quru dinləndirilir — bu, ətə zəngin qoz dadını və yumşaqlığı verən yeganə yoldur."
+          "text": "Hər həftə eyni təsərrüfatlarla işləyirik. Ət restorana bütöv kəsim şəklində gəlir, burada öz ustamız tərəfindən parçalanır. Steyklər 28 gün ərzində öz soyuducu otağımızda quru dinləndirilir. Bu, ətə zəngin qoz dadını və yumşaqlığı verən yeganə yoldur."
         },
         {
           "title": "Alov və səbr",
-          "text": "Mətbəximizdə qaz sobası ilə bişirilən steyk yoxdur. Yalnız palıd və tut kömürü. Şeflər ətin hər tərəfini əl ilə çevirir, temperaturu isə ürək ritmi kimi izləyirlər. Ona görə bəzən bir neçə dəqiqə gözləmək lazım gəlir — və dəyər."
+          "text": "Mətbəximizdə qaz sobası ilə bişirilən steyk yoxdur. Yalnız palıd və tut kömürü. Şeflər ətin hər tərəfini əl ilə çevirir, temperaturu isə ürək ritmi kimi izləyirlər. Ona görə bəzən bir neçə dəqiqə gözləmək lazım gəlir. Və dəyər."
         },
         {
           "title": "Süfrə ənənəsi",
@@ -453,7 +453,7 @@
       "packages": [
         {
           "name": "Ailəvi qeyd",
-          "capacity": "10–25 nəfər",
+          "capacity": "10-25 nəfər",
           "price": "45 ₼ / nəfər",
           "features": [
             "Set menyu (5 yeməkdən ibarət)",
@@ -464,7 +464,7 @@
         },
         {
           "name": "Korporativ axşam",
-          "capacity": "25–60 nəfər",
+          "capacity": "25-60 nəfər",
           "price": "65 ₼ / nəfər",
           "features": [
             "Steyk və mangal büfesi",
@@ -476,7 +476,7 @@
         },
         {
           "name": "Tam restoran",
-          "capacity": "60–140 nəfər",
+          "capacity": "60-140 nəfər",
           "price": "Fərdi qiymət",
           "features": [
             "Bütün salon sizin sərəncamınızda",
@@ -490,7 +490,7 @@
     "elaqe": {
       "title": "Əlaqə",
       "subtitle": "Bizi tapın",
-      "lead": "Sualınız var? Zəng edin, yazın və ya birbaşa gəlin — qapımız hər gün açıqdır."
+      "lead": "Sualınız var? Zəng edin, yazın və ya birbaşa gəlin, qapımız hər gün açıqdır."
     },
     "qalereya": {
       "title": "Qalereya",
@@ -503,7 +503,7 @@
     "rezervasiya": {
       "title": "Rezervasiya",
       "subtitle": "Üç sadə addım",
-      "lead": "Formanı doldurun — sorğunuz birbaşa restoranın rezervasiya sisteminə düşür və heyətimiz təsdiq üçün sizinlə əlaqə saxlayır.",
+      "lead": "Formanı doldurun, sorğunuz birbaşa restoranın rezervasiya sisteminə düşür və heyətimiz təsdiq üçün sizinlə əlaqə saxlayır.",
       "steps": [
         {
           "num": "01",

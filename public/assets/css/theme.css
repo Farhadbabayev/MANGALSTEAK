@@ -5,20 +5,20 @@
 \*-----------------------------------*/
 
 :root {
-  --black: #121212;
-  --black-2: #181817;
-  --black-3: #0D0D0D;
-  --cream: #FAF8F5;
-  --cream-dim: #A9A49C;
-  --gold: #B99B6B;
+  --black: #140E0C;
+  --black-2: #1E1512;
+  --black-3: #0C0807;
+  --cream: #F2ECE4;
+  --cream-dim: #B3A79C;
+  --gold: #EFA93A;
   --brand: #4E0007;
   --brand-2: #6B0A12;
 
-  --display: 'Cormorant Garamond', Garamond, 'Times New Roman', serif;
-  --body: 'Inter', system-ui, -apple-system, sans-serif;
-  --logo: 'Grenze Gotisch', 'Cormorant Garamond', serif;
+  --display: 'Archivo', system-ui, -apple-system, sans-serif;
+  --body: 'Archivo', system-ui, -apple-system, sans-serif;
+  --logo: 'Grenze Gotisch', Georgia, serif;
 
-  --space: 130px;
+  --space: 120px;
 }
 
 .logo-title { font-size: 31px; }

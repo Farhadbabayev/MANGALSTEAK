@@ -2,24 +2,24 @@
   "_comment": "Rənglər, şriftlər və loqo. Admin panelin «Dizayn» bölməsindən dəyişdirilir.",
 
   "colors": {
-    "black": "#121212",
-    "black2": "#181817",
-    "black3": "#0D0D0D",
-    "cream": "#FAF8F5",
-    "creamDim": "#A9A49C",
-    "gold": "#B99B6B",
+    "black": "#140E0C",
+    "black2": "#1E1512",
+    "black3": "#0C0807",
+    "cream": "#F2ECE4",
+    "creamDim": "#B3A79C",
+    "gold": "#EFA93A",
     "brand": "#4E0007",
     "brand2": "#6B0A12"
   },
 
   "fonts": {
-    "display": "Cormorant Garamond",
-    "body": "Inter",
+    "display": "Archivo",
+    "body": "Archivo",
     "logo": "Grenze Gotisch"
   },
 
   "layout": {
-    "sectionSpace": 130,
+    "sectionSpace": 120,
     "logoSize": 31,
     "markSize": 26
   },

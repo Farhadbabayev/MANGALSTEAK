@@ -23,6 +23,7 @@ const UA =
 const KEEP = ['latin', 'latin-ext'];
 
 const FAMILIES = [
+  'Archivo:wdth,wght@62..125,100..900',
   'Anton',
   'Manrope:wght@400;500;600;700;800',
   'Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700',
@@ -74,6 +75,7 @@ const main = async () => {
       const nameMatch = block.match(/font-family:\s*'([^']+)'/);
       const weightMatch = block.match(/font-weight:\s*([\d\s]+)/);
       const styleMatch = block.match(/font-style:\s*(\w+)/);
+      const stretchMatch = block.match(/font-stretch:\s*([^;]+);/);
       const srcMatch = block.match(/src:\s*url\(([^)]+)\)\s*format\('([^']+)'\)/);
       const rangeMatch = block.match(/unicode-range:\s*([^;]+);/);
 
@@ -102,6 +104,7 @@ const main = async () => {
       out.push("  font-family: '" + name + "';");
       out.push('  font-style: ' + style + ';');
       out.push('  font-weight: ' + weight + ';');
+      if (stretchMatch) out.push('  font-stretch: ' + stretchMatch[1].trim() + ';');
       out.push('  font-display: swap;');
       out.push("  src: url('../fonts/" + fileName + "') format('" + format + "');");
       if (rangeMatch) out.push('  unicode-range: ' + rangeMatch[1].trim() + ';');

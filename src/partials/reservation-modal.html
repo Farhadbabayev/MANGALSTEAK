@@ -13,9 +13,7 @@
         <h2 id="rez-modal-basliq">Masanızı ayırın</h2>
 
         <button type="button" class="rez-modal-close" data-rez-close aria-label="Pəncərəni bağla">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-            <path d="M6 6l12 12M18 6L6 18"/>
-          </svg>
+          {{icons.x}}
         </button>
       </div>
 
@@ -96,9 +94,7 @@
         <div class="form-success" data-form-success hidden>
 
           <div class="success-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M4 12.5l5.2 5.2L20 7"/>
-            </svg>
+            {{icons.check}}
           </div>
 
           <h2 class="title-1">Rezervasiya qəbul olundu</h2>
@@ -107,7 +103,7 @@
 
           <div class="success-code">
             <span class="label">Rezervasiya kodunuz</span>
-            <strong data-success-code>—</strong>
+            <strong data-success-code></strong>
           </div>
 
           <ul class="success-list" data-success-summary></ul>

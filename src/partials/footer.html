@@ -1,46 +1,57 @@
   <footer class="footer">
+    <div class="frieze" aria-hidden="true"></div>
+
     <div class="wrap">
+
+      <div class="footer-top">
+        <p class="footer-call">Masanız közün yanında hazırdır.</p>
+        <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>Masa ayır</a>
+      </div>
 
       <div class="footer-grid">
 
-        <div>
+        <div class="footer-brand">
           {{> logo}}
           <p>{{site.tagline}}</p>
           <address>{{contact.addressOneLine}}</address>
         </div>
 
         <div>
-          <h4>Səhifələr</h4>
+          <h2 class="footer-h">Səhifələr</h2>
           <ul>
-            <li><a href="index.html">Ana Səhifə</a></li>
             <li><a href="menyu.html">Menyu</a></li>
             <li><a href="haqqimizda.html">Haqqımızda</a></li>
             <li><a href="qalereya.html">Qalereya</a></li>
             <li><a href="tedbirler.html">Tədbirlər</a></li>
             <li><a href="rezervasiya.html">Rezervasiya</a></li>
+            <li><a href="elaqe.html">Əlaqə</a></li>
           </ul>
         </div>
 
         <div>
-          <h4>Əlaqə</h4>
-          <p><a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a></p>
-          <p><a href="mailto:{{contact.email}}">{{contact.email}}</a></p>
-          <p>{{hours.short}}</p>
-          <p><a href="{{contact.mapLink}}" target="_blank" rel="noopener">Xəritədə bax</a></p>
-          <ul style="margin-top:14px">
-            <li><a href="{{social.instagram}}" target="_blank" rel="noopener">Instagram</a></li>
-            <li><a href="{{social.facebook}}" target="_blank" rel="noopener">Facebook</a></li>
-            <li><a href="{{social.tiktok}}" target="_blank" rel="noopener">TikTok</a></li>
+          <h2 class="footer-h">Əlaqə</h2>
+          <ul>
+            <li><a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a></li>
+            <li><a href="mailto:{{contact.email}}">{{contact.email}}</a></li>
+            <li>{{hours.short}}</li>
+            <li><a href="{{contact.mapLink}}" target="_blank" rel="noopener">Xəritədə bax</a></li>
+          </ul>
+
+          <ul class="social" aria-label="Sosial şəbəkələr">
+            <li><a href="{{social.instagram}}" target="_blank" rel="noopener" aria-label="Instagram">{{icons.instagram-logo}}</a></li>
+            <li><a href="{{social.facebook}}" target="_blank" rel="noopener" aria-label="Facebook">{{icons.facebook-logo}}</a></li>
+            <li><a href="{{social.tiktok}}" target="_blank" rel="noopener" aria-label="TikTok">{{icons.tiktok-logo}}</a></li>
           </ul>
         </div>
 
         <div>
-          <h4>{{footer.newsletterTitle}}</h4>
+          <h2 class="footer-h">{{footer.newsletterTitle}}</h2>
           <p>{{footer.newsletterText}}</p>
 
           <form class="newsletter" data-newsletter-form>
-            <input type="email" name="email_address" placeholder="E-mail ünvanınız" autocomplete="email" required
-              aria-label="E-mail ünvanınız">
+            <label class="sr-only" for="newsletter-email">E-mail ünvanınız</label>
+            <input type="email" id="newsletter-email" name="email_address" placeholder="E-mail ünvanınız"
+              autocomplete="email" required>
             <button type="submit">Abunə ol</button>
           </form>
 
@@ -51,7 +62,6 @@
 
       <div class="footer-bottom">
         <span>&copy; {{footer.copyrightYear}} {{site.name}}. Bütün hüquqlar qorunur.</span>
-        <span>{{site.domain}}</span>
       </div>
 
     </div>

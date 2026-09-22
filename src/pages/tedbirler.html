@@ -4,12 +4,11 @@
         - #PAKETLƏR
       -->
 
-      <section class="section" aria-label="Banket paketləri">
+      <section class="section" aria-labelledby="packages-title">
         <div class="wrap">
 
-          <div class="section-head text-center reveal">
-            <p class="label">{{pages.tedbirler.subtitle}}</p>
-            <h2 class="display-2">{{pages.tedbirler.title}}</h2>
+          <div class="section-intro reveal">
+            <h2 class="display-2" id="packages-title">Banket paketləri</h2>
             <p class="lede">{{pages.tedbirler.lead}}</p>
           </div>
 
@@ -18,8 +17,8 @@
           </ul>
 
           <p class="menu-note">
-            Paketlər fərdi şəkildə uyğunlaşdırıla bilər —
-            <a href="tel:{{contact.phoneHref}}" class="span">{{contact.phone}}</a>
+            Paketlər fərdi şəkildə uyğunlaşdırıla bilər:
+            <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
           </p>
 
         </div>
@@ -30,15 +29,14 @@
         - #TƏDBİRLƏR
       -->
 
-      <section class="section bg-2" aria-label="Yaxınlaşan tədbirlər">
+      <section class="section section-alt" aria-labelledby="events-title">
         <div class="wrap">
 
-          <div class="section-head text-center reveal">
-            <p class="label">{{events.subtitle}}</p>
-            <h2 class="display-2">{{events.title}}</h2>
+          <div class="events-head reveal">
+            <h2 class="display-2" id="events-title">{{events.title}}</h2>
           </div>
 
-          <ul class="card-grid reveal">
+          <ul class="events reveal">
             {{blocks.eventCards}}
           </ul>
 

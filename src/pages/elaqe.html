@@ -4,62 +4,52 @@
         - #ƏLAQƏ
       -->
 
-      <section class="section" aria-label="Əlaqə">
-        <div class="wrap">
+      <section class="section" aria-labelledby="contact-title">
+        <div class="wrap contact-layout">
 
-          <div class="section-head text-center reveal">
-            <p class="label">{{pages.elaqe.subtitle}}</p>
-            <h2 class="display-2">{{pages.elaqe.title}}</h2>
+          <div class="section-intro reveal">
+            <h2 class="display-2" id="contact-title">{{pages.elaqe.title}}</h2>
             <p class="lede">{{pages.elaqe.lead}}</p>
+
+            <a href="tel:{{contact.phoneHref}}" class="call-number">{{contact.phone}}</a>
           </div>
 
-          <ul class="contact-grid reveal">
+          <ul class="contact-list reveal">
 
-            <li class="contact-card">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
-                  <path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/>
-                  <circle cx="12" cy="10" r="2.6"/>
-                </svg>
+            <li>
+              {{icons.map-pin}}
+              <div>
+                <h3>Ünvan</h3>
+                <address>{{contact.addressFull}}</address>
+                <a href="{{contact.mapLink}}" target="_blank" rel="noopener" class="btn-text">Xəritədə aç {{icons.arrow-right}}</a>
               </div>
-              <h3>Ünvan</h3>
-              <address>{{contact.addressFull}}</address>
-              <a href="{{contact.mapLink}}" target="_blank" rel="noopener" class="btn-text">Xəritədə aç</a>
             </li>
 
-            <li class="contact-card">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
-                  <path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1.1 1A16 16 0 0 1 4 5.1 1 1 0 0 1 5 4z"/>
-                </svg>
+            <li>
+              {{icons.phone}}
+              <div>
+                <h3>Telefon</h3>
+                <p>Rezervasiya: {{contact.phone}}<br>Mobil: {{contact.mobile}}</p>
+                <a href="tel:{{contact.phoneHref}}" class="btn-text">Zəng et {{icons.arrow-right}}</a>
               </div>
-              <h3>Telefon</h3>
-              <p>Rezervasiya: {{contact.phone}}<br>Mobil: {{contact.mobile}}</p>
-              <a href="tel:{{contact.phoneHref}}" class="btn-text">Zəng et</a>
             </li>
 
-            <li class="contact-card">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
-                  <rect x="3" y="5" width="18" height="14" rx="1.5"/>
-                  <path d="m3.5 6.5 8.5 6 8.5-6"/>
-                </svg>
+            <li>
+              {{icons.envelope-simple}}
+              <div>
+                <h3>E-mail</h3>
+                <p>{{contact.email}}<br>Tədbir və banket sorğuları üçün</p>
+                <a href="mailto:{{contact.email}}" class="btn-text">Məktub yaz {{icons.arrow-right}}</a>
               </div>
-              <h3>E-mail</h3>
-              <p>{{contact.email}}<br>Tədbir və banket sorğuları üçün</p>
-              <a href="mailto:{{contact.email}}" class="btn-text">Məktub yaz</a>
             </li>
 
-            <li class="contact-card">
-              <div class="icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3">
-                  <circle cx="12" cy="12" r="9"/>
-                  <path d="M12 7v5.4l3.4 2"/>
-                </svg>
+            <li>
+              {{icons.clock}}
+              <div>
+                <h3>İş saatları</h3>
+                <p>{{hours.lunchValue}}<br>{{hours.dinnerValue}}</p>
+                <a href="rezervasiya.html" class="btn-text" data-rez-open>Masa ayır {{icons.arrow-right}}</a>
               </div>
-              <h3>İş saatları</h3>
-              <p>{{hours.lunchValue}}<br>{{hours.dinnerValue}}</p>
-              <a href="rezervasiya.html" class="btn-text">Masa ayır</a>
             </li>
 
           </ul>

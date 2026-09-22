@@ -4,26 +4,20 @@
         - #HEKAYƏ
       -->
 
-      <section class="section" aria-label="Haqqımızda">
-        <div class="wrap split reveal">
+      <section class="section story" aria-labelledby="story-title">
+        <div class="wrap story-grid">
 
-          <div class="split-body">
-            <div class="index-head">
-              <span class="num">№ 01</span>
-              <span class="label">{{about.subtitle}}</span>
-            </div>
-
-            <h2 class="title-1">{{about.title}}</h2>
-
-            <p>{{pages.haqqimizda.lead}}</p>
+          <div class="story-body reveal">
+            <h2 class="display-2" id="story-title">{{about.title}}</h2>
+            <p class="lede">{{pages.haqqimizda.lead}}</p>
             <p>{{about.text}}</p>
-
-            <a href="rezervasiya.html" class="btn">Masa ayır</a>
           </div>
 
-          <div class="split-img">
+          <div class="story-media reveal">
+            <figure class="story-img arch">
             <img src="./assets/images/about-banner.jpg" width="570" height="620" loading="lazy"
               alt="{{site.name}} mətbəxi">
+          </figure>
           </div>
 
         </div>
@@ -34,7 +28,7 @@
         - #RƏQƏMLƏR
       -->
 
-      <section class="section-tight" aria-label="Rəqəmlərlə biz">
+      <section class="stats-band" aria-label="Rəqəmlərlə biz">
         <div class="wrap">
           <ul class="stats reveal">
             {{blocks.statCards}}
@@ -47,20 +41,14 @@
         - #QAYDALAR
       -->
 
-      <section class="section" aria-label="Necə işləyirik">
+      <section class="section" aria-labelledby="rules-title">
         <div class="wrap">
 
-          <div class="section-head reveal">
-            <div class="index-head">
-              <span class="num">№ 02</span>
-              <span class="label">Necə işləyirik</span>
-            </div>
-            <h2 class="display-2">Mətbəximizin üç qaydası</h2>
-          </div>
+          <h2 class="display-2 section-title reveal" id="rules-title">Mətbəximizin üç qaydası</h2>
 
-          <ul class="story-list reveal">
+          <ol class="story-list reveal">
             {{blocks.storyBlocks}}
-          </ul>
+          </ol>
 
         </div>
       </section>
@@ -70,15 +58,15 @@
         - #ÜSTÜNLÜKLƏR
       -->
 
-      <section class="section bg-2 text-center" aria-label="Üstünlüklər">
-        <div class="wrap">
+      <section class="section section-alt" aria-labelledby="virtue-title">
+        <div class="wrap virtues">
 
-          <div class="section-head text-center reveal">
-            <p class="label">{{features.subtitle}}</p>
-            <h2 class="display-2">{{features.title}}</h2>
+          <div class="virtues-head reveal">
+            <h2 class="display-2" id="virtue-title">{{features.title}}</h2>
+            <p class="manifest">{{services.text}}</p>
           </div>
 
-          <ul class="grid-hair cols-4 reveal">
+          <ul class="virtue-grid reveal">
             {{blocks.featureCards}}
           </ul>
 

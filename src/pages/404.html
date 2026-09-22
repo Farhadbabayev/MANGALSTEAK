@@ -1,25 +1,27 @@
-      <section class="page-hero" aria-label="Səhifə tapılmadı">
-        <div class="page-hero-bg">
-          <img src="./assets/images/hero-slider-1.jpg" width="1880" height="900" alt="">
-        </div>
+      <section class="page-hero page-hero-404" aria-labelledby="page-title">
+        <div class="wrap page-hero-grid">
 
-        <div class="wrap">
-          <p class="label">Xəta 404</p>
-          <h1 class="display-2">Səhifə tapılmadı</h1>
-          <div class="rule-v"></div>
-        </div>
-      </section>
+          <div class="page-hero-copy">
+            <h1 class="display-1" id="page-title">Səhifə tapılmadı</h1>
+            <p class="lede">
+              Axtardığınız səhifə köçürülüb və ya silinib.
+              Menyuya baxa və ya masanızı ayıra bilərsiniz.
+            </p>
 
-      <section class="section text-center" aria-label="Naviqasiya">
-        <div class="narrow">
-          <p class="lede" style="margin-inline:auto">
-            Axtardığınız səhifə köçürülüb və ya silinib.
-            Menyuya baxa və ya masanızı ayıra bilərsiniz.
-          </p>
-
-          <div class="form-actions">
-            <a href="index.html" class="btn">Ana səhifə</a>
-            <a href="rezervasiya.html" class="btn btn-solid" style="margin-left:12px">Masa ayır</a>
+            <div class="hero-actions">
+              <a href="rezervasiya.html" class="btn btn-solid" data-rez-open>Masa ayır</a>
+              <a href="index.html" class="btn-text">Ana səhifə {{icons.arrow-right}}</a>
+            </div>
           </div>
+
+          <figure class="page-hero-window">
+            <div class="window" data-window>
+              <div class="window-media">
+                <img src="./assets/images/hero-slider-1.jpg" width="1880" height="900" alt="">
+              </div>
+              {{blocks.pageLattice}}
+            </div>
+          </figure>
+
         </div>
       </section>

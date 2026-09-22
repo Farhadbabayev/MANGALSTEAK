@@ -1,17 +1,25 @@
-      <section class="page-hero" aria-label="{{page.heroTitle}}">
-        <div class="page-hero-bg">
-          <img src="./assets/images/{{page.heroImage}}" width="1880" height="900" alt="">
-        </div>
+      <section class="page-hero" aria-labelledby="page-title">
+        <div class="wrap page-hero-grid">
 
-        <div class="wrap">
-          <p class="label">{{page.heroSubtitle}}</p>
-          <h1 class="display-2">{{page.heroTitle}}</h1>
-          <div class="rule-v"></div>
+          <div class="page-hero-copy">
+            <nav class="breadcrumb" aria-label="Naviqasiya">
+              <a href="index.html">Ana Səhifə</a>
+              <span class="sep" aria-hidden="true">/</span>
+              <span class="current" aria-current="page">{{page.heroTitle}}</span>
+            </nav>
 
-          <nav class="breadcrumb" aria-label="Naviqasiya">
-            <a href="index.html">Ana Səhifə</a>
-            <span class="sep" aria-hidden="true">·</span>
-            <span class="current">{{page.heroTitle}}</span>
-          </nav>
+            <h1 class="display-1" id="page-title">{{page.heroTitle}}</h1>
+            <p class="lede">{{page.heroSubtitle}}</p>
+          </div>
+
+          <figure class="page-hero-window">
+            <div class="window" data-window>
+              <div class="window-media">
+                <img src="./assets/images/{{page.heroImage}}" width="1880" height="900" alt="">
+              </div>
+              {{blocks.pageLattice}}
+            </div>
+          </figure>
+
         </div>
       </section>

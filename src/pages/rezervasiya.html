@@ -4,18 +4,17 @@
         - #NECƏ İŞLƏYİR
       -->
 
-      <section class="section" aria-label="Rezervasiya mərhələləri">
-        <div class="wrap">
+      <section class="section section-steps" aria-labelledby="steps-title">
+        <div class="wrap steps-grid">
 
-          <div class="section-head text-center reveal">
-            <p class="label">{{pages.rezervasiya.subtitle}}</p>
-            <h2 class="display-2">Necə işləyir?</h2>
+          <div class="section-intro reveal">
+            <h2 class="display-2" id="steps-title">Necə işləyir?</h2>
             <p class="lede">{{pages.rezervasiya.lead}}</p>
           </div>
 
-          <ul class="steps reveal">
+          <ol class="steps reveal">
             {{blocks.stepCards}}
-          </ul>
+          </ol>
 
         </div>
       </section>
@@ -28,30 +27,21 @@
         - #QAYDALAR
       -->
 
-      <section class="section" aria-label="Rezervasiya qaydaları">
-        <div class="wrap split reveal">
+      <section class="section" aria-labelledby="rules-title">
+        <div class="wrap rules-grid reveal">
 
-          <div class="split-body">
-            <div class="index-head">
-              <span class="num">№ 04</span>
-              <span class="label">Bilməli olduqlarınız</span>
-            </div>
-
-            <h2 class="title-1">Rezervasiya qaydaları</h2>
+          <div>
+            <h2 class="display-2" id="rules-title">Rezervasiya qaydaları</h2>
 
             <ul class="rules-list">
               {{blocks.ruleItems}}
             </ul>
-
-            <p class="label">Qrup sifarişləri üçün</p>
-            <p style="font-family:var(--display);font-size:28px;color:var(--gold);margin-top:8px">
-              <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
-            </p>
           </div>
 
-          <div class="split-img">
-            <img src="./assets/images/event-1.jpg" width="570" height="620" loading="lazy"
-              alt="{{site.name}} salonu">
+          <div class="call-card">
+            <p class="dim">Qrup sifarişləri üçün</p>
+            <a href="tel:{{contact.phoneHref}}" class="call-number">{{contact.phone}}</a>
+            <p class="dim small">{{hours.short}}</p>
           </div>
 
         </div>

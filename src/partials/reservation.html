@@ -6,7 +6,6 @@
         <div class="narrow">
 
           <div class="booking-head reveal">
-            <p class="label">Onlayn rezervasiya</p>
             <h2 class="display-2" id="rezervasiya-basliq">Masanızı ayırın</h2>
             <p class="lede">
               Sorğunuz birbaşa restoranın rezervasiya sisteminə düşür.
@@ -72,10 +71,7 @@
             </div>
 
             <p class="form-hint">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                <rect x="4" y="10" width="16" height="11" rx="1.5"/>
-                <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
-              </svg>
+              {{icons.lock-simple}}
               Məlumatlarınız yalnız rezervasiyanın təsdiqi üçün istifadə olunur.
             </p>
 
@@ -96,28 +92,26 @@
           <div class="form-success" data-form-success hidden>
 
             <div class="success-mark" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M4 12.5l5.2 5.2L20 7"/>
-              </svg>
+              {{icons.check}}
             </div>
 
             <h2 class="display-2">Rezervasiya qəbul olundu</h2>
 
-            <p class="lede" style="margin-inline:auto">
-              Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü —
-              heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
+            <p class="lede">
+              Təşəkkür edirik! Sorğunuz rezervasiya sistemimizə düşdü.
+              Heyətimiz qısa müddətdə sizinlə əlaqə saxlayacaq.
             </p>
 
             <div class="success-code">
               <span class="label">Rezervasiya kodunuz</span>
-              <strong data-success-code>—</strong>
+              <strong data-success-code></strong>
             </div>
 
             <ul class="success-list" data-success-summary></ul>
 
-            <p class="dim" style="font-size:14.5px">
+            <p class="dim small">
               Dəyişiklik və ya ləğv üçün:
-              <a href="tel:{{contact.phoneHref}}" style="color:var(--gold)">{{contact.phone}}</a>
+              <a href="tel:{{contact.phoneHref}}">{{contact.phone}}</a>
             </p>
 
             <div class="form-actions">

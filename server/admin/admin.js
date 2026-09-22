@@ -522,9 +522,9 @@
       title: 'Rənglər',
       hint: 'Saytın bütün rəngləri',
       fields: [
-        f('colors.brand', 'Brend rəngi', 'color', { help: 'Üst zolaq və dolu düymələr' }),
+        f('colors.brand', 'Brend rəngi', 'color', { help: 'Bordo sahələr: rezervasiya bölməsi, seçilmiş paket' }),
         f('colors.brand2', 'Brend (açıq çalar)', 'color'),
-        f('colors.gold', 'Vurğu rəngi', 'color', { help: 'Etiketlər, qiymətlər, xətlər' }),
+        f('colors.gold', 'Vurğu rəngi', 'color', { help: 'Əsas düymələr, qiymətlər, aktiv keçidlər, şəbəkə şüşəsi' }),
         f('colors.black', 'Əsas fon', 'color'),
         f('colors.black2', 'İkinci fon', 'color', { help: 'Növbələşən bölmələr' }),
         f('colors.black3', 'Footer fonu', 'color'),
