@@ -1,5 +1,6 @@
 /**
- * Qonağın rezervini saytda yoxlaması, vaxtını dəyişməsi və ləğv etməsi.
+ * Qonağın rezervini saytda yoxlaması, vaxtını / nəfər sayını dəyişməsi və
+ * ləğv etməsi.
  *
  * Qonaq bron kodunu və rezervdəki telefon nömrəsini yazır; server rezervi
  * Vilka-dan oxuyur və nömrə uyğun gələndə göstərir. Nömrə tələb olunur,
@@ -10,12 +11,12 @@
  * (server/index.mjs) eyni məntiqi çağırır.
  */
 
-import { normalizePhone, validateSlot } from './validate.mjs';
+import { normalizePhone, validateSlot, reservationRules } from './validate.mjs';
 import {
   vilkaLookupEnabled,
   fetchVilkaReservation,
   cancelVilkaReservation,
-  rescheduleVilkaReservation,
+  changeVilkaReservation,
 } from './vilka.mjs';
 
 /* Vilka kodu (27BDF7B6, 12 simvolluq yenilər) və ya saytın MS-260101-1234 kodu */
@@ -38,8 +39,8 @@ const STATUS_LABELS = {
 };
 
 const CANCELLABLE = ['hold', 'pending', 'confirmed'];
-/* «hold» hələ ödəniş mərhələsindədir — vaxtı sabitdir */
-const RESCHEDULABLE = ['pending', 'confirmed'];
+/* «hold» hələ ödəniş mərhələsindədir — vaxtı və nəfər sayı sabitdir */
+const CHANGEABLE = ['pending', 'confirmed'];
 
 /* Telefonların müqayisəsi: son 9 rəqəm (+994 / 0 / boşluq fərqi önəmsizdir) */
 const phoneKey = (value) => String(value || '').replace(/\D/g, '').slice(-9);
@@ -68,7 +69,7 @@ const publicView = (r) => {
     name: (r.guest && r.guest.name) || '',
     place: r.place || '',
     canCancel: CANCELLABLE.includes(r.status) && upcoming,
-    canReschedule: RESCHEDULABLE.includes(r.status) && upcoming,
+    canChange: CHANGEABLE.includes(r.status) && upcoming,
   };
 };
 
@@ -92,12 +93,14 @@ const rateLimited = (ip) => {
 };
 
 /**
- * @param {{ action?: string, code?: string, phone?: string, date?: string, time?: string }} input
+ * @param {{ action?: string, code?: string, phone?: string, date?: string, time?: string, guests?: number }} input
  * @param {string} ip
  * @returns {Promise<{ status: number, body: object }>}
  */
 export const handleBooking = async (input, ip) => {
-  const action = ['cancel', 'reschedule'].includes(input && input.action) ? input.action : 'lookup';
+  /* «reschedule» — əvvəlki ad, eyni əməliyyat */
+  const requested = input && input.action === 'reschedule' ? 'change' : input && input.action;
+  const action = ['cancel', 'change'].includes(requested) ? requested : 'lookup';
   const code = normalizeCode(input && input.code);
   const phone = normalizePhone(input && input.phone);
 
@@ -111,11 +114,26 @@ export const handleBooking = async (input, ip) => {
     };
   }
 
-  /* Yeni vaxt Vilka-ya getməzdən əvvəl saytın öz qaydaları ilə yoxlanılır */
+  /* Yeni vaxt və nəfər sayı Vilka-ya getməzdən əvvəl saytın öz qaydaları ilə yoxlanılır */
   let slot = null;
-  if (action === 'reschedule') {
-    slot = validateSlot(input.date, input.time);
-    if (!slot.ok) return { status: 400, body: { ok: false, field: slot.field, error: slot.error } };
+  let guests = null;
+  if (action === 'change') {
+    const hasDate = Boolean(input.date || input.time);
+    const hasGuests = input.guests !== undefined && input.guests !== null && input.guests !== '';
+    if (!hasDate && !hasGuests) {
+      return { status: 400, body: { ok: false, error: 'Yeni vaxt və ya nəfər sayı seçin.' } };
+    }
+    if (hasDate) {
+      slot = validateSlot(input.date, input.time);
+      if (!slot.ok) return { status: 400, body: { ok: false, field: slot.field, error: slot.error } };
+    }
+    if (hasGuests) {
+      guests = Number(input.guests);
+      const max = reservationRules.maxGuests + 1;
+      if (!Number.isInteger(guests) || guests < reservationRules.minGuests || guests > max) {
+        return { status: 400, body: { ok: false, field: 'guests', error: 'Nəfər sayı düzgün deyil.' } };
+      }
+    }
   }
 
   if (rateLimited(ip)) {
@@ -147,30 +165,41 @@ export const handleBooking = async (input, ip) => {
     return { status: 200, body: { ok: true, reservation: current } };
   }
 
-  if (action === 'reschedule') {
-    if (!current.canReschedule) {
+  if (action === 'change') {
+    if (!current.canChange) {
       return {
         status: 409,
         body: {
           ok: false,
-          error: 'Bu rezervasiyanın vaxtını artıq onlayn dəyişmək mümkün deyil. Zəhmət olmasa bizə zəng edin.',
+          error: 'Bu rezervasiyanı artıq onlayn dəyişmək mümkün deyil. Zəhmət olmasa bizə zəng edin.',
           reservation: current,
         },
       };
     }
 
-    const moved = await rescheduleVilkaReservation(found.data.ref || code, slot.date, slot.time);
-    if (!moved.ok) {
+    /* Yalnız həqiqətən dəyişən sahələr gedir — eyni vaxt yenidən yoxlanmasın */
+    const changes = {};
+    if (slot && (slot.date !== current.date || slot.time !== current.time)) {
+      changes.date = slot.date;
+      changes.time = slot.time;
+    }
+    if (guests !== null && guests !== current.guests) changes.party_size = guests;
+    if (!Object.keys(changes).length) {
+      return { status: 400, body: { ok: false, error: 'Heç nə dəyişməyib — yeni vaxt və ya nəfər sayı seçin.' } };
+    }
+
+    const changed = await changeVilkaReservation(found.data.ref || code, changes);
+    if (!changed.ok) {
       /* 400/409: Vilka səbəbi deyir (boş masa yoxdur, restoran bağlıdır…) */
-      if ((moved.status === 400 || moved.status === 409) && moved.message) {
-        return { status: 409, body: { ok: false, field: 'time', error: moved.message, reservation: current } };
+      if ((changed.status === 400 || changed.status === 409) && changed.message) {
+        return { status: 409, body: { ok: false, error: changed.message, reservation: current } };
       }
-      console.warn('[bron] Vilka-da vaxt dəyişmədi: ' + moved.error);
+      console.warn('[bron] Vilka-da rezerv dəyişmədi: ' + changed.error);
       return { status: 502, body: { ok: false, error: UNAVAILABLE } };
     }
 
-    console.log('[bron] qonaq vaxtı dəyişdi: ' + (found.data.ref || code) + ' → ' + slot.date + ' ' + slot.time);
-    return { status: 200, body: { ok: true, rescheduled: true, reservation: publicView(moved.data) } };
+    console.log('[bron] qonaq rezervi dəyişdi: ' + (found.data.ref || code) + ' → ' + JSON.stringify(changes));
+    return { status: 200, body: { ok: true, changed: true, reservation: publicView(changed.data) } };
   }
 
   if (!current.canCancel) {

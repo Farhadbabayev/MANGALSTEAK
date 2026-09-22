@@ -120,11 +120,13 @@ göstərilir — Vilka panelində görünən eyni kod. Saytın `MS-…` kodu Vil
 çatmayan (yalnız Telegram-a düşən) rezervdə qonaq həmin `MS-…` kodunu görür.
 
 **Bronu yoxla** (`/bron`). Qonaq kodu və rezervdəki telefon nömrəsini yazıb
-rezervin vəziyyətinə baxır, vaxtını dəyişir və ya onu ləğv edir
-(`POST /api/booking`). Yeni vaxt əvvəl saytın qaydaları ilə (iş saatı,
-90 gün), sonra Vilka-da yoxlanılır: boş masa yoxdursa və ya restoran
-bağlıdırsa, Vilka-nın səbəbi qonağa göstərilir və rezerv köhnə vaxtda qalır.
-Dəyişiklik Vilka panelində rezervin qeydinə yazılır. Həm
+rezervin vəziyyətinə baxır, vaxtını və/və ya nəfər sayını dəyişir və ya onu
+ləğv edir (`POST /api/booking`). Yeni vaxt və nəfər sayı əvvəl saytın
+qaydaları ilə (iş saatı, 90 gün, 1–21 nəfər), sonra Vilka-da yoxlanılır: boş
+masa yoxdursa, restoran bağlıdırsa və ya rezerv behlidirsə (nəfər sayı
+dəyişmir), Vilka-nın səbəbi qonağa göstərilir və rezerv olduğu kimi qalır.
+Vilka-ya yalnız dəyişən sahələr gedir. Dəyişiklik Vilka panelində rezervin
+qeydinə yazılır. Həm
 Vilka kodu, həm də köhnə `MS-…` kodu qəbul olunur. Nömrə uyğun gəlməsə
 «tapılmadı» deyilir. Bu, yalnız `VILKA_MODE=api` ilə işləyir.
 

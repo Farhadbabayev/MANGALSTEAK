@@ -2,8 +2,8 @@
 
 /**
  * «Bronu yoxla» səhifəsi — qonaq bron kodu və telefon nömrəsi ilə
- * rezervasiyasının vəziyyətinə baxır, istəsə vaxtını dəyişir və ya onu
- * ləğv edir.
+ * rezervasiyasının vəziyyətinə baxır, istəsə vaxtını və nəfər sayını
+ * dəyişir və ya onu ləğv edir.
  *
  * Sorğu öz API-mıza gedir (POST /api/booking), server isə rezervi
  * Vilka-dan oxuyur. Kod ?kod= parametri ilə gəlirsə, sahə doldurulur.
@@ -38,6 +38,7 @@
   const rescheduleClose = root.querySelector('[data-reschedule-close]');
   const newDate = rescheduleForm.querySelector('[data-field="date"]');
   const newTime = rescheduleForm.querySelector('[data-field="time"]');
+  const newGuests = rescheduleForm.querySelector('[data-field="guests"]');
 
   const MAX_DAYS_AHEAD = 90;
   const pad = function (n) { return String(n).padStart(2, '0'); };
@@ -50,6 +51,7 @@
     if (!current || !r) return;
     current.date = r.date;
     current.time = r.time;
+    current.guests = r.guests;
   };
 
   const normalizeCode = function (raw) {
@@ -153,18 +155,33 @@
       .join('');
 
     cancelBtn.hidden = !r.canCancel;
-    rescheduleBtn.hidden = !r.canReschedule;
+    rescheduleBtn.hidden = !r.canChange;
   };
 
-  /* Bu gün üçün keçmiş saatlar söndürülür (ən azı 45 dəq sonra) */
+  /* Siyahıda olmayan dəyəri (restoranın əl ilə qoyduğu 19:15, 25 nəfər)
+     seçim kimi əlavə edir ki, yalnız digər sahəni dəyişmək mümkün olsun */
+  const ensureOption = function (select, value, label) {
+    if (!value) return;
+    const exists = Array.prototype.some.call(select.options, function (o) { return o.value === value; });
+    if (exists) return;
+    const opt = document.createElement('option');
+    opt.value = value;
+    opt.textContent = label || value;
+    opt.dataset.added = 'true';
+    select.appendChild(opt);
+  };
+
+  /* Bu gün üçün keçmiş saatlar söndürülür (ən azı 45 dəq sonra);
+     indiki rezervin öz saatı isə seçilə bilən qalır */
   const refreshTimes = function () {
     const isToday = newDate.value === toISO(new Date());
+    const sameDay = current && newDate.value === current.date;
     const now = new Date();
     const earliest = now.getHours() * 60 + now.getMinutes() + 45;
     Array.prototype.forEach.call(newTime.options, function (opt) {
       if (!opt.value) return;
       const parts = opt.value.split(':').map(Number);
-      opt.disabled = isToday && parts[0] * 60 + parts[1] < earliest;
+      opt.disabled = isToday && parts[0] * 60 + parts[1] < earliest && !(sameDay && opt.value === current.time);
     });
     const selected = newTime.selectedOptions[0];
     if (selected && selected.disabled) newTime.value = '';
@@ -191,7 +208,10 @@
     newDate.min = toISO(new Date());
     newDate.max = toISO(maxDate);
     newDate.value = current.date || toISO(new Date());
+    ensureOption(newTime, current.time);
     newTime.value = current.time || '';
+    ensureOption(newGuests, current.guests ? String(current.guests) : '', current.guests + ' nəfər');
+    newGuests.value = current.guests ? String(current.guests) : newGuests.value;
     refreshTimes();
     clearStatus(resultStatus);
     resultActions.hidden = true;
@@ -216,36 +236,41 @@
       showStatus(resultStatus, 'Saat seçin.', 'error');
       return;
     }
-    if (newDate.value === current.date && newTime.value === current.time) {
-      showStatus(resultStatus, 'Yeni vaxt indiki ilə eynidir.', 'error');
+    const timeChanged = newDate.value !== current.date || newTime.value !== current.time;
+    const guestsChanged = Number(newGuests.value) !== Number(current.guests);
+    if (!timeChanged && !guestsChanged) {
+      showStatus(resultStatus, 'Heç nə dəyişməyib — yeni vaxt və ya nəfər sayı seçin.', 'error');
       return;
     }
 
     setLoading(rescheduleSave, true);
-    showStatus(resultStatus, 'Vaxt dəyişdirilir…', 'info');
+    showStatus(resultStatus, 'Rezervasiya yenilənir…', 'info');
 
-    const res = await call({
-      action: 'reschedule',
-      code: current.code,
-      phone: current.phone,
-      date: newDate.value,
-      time: newTime.value,
-    });
+    /* Yalnız dəyişən sahələr gedir */
+    const body = { action: 'change', code: current.code, phone: current.phone };
+    if (timeChanged) {
+      body.date = newDate.value;
+      body.time = newTime.value;
+    }
+    if (guestsChanged) body.guests = Number(newGuests.value);
+
+    const res = await call(body);
     setLoading(rescheduleSave, false);
 
     if (!res.ok) {
       if (res.payload && res.payload.field) markInvalid(res.payload.field, true, rescheduleForm);
-      showStatus(resultStatus, (res.payload && res.payload.error) || 'Vaxtı dəyişmək alınmadı. Zəhmət olmasa bizə zəng edin.', 'error');
+      showStatus(resultStatus, (res.payload && res.payload.error) || 'Dəyişmək alınmadı. Zəhmət olmasa bizə zəng edin.', 'error');
       return;
     }
 
     remember(res.payload.reservation);
     render(res.payload.reservation);
     closeReschedule();
+    const r = res.payload.reservation;
     showStatus(
       resultStatus,
-      'Rezervasiyanızın vaxtı dəyişdirildi: ' +
-        res.payload.reservation.date.split('-').reverse().join('.') + ', ' + res.payload.reservation.time + '.',
+      'Rezervasiyanız yeniləndi: ' + r.date.split('-').reverse().join('.') + ', ' + r.time +
+        (r.guests ? ', ' + r.guests + ' nəfər' : '') + '.',
       'info'
     );
   });

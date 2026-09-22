@@ -301,9 +301,11 @@ export const vilkaLookupEnabled = () => {
 
 export const fetchVilkaReservation = (ref) => requestVilka('GET', ref);
 
-/** Yalnız vaxt: Vilka onu qonağın öz səhifəsindəki «Vaxtı dəyiş» ilə eyni yoxlayır */
-export const rescheduleVilkaReservation = (ref, date, time) =>
-  requestVilka('PATCH', ref, '', { date, time });
+/**
+ * Yalnız vaxt ({ date, time }) və/və ya nəfər sayı ({ party_size }): Vilka onu
+ * qonağın öz səhifəsindəki «Dəyiş» ilə eyni qaydalarla yoxlayır.
+ */
+export const changeVilkaReservation = (ref, changes) => requestVilka('PATCH', ref, '', changes);
 
 export const cancelVilkaReservation = (ref, reason) =>
   requestVilka('DELETE', ref, reason ? '?reason=' + encodeURIComponent(reason) : '');
