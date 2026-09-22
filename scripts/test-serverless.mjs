@@ -361,8 +361,8 @@ try {
    *  API bu adları və tipləri gözləyir:
    *    guest_name / guest_phone / party_size (RƏQƏM) / date / time /
    *    external_ref
-   *  VILKA_FIELD_MAP olmadan sayt «name», «phone», «guests» göndərir
-   *  və sorğu rədd olunur.
+   *  «api» rejimində bu adlar standartdır — VILKA_FIELD_MAP yazılmasa
+   *  belə rezervasiya Vilka-da restoranın jurnalına düşməlidir.
    * ---------------------------------------------------------------- */
 
   const mapBefore = vilkaHits.length;
@@ -370,8 +370,6 @@ try {
     VILKA_MODE: 'api',
     VILKA_API_URL: 'http://127.0.0.1:' + VILKA_PORT + '/r/mangal-zugulba/reservations',
     VILKA_API_KEY: 'vk_live_sinaq',
-    VILKA_FIELD_MAP:
-      '{"name":"guest_name","phone":"guest_phone","guests":"party_size","external_id":"external_ref"}',
     TELEGRAM_BOT_TOKEN: '', TELEGRAM_CHAT_ID: '',
   });
 

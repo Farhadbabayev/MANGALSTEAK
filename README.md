@@ -104,36 +104,40 @@ cp .env.example .env
 
 ```env
 VILKA_MODE=api
-VILKA_API_URL=https://api.vilka.az/v1/reservations   # Vilka-dan alınacaq
-VILKA_API_KEY=sizin_acar
-VILKA_RESTAURANT_ID=123
+VILKA_API_URL=https://mqirnsmgnymjnyabvurr.supabase.co/functions/v1/api-v1/r/mangal-steak-house/reservations
+VILKA_API_KEY=vk_live_...   # Vilka super-admin → İnteqrasiyalar (API)
 ```
 
 ### Sahə adlarının uyğunlaşdırılması
 
-Standart olaraq belə JSON göndərilir:
+`api` rejimində sayt Vilka Partner API-sinin öz adlarını **avtomatik**
+göndərir — heç nə yazmaq lazım deyil. Rezerv Vilka-da birbaşa Mangal Steak
+House-un jurnalına düşür (restoranı açar müəyyən edir):
 
 ```json
 {
-  "external_id": "MS-260916-4821",
-  "restaurant_id": "123",
-  "name": "Aysel Quliyeva",
-  "phone": "+994501234567",
-  "guests": 4,
+  "external_ref": "MS-260916-4821",
+  "guest_name": "Aysel Quliyeva",
+  "guest_phone": "+994501234567",
+  "party_size": 4,
   "date": "2026-09-19",
   "time": "19:30",
-  "datetime": "2026-09-19T19:30:00+04:00",
-  "area": "terrace",
-  "comment": "Ad günü tortu gətirəcəyik",
+  "starts_at": "2026-09-19T19:30:00+04:00",
+  "note": "Zona: Yay terrası · Səbəb: Ad günü · Ad günü tortu gətirəcəyik · Sayt kodu: MS-260916-4821",
   "source": "website",
   "created_at": "2026-09-16T12:00:00.000Z"
 }
 ```
 
-Vilka başqa adlar gözləyirsə, **kodu dəyişmədən** `.env`-dən uyğunlaşdırın:
+`external_ref` sayəsində təkrar cəhd ikinci rezerv yaratmır. Vilka-nın
+cavabındakı `ref` (paneldə görünən kod) jurnala yazılır.
+
+`webhook` rejimində isə saytın öz adları gedir (`name`, `phone`, `guests`,
+`area`, `occasion`, `comment` …). Başqa adlar lazımdırsa, **kodu dəyişmədən**
+`.env`-dən uyğunlaşdırın (bu, avtomatik adların da üstünə yazılır):
 
 ```env
-VILKA_FIELD_MAP={"name":"guest_name","phone":"guest_phone","guests":"persons","comment":"note"}
+VILKA_FIELD_MAP={"name":"customer","phone":"tel"}
 VILKA_EXTRA_FIELDS={"branch_id":3,"channel":"website"}
 ```
 

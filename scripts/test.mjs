@@ -143,13 +143,25 @@ const run = async () => {
 
   const sent = received[received.length - 1];
   check('Vilka sorğusu alındı', Boolean(sent));
-  check('Telefon beynəlxalq formata salınıb', sent && sent.body.phone === '+994501234567',
-    sent && sent.body.phone);
+  check('Telefon beynəlxalq formata salınıb', sent && sent.body.guest_phone === '+994501234567',
+    sent && sent.body.guest_phone);
   check('Açar başlığı göndərilir', sent && sent.auth === 'Bearer test-acar', sent && sent.auth);
   check('Sahə adları dəyişdirilib (field map)', sent && sent.body.guest_name === 'Test Qonaq',
     sent && JSON.stringify(sent.body));
   check('Əlavə sabit sahə göndərilir', sent && sent.body.branch_id === 7);
-  check('Rezervasiya kodu Vilka-ya ötürülür', sent && sent.body.external_id === createdBody.code);
+  check('Rezervasiya kodu Vilka-ya external_ref kimi ötürülür',
+    sent && sent.body.external_ref === createdBody.code, sent && JSON.stringify(sent.body));
+  check('Nəfər sayı party_size (rəqəm) kimi gedir', sent && sent.body.party_size === 4);
+  check('Vaxt starts_at kimi Bakı saatı ilə gedir',
+    sent && /T19:00:00\+04:00$/.test(sent.body.starts_at || ''), sent && sent.body.starts_at);
+  check('Zona, səbəb və qeyd Vilka qeydinə düşür',
+    sent && /Zona: Əsas salon/.test(sent.body.note || '') && /Səbəb: Ad günü/.test(sent.body.note || '') &&
+      /Pəncərə kənarı olsun/.test(sent.body.note || '') && sent.body.note.includes(createdBody.code),
+    sent && sent.body.note);
+  check('Köhnə adlar Vilka-ya getmir',
+    sent && !('name' in sent.body) && !('phone' in sent.body) && !('guests' in sent.body) &&
+      !('external_id' in sent.body) && !('comment' in sent.body),
+    sent && Object.keys(sent.body).join(', '));
 
   const badPhone = await post('/api/reservations', validReservation({ phone: '12345' }));
   const badPhoneBody = await badPhone.json();
