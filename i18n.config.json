@@ -236,6 +236,10 @@
           "title": "О нас",
           "subtitle": "У огня с 2014 года",
           "lead": "Мы не просто ресторан — мы история дыма, железного шампура и терпения.",
+          "philosophy": {
+            "title": "Наша философия стейка",
+            "text": "Mangal Steak House, без сомнения, можно отнести к самым изысканным и презентабельным ресторанам Баку, где всё вращается вокруг стейка. Его главная составляющая — лучшее мясо премиальных сортов в авторской подаче наших шеф-поваров. Мы уверены, что стейк — самая сладкая зависимость, которой стоит поддаться. И мы знаем о стейках всё: где и на каких кормах выращивают бычков, как хранят и доставляют мясо, где и как оно вызревает, как готовить стейки и с чем их подавать.\n\nДля идеального стейка мы используем мясо, которое провело в наших камерах сухой выдержки не менее трёх недель. Сухая выдержка — сложный и дорогой процесс, поэтому эту технологию выбирают только настоящие профессионалы. Во время выдержки мясо теряет в весе за счёт потери влаги, освобождается от гормонов стресса и приобретает необычайно насыщенный вкус, становясь нежным и мягким. А после обжарки получается качественный кусок мяса с натуральным, но более насыщенным, поистине божественным вкусом."
+          },
           "blocks": [
             { "title": "Всё начинается с выбора мяса", "text": "Каждую неделю мы работаем с одними и теми же фермами. Мясо поступает в ресторан целыми отрубами и разделывается нашим мастером. Стейки 28 дней проходят сухую выдержку в нашей собственной камере — единственный способ придать мясу насыщенный ореховый вкус и мягкость." },
             { "title": "Огонь и терпение", "text": "На нашей кухне нет стейков, приготовленных на газу. Только дубовые и тутовые угли. Шефы переворачивают мясо вручную и следят за температурой, как за пульсом. Поэтому иногда нужно подождать несколько минут. И оно того стоит." },
@@ -530,6 +534,10 @@
           "title": "About us",
           "subtitle": "By the fire since 2014",
           "lead": "We are not just a restaurant. We are a story of smoke, iron skewers and patience.",
+          "philosophy": {
+            "title": "Our steak philosophy",
+            "text": "Mangal Steak House is without doubt one of the most refined and prestigious restaurants in Baku, a place where everything revolves around steak. At its heart is the finest premium meat, served in our chefs' signature style. We believe steak is the sweetest addiction worth indulging in. We know everything about steak: where the steers are raised and what they are fed, how the meat is stored and delivered, where and how it matures, how to cook it and what to serve it with.\n\nTo make the perfect steak, we use meat that has spent at least three weeks in our dry-ageing chambers. Dry ageing is a complicated and expensive process, so only true professionals choose it. During ageing, the meat loses weight through moisture loss, is freed of stress hormones and develops an unusually rich flavour, becoming tender and soft. After grilling, the result is a quality piece of meat with a natural yet richer, truly divine taste."
+          },
           "blocks": [
             { "title": "It starts with the meat", "text": "Every week we work with the same farms. The meat arrives as whole cuts and is butchered here by our own master. Steaks are dry-aged for 28 days in our own ageing room, the only way to give the meat its rich, nutty flavour and tenderness." },
             { "title": "Fire and patience", "text": "There is no gas-cooked steak in our kitchen. Only oak and mulberry charcoal. Our chefs turn every piece by hand and follow the temperature like a heartbeat. That's why you may sometimes wait a few minutes. And it's worth it." },
