@@ -35,14 +35,14 @@ hero caption, footer column heads, menu category heads, dish subtitle.
 
 The owner's own lockup (bull skull on a skewer, blackletter "Mangal",
 tracked "STEAKHOUSE"), traced to vector in `src/brand/logo.svg`
-(`currentColor`, cream on dark). Inlined once per page as a `<symbol>`;
-header and footer `<use>` it. Height is `--logo-h` (admin → Dizayn, default 84px).
-In the header it hangs from the top edge on a bordeaux banner: logo field +
-gold motif band + sawtooth fringe, the `.kilim` grammar (`logo.banner`).
-Once the page scrolls (or the mobile menu opens) the banner folds to the
-header height and only the fringe hangs below. The desktop nav collapses
-into the menu at ≤1180px so the banner keeps its size. The footer shows the
-bare lockup, larger.
+(`currentColor`). Inlined once per page as a `<symbol>`; header and footer
+`<use>` it. Shown the way the owner uploaded it: cream on a plain bordeaux
+field (`logo.banner`). No pattern on or around the logo: the owner rejected a
+carpet-banner version (2026-09). In the header the field runs the full header
+height, top edge to bottom edge; the logo is `--logo-h` (admin → Dizayn,
+default 64px, never taller than the header minus 12px). The footer shows the
+same bordeaux tile, larger. The desktop nav collapses into the menu at
+≤1180px so the logo keeps its size.
 
 ## Carpet system (`/assets/ornament/`, all CSS masks, pixel-stepped like knots)
 

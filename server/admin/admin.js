@@ -554,7 +554,7 @@
       title: 'Ölçülər',
       fields: [
         f('layout.sectionSpace', 'Bölmələr arası boşluq (px)', 'number', { help: 'Adi hal: 130' }),
-        f('layout.logoHeight', 'Loqonun hündürlüyü (px)', 'number', { help: 'Mangal loqosu və yüklənmiş şəkil üçün, 40–120. Telefonda özü kiçilir. Adi hal: 84' }),
+        f('layout.logoHeight', 'Loqonun hündürlüyü (px)', 'number', { help: 'Başlıqda ən çox 64 (başlıq 76px-dir), footer-də 1.35 dəfə böyük. Telefonda özü kiçilir. Adi hal: 64' }),
         f('layout.logoSize', 'Loqo yazısının ölçüsü (px)', 'number'),
         f('layout.markSize', 'Loqo nişanının eni (px)', 'number'),
       ],
@@ -578,7 +578,7 @@
             { v: 'leaf', t: 'Yarpaq' },
           ],
         }),
-        f('logo.banner', 'Başlıqda loqonu bordo xalça lentində göstər', 'checkbox', { help: 'Lent başlıqdan asılır; səhifə sürüşəndə başlığın hündürlüyünə yığılır' }),
+        f('logo.banner', 'Loqonu bordo fonda göstər', 'checkbox', { help: 'Yüklənmiş loqo kimi: bordo sahədə krem loqo. Başlıqda bordo sahə başlığın bütün hündürlüyü boyunca uzanır' }),
         f('logo.image', 'Loqo şəkli', 'image', { full: true, help: 'Yalnız «Yüklənmiş şəkil» rejimində istifadə olunur' }),
       ],
     },

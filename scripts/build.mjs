@@ -160,7 +160,7 @@ blocks.logoSprite = useBrandLogo
   ? `<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false"><symbol id="brand-logo" viewBox="${brandLogo.viewBox}">${brandLogo.inner}</symbol></svg>`
   : '';
 
-/* Başlıqda loqo bordo xalça lentindən asılır (admin → Dizayn → Loqo) */
+/* Loqo bordo fonda, yüklənmiş loqo kimi; başlıqda fon başlığın boyu boyunca (admin → Dizayn → Loqo) */
 blocks.logoClass = theme.logo?.banner ? ' is-banner' : '';
 
 
@@ -703,7 +703,7 @@ const themeCss = `/*-----------------------------------*\\
   --logo: ${fontStack(f.logo || 'Grenze Gotisch', 'Georgia, serif')};
 
   --space: ${Number(l.sectionSpace) || 130}px;
-  --logo-h: ${Math.min(120, Math.max(40, Number(l.logoHeight) || 84))}px;
+  --logo-h: ${Math.min(120, Math.max(40, Number(l.logoHeight) || 64))}px;
 }
 
 .logo-title { font-size: ${Number(l.logoSize) || 31}px; }

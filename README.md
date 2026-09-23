@@ -10,10 +10,10 @@ məxsusdur; xarici CSS çərçivəsi və ya ikon kitabxanası istifadə olunmur.
 
 Loqo — restoranın öz loqosu (buğa kəlləsi və şiş, gotik «Mangal» yazısı,
 «STEAKHOUSE») vektora çevrilib: `src/brand/logo.svg`. Hər ölçüdə iti görünür,
-rəngi CSS-dən gəlir. Başlıqda loqo bordo xalça lentindən asılır (qızılı motiv
-zolağı və mişar-diş saçaqla), səhifə sürüşəndə başlığın hündürlüyünə yığılır.
-Loqonun orijinal vektor faylı (SVG/PDF/AI) tapılsa, `src/brand/logo.svg`-ni
-onunla əvəz etmək kifayətdir.
+rəngi CSS-dən gəlir. Yüklənmiş loqo kimi bordo fonda göstərilir: başlıqda
+bordo sahə başlığın bütün hündürlüyü boyunca uzanır, footer-də eyni bordo
+lövhə daha böyükdür. Loqonun orijinal vektor faylı (SVG/PDF/AI) tapılsa,
+`src/brand/logo.svg`-ni onunla əvəz etmək kifayətdir.
 
 ---
 
@@ -250,7 +250,7 @@ Hər dəyişiklikdən sonra sayt avtomatik yenidən yığılır.
 | **Menyu** | Kateqoriya və yemək əlavə et/sil/sırala, qiymət, nişan (Bestseller və s.), təsvir |
 | **Səhifə mətnləri** | Slayder, haqqımızda, şefin seçimi, üstünlüklər, tədbirlər, qalereya, banket paketləri, rezervasiya addımları və qaydaları — bütün səhifələrin mətnləri |
 | **Şəkillər** | Yüklə, əvəz et, sil. Eyni adla yükləmək saytdakı şəkli dərhal dəyişir |
-| **Dizayn** | Rənglər, şriftlər, bölmə boşluqları, loqo (Mangal loqosu / nişan / yazı / yüklənmiş şəkil), loqonun hündürlüyü və bordo lent — canlı önizləmə ilə |
+| **Dizayn** | Rənglər, şriftlər, bölmə boşluqları, loqo (Mangal loqosu / nişan / yazı / yüklənmiş şəkil), loqonun hündürlüyü və bordo fon — canlı önizləmə ilə |
 | **Sistem** | Sistemin vəziyyəti, son əməliyyatın jurnalı, saytı yenidən yığma |
 
 > **Rezervasiyalar bu paneldən idarə olunmur.** Masaların təsdiqi, ləğvi və
