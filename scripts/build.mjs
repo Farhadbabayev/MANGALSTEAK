@@ -112,25 +112,56 @@ const MARKS = {
     </svg>`,
 };
 
+/**
+ * Brend loqosu (src/brand/logo.svg): sahibin loqosunun vektor nüsxəsi.
+ * Səhifəyə bir dəfə <symbol> kimi yazılır, başlıq və footer onu <use> ilə
+ * göstərir — path səhifədə iki dəfə təkrarlanmır. Rəngi currentColor-dan gəlir.
+ */
+const brandLogo = (() => {
+  const file = join(SRC, 'brand', 'logo.svg');
+  if (!existsSync(file)) return null;
+  const svg = readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
+  const viewBox = (svg.match(/<svg\b[^>]*\sviewBox=["']([^"']+)["']/) || [])[1];
+  const inner = svg.replace(/^[\s\S]*?<svg\b[^>]*>/, '').replace(/<\/svg>[\s\S]*$/, '').trim();
+  return viewBox && inner ? { viewBox, inner } : null;
+})();
+
+const logoMode = theme.logo?.mode || 'mark';
+const useBrandLogo = logoMode === 'brand' && Boolean(brandLogo);
+
+if (logoMode === 'brand' && !brandLogo) {
+  console.warn('  ! src/brand/logo.svg tapılmadı və ya viewBox-u yoxdur — «Nişan + yazı» loqosu göstərilir');
+}
+
 const logoInner = (() => {
-  const mode = theme.logo?.mode || 'mark';
   const nameHtml =
     `<span class="logo-text">` +
     `<span class="logo-title">${esc(site.site.logoTop)}</span>` +
     `<span class="logo-sub">${esc(site.site.logoBottom)}</span>` +
     `</span>`;
 
-  if (mode === 'image' && theme.logo.image) {
+  if (useBrandLogo) {
+    return `<svg class="logo-brand" viewBox="${brandLogo.viewBox}" fill="currentColor" aria-hidden="true" focusable="false"><use href="#brand-logo"/></svg>`;
+  }
+
+  if (logoMode === 'image' && theme.logo.image) {
     return `<img src="${img(theme.logo.image)}" alt="${esc(site.site.name)}" class="logo-img">`;
   }
 
-  if (mode === 'text') return nameHtml;
+  if (logoMode === 'text') return nameHtml;
 
   const mark = MARKS[theme.logo?.mark] || MARKS.bull;
   return `<span class="logo-mark" aria-hidden="true">${mark}</span>\n  ${nameHtml}`;
 })();
 
 blocks.logoInner = logoInner;
+
+blocks.logoSprite = useBrandLogo
+  ? `<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false"><symbol id="brand-logo" viewBox="${brandLogo.viewBox}">${brandLogo.inner}</symbol></svg>`
+  : '';
+
+/* Başlıqda loqo bordo xalça lentindən asılır (admin → Dizayn → Loqo) */
+blocks.logoClass = theme.logo?.banner ? ' is-banner' : '';
 
 
 /* ------------------------------------------------------------------ *
@@ -672,11 +703,11 @@ const themeCss = `/*-----------------------------------*\\
   --logo: ${fontStack(f.logo || 'Grenze Gotisch', 'Georgia, serif')};
 
   --space: ${Number(l.sectionSpace) || 130}px;
+  --logo-h: ${Math.min(120, Math.max(40, Number(l.logoHeight) || 84))}px;
 }
 
 .logo-title { font-size: ${Number(l.logoSize) || 31}px; }
 .logo-mark { width: ${Number(l.markSize) || 26}px; }
-.logo-img { max-height: ${Math.round((Number(l.logoSize) || 31) * 1.6)}px; width: auto; }
 `;
 
 writeFileSync(join(OUT, 'assets', 'css', 'theme.css'), themeCss, 'utf8');

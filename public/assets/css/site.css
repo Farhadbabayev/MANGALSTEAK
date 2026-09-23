@@ -341,6 +341,99 @@ body.nav-open .header::before {
   color: var(--cream-dim);
 }
 
+/* Brend loqosu (src/brand/logo.svg) və yüklənmiş şəkil.
+   Hündürlük admin → Dizayn → «Loqonun hündürlüyü» (--logo-h, theme.css). */
+.logo-brand { display: block; width: auto; height: var(--logo-h); }
+.logo-img { display: block; width: auto; max-width: min(280px, 45vw); max-height: var(--logo-h); }
+
+.header .logo:not(.is-banner) .logo-brand { height: min(var(--logo-h), calc(var(--header-h) - 14px)); }
+.header .logo:not(.is-banner) .logo-img { max-height: min(var(--logo-h), calc(var(--header-h) - 14px)); }
+
+.footer .logo-brand { height: calc(var(--logo-h) * 1.35); }
+
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* Loqo lenti (theme.config.json → logo.banner)
+
+   Başlıqdan asılan bordo xalça parçası: loqo sahəsi + qızılı motiv
+   zolağı + mişar-diş saçaq, .kilim ilə eyni qrammatika. Səhifə
+   sürüşəndə və mobil menyu açılanda başlığın hündürlüyünə yığılır,
+   yalnız saçaq aşağı sallanır. Ölçülər :root-dadır ki, hero da
+   lentin altında yer saxlaya bilsin. */
+
+:root {
+  --banner-lh: var(--logo-h);
+  --banner-pad: 14px;
+  --banner-pad-x: 24px;
+  --banner-band: 20px;
+}
+
+.header .logo.is-banner {
+  position: relative;
+  align-self: flex-start;
+  display: grid;
+  place-items: center;
+  min-height: var(--header-h);
+  padding: var(--banner-pad) var(--banner-pad-x) calc(var(--banner-pad) + var(--banner-band));
+  background-color: var(--brand);
+  transition: padding 360ms var(--ease-out);
+}
+
+.header .logo.is-banner::before,
+.header .logo.is-banner::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  background-color: var(--gold);
+  pointer-events: none;
+}
+
+/* Motiv zolağı */
+.header .logo.is-banner::before {
+  bottom: 0;
+  height: var(--banner-band);
+  -webkit-mask: url('../ornament/motif.svg') 0 0 / var(--banner-band) var(--banner-band) round;
+  mask: url('../ornament/motif.svg') 0 0 / var(--banner-band) var(--banner-band) round;
+  transform-origin: bottom;
+  transition: transform 360ms var(--ease-out), opacity 240ms ease;
+}
+
+/* Mişar-diş saçaq */
+.header .logo.is-banner::after {
+  top: 100%;
+  height: calc(var(--banner-band) / 3.5);
+  -webkit-mask: url('../ornament/guard.svg') 0 0 / calc(var(--banner-band) / 1.75) 100% round;
+  mask: url('../ornament/guard.svg') 0 0 / calc(var(--banner-band) / 1.75) 100% round;
+  transform: scaleY(-1);
+}
+
+.header .logo.is-banner:focus-visible { outline-offset: -6px; }
+
+.header .logo.is-banner .logo-brand { height: var(--banner-lh); transition: height 360ms var(--ease-out); }
+.header .logo.is-banner .logo-img { max-height: var(--banner-lh); transition: max-height 360ms var(--ease-out); }
+
+body.is-scrolled .header .logo.is-banner,
+body.nav-open .header .logo.is-banner { padding-block: 8px; }
+
+body.is-scrolled .header .logo.is-banner::before,
+body.nav-open .header .logo.is-banner::before { opacity: 0; transform: scaleY(0); }
+
+body.is-scrolled .header .logo.is-banner .logo-brand,
+body.nav-open .header .logo.is-banner .logo-brand { height: min(var(--banner-lh), calc(var(--header-h) - 16px)); }
+
+body.is-scrolled .header .logo.is-banner .logo-img,
+body.nav-open .header .logo.is-banner .logo-img { max-height: min(var(--banner-lh), calc(var(--header-h) - 16px)); }
+
+/* Hero məzmunu açıq lentin altına düşməsin */
+body:has(.header .logo.is-banner) :is(.hero, .page-hero) {
+  padding-top: calc(var(--banner-pad) * 2 + var(--banner-lh) + var(--banner-band) * 1.3 + 24px);
+}
+
+@media (max-width: 1280px) {
+  :root { --banner-lh: calc(var(--logo-h) * 0.8); --banner-pad-x: 20px; }
+}
+
 .navbar { margin-left: auto; }
 
 .navbar-list { display: flex; align-items: center; gap: clamp(18px, 2vw, 32px); }
@@ -378,6 +471,7 @@ body.nav-open .header::before {
 .nav-toggle {
   display: none;
   position: relative;
+  flex-shrink: 0;
   width: 44px;
   height: 44px;
   margin-right: -10px;
@@ -398,8 +492,15 @@ body.nav-open .header::before {
 body.nav-open .nav-toggle span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
 body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
 
-@media (max-width: 1080px) {
-  :root { --header-h: 68px; }
+/* Nav 1180px-dən dar ekranda açılan menyuya keçir: başlıqda loqo lentinə yer qalsın */
+@media (max-width: 1180px) {
+  :root {
+    --header-h: 68px;
+    --banner-lh: calc(var(--logo-h) * 0.7);
+    --banner-pad: 10px;
+    --banner-pad-x: 16px;
+    --banner-band: 16px;
+  }
 
   .header .wrap { gap: 14px; }
 
@@ -460,7 +561,18 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 }
 
 @media (max-width: 420px) {
+  :root { --banner-lh: min(calc(var(--logo-h) * 0.6), 13.5vw); --banner-pad-x: 12px; }
+
   .logo-sub { display: none; }
+}
+
+/* Ən dar telefonlar: uzun düymə mətni də (ru «Забронировать») lentin yanına sığsın */
+@media (max-width: 374px) {
+  :root { --banner-pad-x: 10px; }
+
+  .header .wrap { gap: 10px; }
+
+  .header-cta { padding-inline: 10px; font-size: 13px; font-stretch: 100%; letter-spacing: 0; }
 }
 
 /*-----------------------------------*\
@@ -2238,7 +2350,7 @@ body.rez-open .rez-modal-panel { transform: none; transition-duration: 480ms; }
 /* Dar ekranda başlıqda yer yoxdur: dil seçimi açılan menyunun içinə keçir */
 .navbar-foot .lang-switch { display: none; }
 
-@media (max-width: 1080px) {
+@media (max-width: 1180px) {
   .header .lang-switch { margin-left: auto; }
   .header .lang-switch + .header-cta { margin-left: 0; }
 }
