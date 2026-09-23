@@ -447,6 +447,14 @@
       ],
     },
     {
+      title: 'Haqqımızda — steyk fəlsəfəsi',
+      hint: 'Hekayədən sonrakı bölmə. Mətn boşdursa, bölmə saytda görünmür',
+      fields: [
+        f('pages.haqqimizda.philosophy.title', 'Başlıq', 'text', { full: true }),
+        f('pages.haqqimizda.philosophy.text', 'Mətn', 'textarea', { full: true, help: 'Hər sətir saytda ayrıca abzas kimi görünür' }),
+      ],
+    },
+    {
       title: 'Haqqımızda — mətn blokları',
       array: 'pages.haqqimizda.blocks',
       label: (item) => item.title || 'Blok',

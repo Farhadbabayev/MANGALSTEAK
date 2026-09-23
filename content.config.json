@@ -241,6 +241,10 @@
       "title": "Haqqımızda",
       "subtitle": "2014-cü ildən bəri közün başında",
       "lead": "Biz sadəcə restoran deyilik, tüstünün, dəmir şişin və səbrin hekayəsiyik.",
+      "philosophy": {
+        "title": "Steyk fəlsəfəmiz",
+        "text": "Mangal Steak House, şübhəsiz, Bakının ən zərif və mötəbər restoranlarından biridir və burada hər şey steykin ətrafında fırlanır. Onun əsasını şeflərimizin müəllif təqdimatında süfrəyə gələn ən yaxşı premium ət növləri təşkil edir. İnanırıq ki, steyk təslim olmağa dəyən ən şirin asılılıqdır. Biz steyk haqqında hər şeyi bilirik: buğaların harada böyüdüldüyünü və hansı yemlə bəsləndiyini, ətin necə saxlanılıb çatdırıldığını, harada və necə yetişdiyini, steykin necə bişirildiyini və nə ilə süfrəyə verildiyini.\n\nMükəmməl steyk hazırlamaq üçün quru dinləndirmə kameralarımızda ən azı üç həftə saxlanılmış ətdən istifadə edirik. Quru dinləndirmə mürəkkəb və baha başa gələn prosesdir, ona görə də bu texnologiyanı yalnız əsl peşəkarlar seçir. Dinləndirmə zamanı ət nəmini itirdiyi üçün çəkidən düşür, stress hormonlarından təmizlənir və qeyri-adi dərəcədə zəngin dad qazanaraq zərif və yumşaq olur. Qızardıldıqdan sonra isə təbii, lakin daha zəngin, həqiqətən ilahi dadı olan keyfiyyətli bir tikə ət alırıq."
+      },
       "blocks": [
         {
           "title": "Ət seçimindən başlayır",
