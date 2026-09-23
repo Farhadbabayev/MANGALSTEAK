@@ -9,7 +9,7 @@
 
 import { createServer } from 'node:http';
 import { spawn } from 'node:child_process';
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdtempSync, rmSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -221,6 +221,24 @@ const run = async () => {
       hallsHtml.includes('data-lightbox-item="' + id + '"')));
   check('«Bu zalda masa ayır» zalı formada seçir', hallsHtml.includes('data-rez-area="milli"'));
   check('Zallar formada seçim kimi var', /<option value="ocakbasi"[ >]/.test(hallsHtml));
+
+  /* Steyk fəlsəfəsi: gözlənilən mətn konfiqurasiyadan oxunur ki, sahib mətni dəyişəndə test sınmasın */
+  const readConfig = (file) => JSON.parse(readFileSync(join(ROOT, file), 'utf8'));
+  const contentCfg = readConfig('content.config.json');
+  const i18nCfg = readConfig('i18n.config.json');
+  const escHtml = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const paragraphs = (text) => String(text || '').split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+
+  for (const lang of ['az', 'ru', 'en']) {
+    const own = lang === 'az' ? '' : i18nCfg[lang]?.content?.pages?.haqqimizda?.philosophy?.text;
+    const expected = paragraphs(typeof own === 'string' && own.trim() ? own : contentCfg.pages.haqqimizda.philosophy?.text);
+    const aboutHtml = await (await fetch(BASE + (lang === 'az' ? '' : '/' + lang) + '/haqqimizda.html')).text();
+    check(lang + ': Haqqımızda səhifəsində steyk fəlsəfəsi ' + (expected.length ? 'abzaslarla görünür' : 'görünmür (mətn boşdur)'),
+      expected.length
+        ? aboutHtml.includes('class="wrap philosophy"') && expected.every((p) => aboutHtml.includes('<p>' + escHtml(p) + '</p>'))
+        : !aboutHtml.includes('class="wrap philosophy"'),
+      'gözlənilən: «' + (expected[0] || '').slice(0, 50) + '…» (public/ köhnədirsə: npm run build)');
+  }
 
   const sitemap = await (await fetch(BASE + '/sitemap.xml')).text();
   check('Sitemap bütün dilləri əhatə edir', sitemap.includes('/ru/zallar.html') && sitemap.includes('/en/menyu.html'));

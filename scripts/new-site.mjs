@@ -211,6 +211,7 @@ const content = {
       title: 'Haqqımızda',
       subtitle: 'Kiçik etiket',
       lead: 'Giriş cümləsi.',
+      philosophy: { title: 'Bölmənin başlığı', text: 'Birinci abzas.\n\nİkinci abzas.' },
       blocks: [{ title: 'Blokun başlığı', text: 'Blokun mətni.' }],
       stats: [
         { value: '0', label: 'il təcrübə' },

@@ -484,6 +484,29 @@ ${hallMenuLinks(h, '            ')}
     )
     .join('');
 
+  /* Steyk fəlsəfəsi: hər sətir ayrıca abzasdır; mətn boşdursa bölmə çıxmır */
+  const philosophy = C.pages.haqqimizda.philosophy || {};
+  const philosophyTitle = String(philosophy.title || '').trim();
+  const philosophyParas = String(philosophy.text || '')
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  b.philosophySection = philosophyParas.length
+    ? `
+      <section class="section section-alt"${philosophyTitle ? ' aria-labelledby="philosophy-title"' : ''}>
+        <div class="wrap philosophy">
+${philosophyTitle ? `
+          <h2 class="display-2 reveal" id="philosophy-title">${esc(philosophyTitle)}</h2>
+` : ''}
+          <div class="philosophy-body reveal">
+${philosophyParas.map((p) => `            <p>${esc(p)}</p>`).join('\n')}
+          </div>
+
+        </div>
+      </section>`
+    : '';
+
   /* --- Banket paketləri --- */
 
   b.packageCards = C.pages.tedbirler.packages

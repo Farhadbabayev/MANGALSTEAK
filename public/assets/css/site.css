@@ -1065,6 +1065,33 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
   .story-media { max-width: 440px; }
 }
 
+/* Haqqımızda: steyk fəlsəfəsi — solda başlıq, sağda abzaslar («üstünlüklər» toru) */
+
+.philosophy {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: clamp(40px, 7vw, 120px);
+  align-items: start;
+}
+
+.philosophy-body { display: grid; gap: 24px; }
+
+.philosophy-body p {
+  font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--cream-dim);
+  max-width: 58ch;
+}
+
+.philosophy-body p:first-child { color: var(--cream); }
+
+/* Başlıq silinibsə mətn bütün eni tutur */
+.philosophy-body:only-child { grid-column: 1 / -1; }
+
+@media (max-width: 900px) {
+  .philosophy { grid-template-columns: 1fr; gap: 28px; }
+}
+
 /* Haqqımızda: rəqəmlər (bordo zolaq) */
 
 .stats-band {
