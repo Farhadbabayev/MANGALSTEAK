@@ -1563,6 +1563,42 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 .contact-list p,
 .contact-list address { color: var(--cream-dim); font-size: 15px; }
 
+/* Zalların öz nömrələri: menyudakı kimi nöqtəli xətlə, hər nömrə zəng keçididir */
+.hall-phones { justify-self: stretch; display: grid; gap: 6px; margin-top: 16px; }
+
+.hall-phones h3 { font-size: 1.2rem; font-stretch: 112%; font-weight: 600; }
+
+.hall-phones li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding-block: 8px;
+  font-size: 15px;
+  color: var(--cream-dim);
+}
+
+.hall-phones .leader {
+  flex: 1;
+  min-width: 24px;
+  border-bottom: 1px dotted var(--hair-strong);
+  transform: translateY(-5px);
+}
+
+.hall-phones-nums { display: grid; justify-items: end; }
+
+.hall-phones-nums a {
+  padding-block: 3px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--gold);
+  transition: color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hall-phones-nums a:hover { color: var(--gold-hover); }
+}
+
 @media (max-width: 900px) {
   .contact-layout { grid-template-columns: 1fr; }
 }
@@ -1740,6 +1776,9 @@ body.nav-open .nav-toggle span:nth-child(2) { transform: translateY(-4px) rotate
 
 .form-success { display: grid; gap: 22px; justify-items: start; }
 .form-success[hidden] { display: none; }
+
+/* Zalın nömrəsi boşluqlu yazıla bilər («+994 50 228 10 14») — sətirdə bölünməsin */
+.form-success a[href^="tel:"] { white-space: nowrap; }
 
 .success-mark {
   width: 56px;
@@ -2321,6 +2360,9 @@ body.rez-open .rez-modal-panel { transform: none; transition-duration: 480ms; }
 /* Uzun zal adları (məs. «Национальный») sütuna sığsın */
 .hall-body .display-2 { font-size: clamp(2.2rem, 1.4rem + 2.4vw, 3.6rem); overflow-wrap: anywhere; }
 
+/* Tutum və zalın telefonları: bir qrup kimi, aralarında kiçik boşluq */
+.hall-facts { display: grid; gap: 10px; justify-items: start; }
+
 .hall-capacity {
   display: inline-flex;
   align-items: center;
@@ -2328,8 +2370,36 @@ body.rez-open .rez-modal-panel { transform: none; transition-duration: 480ms; }
   font-size: 15px;
 }
 
-.hall-capacity .icon { width: 22px; height: 22px; color: var(--gold); }
-.hall-capacity span { color: var(--cream-dim); }
+/* İkon və «Telefon:» birinci nömrənin sətrindədir, qalan nömrələr onun altında */
+.hall-phone {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  align-items: center;
+  gap: 4px 10px;
+  font-size: 15px;
+}
+
+.hall-capacity .icon,
+.hall-phone .icon { width: 22px; height: 22px; color: var(--gold); }
+
+.hall-capacity span,
+.hall-phone span { color: var(--cream-dim); }
+
+/* Hər nömrə ayrıca zəng keçididir: .btn-text kimi qızılı alt xətt */
+.hall-phone a {
+  grid-column: 3;
+  justify-self: start;
+  padding-block: 3px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--gold);
+  transition: color 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hall-phone a:hover { color: var(--gold); }
+}
 
 .hall-body .hall-menu { margin-top: 8px; }
 .hall-reserve { margin-top: 4px; }

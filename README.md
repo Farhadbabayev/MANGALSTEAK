@@ -81,13 +81,20 @@ geri zəngdə hansı dildə danışacağını bilsin.
 
 ### Zallar
 
-Admin → **Zallar və PDF menyular**: hər zalın adı, təsviri, tutumu, şəkilləri
-(birinci şəkil böyük göstərilir) və menyusu. Şəkillər əvvəlcə **Şəkillər**
+Admin → **Zallar və PDF menyular**: hər zalın adı, təsviri, telefonları, tutumu,
+şəkilləri (birinci şəkil böyük göstərilir) və menyusu. Şəkillər əvvəlcə **Şəkillər**
 bölməsinə yüklənir, sonra zalda seçilir. Saytda şəkilə basanda böyüyür
 (oxlar / sürüşdürmə ilə yalnız həmin zalın şəkilləri arasında keçilir).
 
 Zalın **kodu** (`steak`, `ocakbasi`, `milli`) rezervasiya zonasının kodu ilə
 eynidir — «Bu zalda masa ayır» düyməsi formada həmin zalı özü seçir.
+
+**Zalın telefonları** («+ Nömrə əlavə et», istənilən sayda): hər nömrə Zallar
+səhifəsində zalın bölməsində və Əlaqə səhifəsindəki «Zalların telefonları»
+siyahısında zəng keçidi olur. Həmin zalda masa ayıran qonağın təsdiq ekranında
+ümumi nömrənin yerinə zalın **birinci** nömrəsi göstərilir. Nömrəsi olmayan zal
+üçün heç nə göstərilmir; başlıqda və footer-də həmişə ümumi nömrə qalır
+(Restoran məlumatları → Əlaqə).
 
 ### PDF menyular — hər zal × hər dil
 
@@ -291,7 +298,7 @@ Faylları birbaşa redaktə etmək istəsəniz, bütün məzmun üç JSON faylı
 | Fayl | Nə var |
 |---|---|
 | `site.config.json` | Ad, domen, ünvan, telefon, e-mail, iş saatları, sosial şəbəkələr, rezervasiya qaydaları |
-| `content.config.json` | Menyu və qiymətlər, slayder, haqqımızda, tədbirlər, qalereya, banket paketləri |
+| `content.config.json` | Menyu və qiymətlər, zallar (telefonları ilə), slayder, haqqımızda, tədbirlər, qalereya, banket paketləri |
 | `theme.config.json` | Rənglər, şriftlər, ölçülər, loqo |
 
 Dəyişikdən sonra:

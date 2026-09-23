@@ -121,6 +121,10 @@
         "name": "Steak zalı",
         "tagline": "Premium steyklər",
         "text": "Dry-aged steyklər üçün ayrılmış sakit, loş işıqlı zal. Ət 28 gün öz soyuducu otağımızda dinləndirilir və palıd kömürü üzərində bişirilir.",
+        "phones": [
+          "+994 12 5051011",
+          "+994 50 2281011"
+        ],
         "capacity": "",
         "images": [
           {
@@ -142,6 +146,9 @@
         "name": "Ocakbaşı",
         "tagline": "Közün düz yanında",
         "text": "Ocağın yanında oturun: usta kababı gözünüzün qarşısında bişirir. Tüstünün qoxusu, közün istisi və canlı, səmimi ab-hava.",
+        "phones": [
+          "+994 51 2302211"
+        ],
         "capacity": "",
         "images": [
           {
@@ -163,6 +170,11 @@
         "name": "Milli zal",
         "tagline": "Azərbaycan süfrəsi",
         "text": "Milli mətbəx və süfrə ənənəsi üçün zal: ailəvi məclislər, böyük qonaqlıqlar və masanın ortasında paylaşılan tabaqlar.",
+        "phones": [
+          "+994 50 2273080",
+          "+994 50 2273090",
+          "+994 50 2273034"
+        ],
         "capacity": "",
         "images": [
           {

@@ -7,16 +7,16 @@
         "description": "Mangal Steak House — премиальные стейки, кебабы из баранины и говядины на дровяных углях в центре Баку. Онлайн-бронирование столов."
       },
       "contact": {
-        "addressShort": "ул. Низами 00, Баку",
-        "addressFull": "ул. Низами 00, Сабаильский район,<br> Баку AZ1005, Азербайджан",
-        "addressOneLine": "ул. Низами 00, Сабаильский район, Баку AZ1005, Азербайджан"
+        "addressShort": "ул. Айдына Насирова, 3, Баку",
+        "addressFull": "ул. Айдына Насирова, 3, Баку",
+        "addressOneLine": "ул. Айдына Насирова, 3, Баку"
       },
       "hours": {
-        "short": "Ежедневно 11:00 - 24:00",
+        "short": "Ежедневно 10:00 - 00:00",
         "lunchTitle": "Обед",
-        "lunchValue": "Понедельник - Воскресенье<br> 11:00 - 16:00",
+        "lunchValue": "Понедельник - Воскресенье<br> 10:00 - 00:00",
         "dinnerTitle": "Ужин",
-        "dinnerValue": "Понедельник - Воскресенье<br> 17:00 - 24:00",
+        "dinnerValue": "",
         "kitchenNote": "Кухня принимает заказы до <span class=\"span\">23:30</span>"
       },
       "reservation": {
@@ -305,16 +305,16 @@
         "description": "Mangal Steak House: premium steaks, lamb and beef kebabs cooked over wood embers in the centre of Baku. Book a table online."
       },
       "contact": {
-        "addressShort": "00 Nizami St, Baku",
-        "addressFull": "00 Nizami Street, Sabail district,<br> Baku AZ1005, Azerbaijan",
-        "addressOneLine": "00 Nizami Street, Sabail district, Baku AZ1005, Azerbaijan"
+        "addressShort": "3 Aydin Nasirov St, Baku",
+        "addressFull": "3 Aydin Nasirov St, Baku",
+        "addressOneLine": "3 Aydin Nasirov St, Baku"
       },
       "hours": {
-        "short": "Daily 11:00 - 24:00",
+        "short": "Daily 10:00 - 00:00",
         "lunchTitle": "Lunch",
-        "lunchValue": "Monday - Sunday<br> 11:00 - 16:00",
+        "lunchValue": "Monday - Sunday<br> 10:00 - 00:00",
         "dinnerTitle": "Dinner",
-        "dinnerValue": "Monday - Sunday<br> 17:00 - 24:00",
+        "dinnerValue": "",
         "kitchenNote": "The kitchen takes orders until <span class=\"span\">23:30</span>"
       },
       "reservation": {

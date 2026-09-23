@@ -65,6 +65,13 @@ const attr = (s) => String(s).replace(/"/g, '&quot;');
 const img = (name) => `./assets/images/${name}`;
 const pad = (n) => String(n).padStart(2, '0');
 
+/** Zəng keçidi üçün nömrə: yalnız rəqəmlər və əvvəldəki «+» («+994 12 505 10 11» → «+994125051011») */
+const telHref = (phone) => {
+  const text = String(phone || '').trim();
+  const digits = text.replace(/\D/g, '');
+  return digits ? (text.startsWith('+') ? '+' : '') + digits : '';
+};
+
 /* ------------------------------------------------------------------ *
  *  Bloklar
  * ------------------------------------------------------------------ */
@@ -279,6 +286,12 @@ ${c.items.map((i) => menuItem(i, '              ')).join('')}
     .filter((h) => h && /^[a-z0-9-]+$/.test(h.id || ''));
   const areaValues = new Set((S.reservation.areas || []).map((a) => a.value));
 
+  /** Zalın öz nömrələri (admin → Zallar), birincisi əsasdır. Boş sətirlər atılır */
+  const hallPhones = (h) =>
+    (Array.isArray(h.phones) ? h.phones : [h.phones])
+      .map((p) => ({ text: String(p || '').trim(), href: telHref(p) }))
+      .filter((p) => p.href);
+
   /** Zalın menyusu: bu dildə PDF varsa aç/yüklə, yoxdursa digər dillərdəkini təklif et */
   const hallMenuLinks = (h, indent) => {
     if (hasMenu(h.id, code)) {
@@ -361,6 +374,17 @@ ${hallMenuLinks(h, '                ')}
 
       const reserveArea = areaValues.has(h.id) ? ` data-rez-area="${h.id}"` : '';
 
+      const phones = hallPhones(h);
+      const facts = [
+        h.capacity ? `
+              <p class="hall-capacity">${icons['users-three']} <span>${esc(T.halls.capacity)}:</span> ${esc(h.capacity)}</p>` : '',
+        phones.length ? `
+              <div class="hall-phone">
+                ${icons.phone} <span>${esc(T.halls.phone)}:</span>${phones.map((p) => `
+                <a href="tel:${p.href}">${esc(p.text)}</a>`).join('')}
+              </div>` : '',
+      ].join('');
+
       return `
       <section class="section hall${i % 2 ? ' section-alt' : ''}" id="${h.id}" aria-labelledby="hall-${h.id}-title">
         <div class="wrap hall-grid">
@@ -368,8 +392,9 @@ ${hallMenuLinks(h, '                ')}
           <div class="hall-body reveal">
             <p class="label">${esc(h.tagline)}</p>
             <h2 class="display-2" id="hall-${h.id}-title">${esc(h.name)}</h2>
-            <p class="lede">${esc(h.text)}</p>${h.capacity ? `
-            <p class="hall-capacity">${icons['users-three']} <span>${esc(T.halls.capacity)}:</span> ${esc(h.capacity)}</p>` : ''}
+            <p class="lede">${esc(h.text)}</p>${facts ? `
+            <div class="hall-facts">${facts}
+            </div>` : ''}
 ${hallMenuLinks(h, '            ')}
             <a href="rezervasiya.html" class="btn hall-reserve" data-rez-open${reserveArea}>${esc(T.halls.reserveHere)}</a>
           </div>
@@ -381,6 +406,27 @@ ${hallMenuLinks(h, '            ')}
       </section>`;
     })
     .join('\n');
+
+  /* Əlaqə səhifəsi: öz nömrəsi olan zallar (heç birində yoxdursa blok çıxmır) */
+  const hallPhoneRows = halls
+    .map((h) => ({ h, phones: hallPhones(h) }))
+    .filter((x) => x.phones.length)
+    .map(({ h, phones }) => `
+                <li>
+                  <span>${esc(h.name)}</span>
+                  <span class="leader" aria-hidden="true"></span>
+                  <span class="hall-phones-nums">${phones.map((p) => `
+                    <a href="tel:${p.href}">${esc(p.text)}</a>`).join('')}
+                  </span>
+                </li>`)
+    .join('');
+
+  b.hallPhones = hallPhoneRows ? `
+            <div class="hall-phones">
+              <h3>${esc(T.contact.hallPhones)}</h3>
+              <ul>${hallPhoneRows}
+              </ul>
+            </div>` : '';
 
   /* --- Tədbirlər --- */
 
@@ -523,11 +569,15 @@ ${p.features.map((x) => `                <li>${esc(x)}</li>`).join('\n')}
     return out.join('\n');
   })();
 
+  /* Zalın birinci nömrəsi seçimdə saxlanılır: rezervdən sonra qonağa ümumi nömrənin yerinə o göstərilir */
+  const hallsById = new Map(halls.map((h) => [h.id, h]));
+
   b.areaOptions = r.areas
-    .map(
-      (a) =>
-        `                  <option value="${a.value}"${a.value === 'any' ? ' selected' : ''}>${esc(a.label)}</option>`
-    )
+    .map((a) => {
+      const phone = hallsById.has(a.value) ? hallPhones(hallsById.get(a.value))[0] : null;
+      const data = phone ? ` data-phone="${esc(phone.text)}" data-phone-href="${phone.href}"` : '';
+      return `                  <option value="${a.value}"${a.value === 'any' ? ' selected' : ''}${data}>${esc(a.label)}</option>`;
+    })
     .join('\n');
 
   b.occasionOptions = r.occasions

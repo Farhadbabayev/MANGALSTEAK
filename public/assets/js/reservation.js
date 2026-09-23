@@ -147,6 +147,10 @@
     const successCode = root.querySelector('[data-success-code]');
     const successSummary = root.querySelector('[data-success-summary]');
     const successManage = root.querySelector('[data-success-manage]');
+    const successPhone = root.querySelector('[data-success-phone]');
+    const mainPhone = successPhone
+      ? { text: successPhone.textContent, href: successPhone.getAttribute('href') }
+      : null;
     const newReservationBtn = root.querySelector('[data-new-reservation]');
 
     const dateInput = form.querySelector('[data-field="date"]');
@@ -280,6 +284,15 @@
       if (successCode) successCode.textContent = code;
       if (successManage && code && code !== '—') {
         successManage.href = 'bron.html?kod=' + encodeURIComponent(code);
+      }
+
+      /* Seçilən zalın öz nömrəsi varsa, qonaq dəyişiklik üçün birbaşa ora zəng etsin */
+      if (successPhone) {
+        const area = form.querySelector('[data-field="area"]');
+        const opt = area && area.selectedOptions[0];
+        const own = opt && opt.dataset.phone && opt.dataset.phoneHref;
+        successPhone.textContent = own ? opt.dataset.phone : mainPhone.text;
+        successPhone.setAttribute('href', own ? 'tel:' + opt.dataset.phoneHref : mainPhone.href);
       }
 
       if (successSummary) {

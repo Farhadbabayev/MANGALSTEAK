@@ -205,7 +205,8 @@ const run = async () => {
     (ruBareHtml.match(/href="[a-z0-9-]+\.html[^"]*"/) || [''])[0]);
 
   const ruMenu = await (await fetch(BASE + '/ru/menyu')).text();
-  check('Rus menyu səhifəsi tərcümə olunub', ruMenu.includes('Меню залов') && ruMenu.includes('Стейки'));
+  /* «Меню залов» sabit mətndir (src/i18n), «Стейк-зал» isə paneldəki tərcümədən gəlir */
+  check('Rus menyu səhifəsi tərcümə olunub', ruMenu.includes('Меню залов') && ruMenu.includes('Стейк-зал'));
   check('Kiril şrifti yalnız rus səhifəsinə qoşulur',
     ruMenu.includes('fonts-cyrillic.css') && !homeHtml.includes('fonts-cyrillic.css'));
   check('hreflang keçidləri var', /hreflang="en" href="[^"]*\/en\/"/.test(homeHtml) && homeHtml.includes('hreflang="x-default"'));
@@ -219,7 +220,7 @@ const run = async () => {
     ['steak', 'ocakbasi', 'milli'].every((id) => hallsHtml.includes('id="' + id + '"') &&
       hallsHtml.includes('data-lightbox-item="' + id + '"')));
   check('«Bu zalda masa ayır» zalı formada seçir', hallsHtml.includes('data-rez-area="milli"'));
-  check('Zallar formada seçim kimi var', hallsHtml.includes('<option value="ocakbasi">'));
+  check('Zallar formada seçim kimi var', /<option value="ocakbasi"[ >]/.test(hallsHtml));
 
   /* Steyk fəlsəfəsi: gözlənilən mətn konfiqurasiyadan oxunur ki, sahib mətni dəyişəndə test sınmasın */
   const readConfig = (file) => JSON.parse(readFileSync(join(ROOT, file), 'utf8'));
@@ -667,6 +668,38 @@ const run = async () => {
 
   const restored = await (await fetch(BASE + '/index.html')).text();
   check('Geri qaytarma işləyir', restored.includes(original.contact.phone));
+
+  /* Hər zalın öz telefonları: yalnız Milli zala iki nömrə yazırıq (biri boş sətir), sonra geri qaytarırıq */
+  const contentOriginal = JSON.parse(JSON.stringify(cfg.content));
+  const withHallPhones = JSON.parse(JSON.stringify(cfg.content));
+  withHallPhones.halls.items.forEach((h) => {
+    h.phones = h.id === 'milli' ? ['+994 99 111 22 33', ' ', '+994(99)1112244'] : [];
+  });
+
+  try {
+    const savedHall = await post('/api/admin/config', { name: 'content', data: withHallPhones }, adminAuth);
+    check('Zalın telefonları yadda saxlanılır', savedHall.status === 200, 'status ' + savedHall.status);
+
+    const hallsWithPhones = await (await fetch(BASE + '/zallar.html')).text();
+    check('Zallar səhifəsində zalın hər nömrəsi zəng keçididir',
+      hallsWithPhones.includes('<a href="tel:+994991112233">+994 99 111 22 33</a>') &&
+        hallsWithPhones.includes('<a href="tel:+994991112244">+994(99)1112244</a>'));
+    check('Nömrəsi olmayan zala və boş sətrə keçid çıxmır',
+      (hallsWithPhones.match(/class="hall-phone"/g) || []).length === 1 && !hallsWithPhones.includes('href="tel:"'));
+    check('Formada zalın seçimi birinci nömrəni daşıyır (uğur ekranı üçün)',
+      hallsWithPhones.includes('<option value="milli" data-phone="+994 99 111 22 33" data-phone-href="+994991112233">') &&
+        hallsWithPhones.includes('data-success-phone'));
+
+    const enContact = await (await fetch(BASE + '/en/elaqe.html')).text();
+    check('Əlaqə səhifəsində zalların telefonları həmin dildə göstərilir',
+      enContact.includes('Hall phone numbers') && enContact.includes('<a href="tel:+994991112233">') &&
+        enContact.includes('<a href="tel:+994991112244">'));
+  } finally {
+    await post('/api/admin/config', { name: 'content', data: contentOriginal }, adminAuth);
+  }
+
+  const hallsAfter = await (await fetch(BASE + '/zallar.html')).text();
+  check('Geri qaytarılanda sınaq nömrələri saytdan çıxır', !hallsAfter.includes('+994991112233'));
 
   const built = await post('/api/admin/build', {}, adminAuth);
   check('Saytı yenidən yığmaq işləyir', built.status === 200, 'status ' + built.status);

@@ -710,7 +710,7 @@
           values.forEach((line, index) => {
             const row = el('div', 'color-row');
             const text = el('input');
-            text.type = 'text';
+            text.type = field.input || 'text';
             text.value = line;
             text.addEventListener('input', () => { values[index] = text.value; commit(values.slice()); });
             const del = el('button', 'icon-btn danger', '×');
@@ -722,7 +722,7 @@
             list.appendChild(row);
           });
 
-          const add = el('button', 'add-btn', '+ Sətir əlavə et');
+          const add = el('button', 'add-btn', field.add || '+ Sətir əlavə et');
           add.type = 'button';
           add.addEventListener('click', () => { values.push(''); commit(values.slice()); redraw(); });
           list.appendChild(add);
@@ -730,6 +730,7 @@
 
         redraw();
         wrap.appendChild(list);
+        if (field.help) wrap.appendChild(el('span', 'help', field.help));
         return wrap;
       }
 
@@ -1033,6 +1034,13 @@
     f('tagline', 'Kiçik etiket', 'text', { help: 'Məs. «Premium steyklər»' }),
     f('capacity', 'Tutum', 'text', { help: 'Məs. «40 nəfər». Boş qalsa göstərilmir' }),
     f('id', 'Kod', 'text', { help: 'Latın hərfləri, boşluqsuz (steak, ocakbasi, milli). PDF faylının adı və rezervasiya zonası bununla bağlıdır' }),
+    f('phones', 'Zalın telefonları', 'stringlist', {
+      full: true,
+      input: 'tel',
+      add: '+ Nömrə əlavə et',
+      help: 'Hər nömrə ayrıca sətirdə, məs. «+994 50 2273080». Zallar və Əlaqə səhifəsində zəng keçidi olur; ' +
+        'bu zalda masa ayıran qonağa birinci nömrə göstərilir. Nömrə yoxdursa zal üçün heç nə göstərilmir',
+    }),
     f('text', 'Təsvir', 'textarea', { full: true }),
   ];
 
@@ -2093,7 +2101,7 @@
       if (!Array.isArray(state.content.halls.items)) state.content.halls.items = [];
       let id = slugify(name);
       while (state.content.halls.items.some((h) => h.id === id)) id += '-2';
-      state.content.halls.items.push({ id, name, tagline: '', text: '', capacity: '', images: [] });
+      state.content.halls.items.push({ id, name, tagline: '', text: '', phones: [], capacity: '', images: [] });
       markDirty('content');
       renderHalls();
       toast('Zal əlavə olundu. Yadda saxlayın, sonra PDF menyuları yükləyin.', 'info');

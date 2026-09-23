@@ -79,6 +79,7 @@
     "photos": "Zalın şəkilləri",
     "openPhoto": "Şəkli böyüt",
     "capacity": "Tutum",
+    "phone": "Telefon",
     "reserveHere": "Bu zalda masa ayır",
     "menuTitle": "Zalların menyuları",
     "menuLead": "Hər zalın ayrıca menyusu var. Menyunu brauzerdə açın və ya PDF kimi yükləyin.",
@@ -123,7 +124,8 @@
     "email": "E-mail",
     "emailNote": "Tədbir və banket sorğuları üçün",
     "write": "Məktub yaz",
-    "hours": "İş saatları"
+    "hours": "İş saatları",
+    "hallPhones": "Zalların telefonları"
   },
   "notFound": {
     "title": "Səhifə tapılmadı",
