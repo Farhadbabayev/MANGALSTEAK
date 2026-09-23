@@ -205,7 +205,8 @@ const run = async () => {
     (ruBareHtml.match(/href="[a-z0-9-]+\.html[^"]*"/) || [''])[0]);
 
   const ruMenu = await (await fetch(BASE + '/ru/menyu')).text();
-  check('Rus menyu səhifəsi tərcümə olunub', ruMenu.includes('Меню залов') && ruMenu.includes('Стейки'));
+  /* «Меню залов» sabit mətndir (src/i18n), «Стейк-зал» isə paneldəki tərcümədən gəlir */
+  check('Rus menyu səhifəsi tərcümə olunub', ruMenu.includes('Меню залов') && ruMenu.includes('Стейк-зал'));
   check('Kiril şrifti yalnız rus səhifəsinə qoşulur',
     ruMenu.includes('fonts-cyrillic.css') && !homeHtml.includes('fonts-cyrillic.css'));
   check('hreflang keçidləri var', /hreflang="en" href="[^"]*\/en\/"/.test(homeHtml) && homeHtml.includes('hreflang="x-default"'));

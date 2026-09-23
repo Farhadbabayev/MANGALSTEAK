@@ -34,9 +34,9 @@
     ]
   },
   "contact": {
-    "addressShort": "5 Aydin Nasirov, Bakı",
-    "addressFull": "5 Aydin Nasirov, Bakı",
-    "addressOneLine": "5 Aydin Nasirov, Bakı",
+    "addressShort": "Aydin Nasirov küç. 3, Bakı",
+    "addressFull": "Aydin Nasirov küç. 3, Bakı",
+    "addressOneLine": "Aydin Nasirov küç. 3, Bakı",
     "phone": "+994 12 5051011",
     "phoneHref": "+994125051011",
     "mobile": "+994502281011",
@@ -47,11 +47,11 @@
     "mapLink": "https://maps.app.goo.gl/dbLWNPGwUqP4oFij7?g_st=ic"
   },
   "hours": {
-    "short": "Hər gün 11:00 - 24:00",
+    "short": "Hər gün 10:00 - 00:00",
     "lunchTitle": "Nahar saatları",
-    "lunchValue": "Bazar ertəsi - Bazar<br> 11:00 - 16:00",
+    "lunchValue": "Bazar ertəsi - Bazar<br> 10:00 - 00:00",
     "dinnerTitle": "Şam yeməyi",
-    "dinnerValue": "Bazar ertəsi - Bazar<br> 17:00 - 24:00",
+    "dinnerValue": "",
     "kitchenNote": "Mətbəx sifarişləri gecə saat <span class=\"span\">23:30</span>-a qədər qəbul edir"
   },
   "social": {
