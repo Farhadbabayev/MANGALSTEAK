@@ -1,6 +1,5 @@
 {
   "_comment": "Rənglər, şriftlər və loqo. Admin panelin «Dizayn» bölməsindən dəyişdirilir.",
-
   "colors": {
     "black": "#0F0D0C",
     "black2": "#191613",
@@ -11,22 +10,19 @@
     "brand": "#4E0007",
     "brand2": "#6B0A12"
   },
-
   "fonts": {
     "display": "Archivo",
     "body": "Archivo",
     "logo": "Grenze Gotisch"
   },
-
   "layout": {
     "sectionSpace": 120,
     "logoSize": 31,
     "markSize": 26
   },
-
   "logo": {
-    "mode": "mark",
+    "mode": "image",
     "mark": "bull",
-    "image": ""
+    "image": "logo-mangal.jpg"
   }
 }
