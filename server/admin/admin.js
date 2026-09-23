@@ -554,6 +554,7 @@
       title: 'Ölçülər',
       fields: [
         f('layout.sectionSpace', 'Bölmələr arası boşluq (px)', 'number', { help: 'Adi hal: 130' }),
+        f('layout.logoHeight', 'Loqonun hündürlüyü (px)', 'number', { help: 'Başlıqda ən çox 64 (başlıq 76px-dir), footer-də 1.35 dəfə böyük. Telefonda özü kiçilir. Adi hal: 64' }),
         f('layout.logoSize', 'Loqo yazısının ölçüsü (px)', 'number'),
         f('layout.markSize', 'Loqo nişanının eni (px)', 'number'),
       ],
@@ -563,6 +564,7 @@
       fields: [
         f('logo.mode', 'Loqo növü', 'select', {
           options: [
+            { v: 'brand', t: 'Mangal Steakhouse loqosu (vektor)' },
             { v: 'mark', t: 'Nişan + yazı' },
             { v: 'text', t: 'Yalnız yazı' },
             { v: 'image', t: 'Yüklənmiş şəkil' },
@@ -576,6 +578,7 @@
             { v: 'leaf', t: 'Yarpaq' },
           ],
         }),
+        f('logo.banner', 'Loqonu bordo fonda göstər', 'checkbox', { help: 'Yüklənmiş loqo kimi: bordo sahədə krem loqo. Başlıqda bordo sahə başlığın bütün hündürlüyü boyunca uzanır' }),
         f('logo.image', 'Loqo şəkli', 'image', { full: true, help: 'Yalnız «Yüklənmiş şəkil» rejimində istifadə olunur' }),
       ],
     },

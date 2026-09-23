@@ -50,8 +50,9 @@ an open mangal zone where guests watch the fire.
 
 ## Brand Commitments
 
-- Name "Mangal Steak House", logo = bull skull with skewer mark plus the
-  "Mangal" wordmark in Grenze Gotisch.
+- Name "Mangal Steak House", logo = the owner's lockup (bull skull on a
+  skewer, blackletter "Mangal", "STEAKHOUSE"), vector in `src/brand/logo.svg`.
+  Never redrawn or re-typeset; replace the file if the original vector turns up.
 - Brand bordeaux `#4E0007`.
 - Owner-requested feel (2026-09): premium calm mixed with the spirit of Baku
   and the Caucasus. Reference feel: Nusr-Et. Full new visual world approved.

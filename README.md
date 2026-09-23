@@ -8,10 +8,12 @@ Dizayn: **Premium Minimal** — demək olar qara fon, süd rəngi mətn, incə q
 xətlər və brendin tünd bordo rəngi (`#4E0007`). Bütün CSS və HTML bu layihəyə
 məxsusdur; xarici CSS çərçivəsi və ya ikon kitabxanası istifadə olunmur.
 
-Loqo (buğa kəlləsi + şiş) vektor SVG kimi çəkilib, "Mangal" yazısı
-Grenze Gotisch şrifti ilə verilir — beləliklə hər ölçüdə iti görünür və
-rəngi CSS-dən dəyişdirilə bilir. Loqonun orijinal faylı varsa,
-`src/partials/logo.html` içindəki SVG-ni onunla əvəz etmək kifayətdir.
+Loqo — restoranın öz loqosu (buğa kəlləsi və şiş, gotik «Mangal» yazısı,
+«STEAKHOUSE») vektora çevrilib: `src/brand/logo.svg`. Hər ölçüdə iti görünür,
+rəngi CSS-dən gəlir. Yüklənmiş loqo kimi bordo fonda göstərilir: başlıqda
+bordo sahə başlığın bütün hündürlüyü boyunca uzanır, footer-də eyni bordo
+lövhə daha böyükdür. Loqonun orijinal vektor faylı (SVG/PDF/AI) tapılsa,
+`src/brand/logo.svg`-ni onunla əvəz etmək kifayətdir.
 
 ---
 
@@ -248,7 +250,7 @@ Hər dəyişiklikdən sonra sayt avtomatik yenidən yığılır.
 | **Menyu** | Kateqoriya və yemək əlavə et/sil/sırala, qiymət, nişan (Bestseller və s.), təsvir |
 | **Səhifə mətnləri** | Slayder, haqqımızda, şefin seçimi, üstünlüklər, tədbirlər, qalereya, banket paketləri, rezervasiya addımları və qaydaları — bütün səhifələrin mətnləri |
 | **Şəkillər** | Yüklə, əvəz et, sil. Eyni adla yükləmək saytdakı şəkli dərhal dəyişir |
-| **Dizayn** | Rənglər, şriftlər, bölmə boşluqları, loqo (nişan / yazı / yüklənmiş şəkil) — canlı önizləmə ilə |
+| **Dizayn** | Rənglər, şriftlər, bölmə boşluqları, loqo (Mangal loqosu / nişan / yazı / yüklənmiş şəkil), loqonun hündürlüyü və bordo fon — canlı önizləmə ilə |
 | **Sistem** | Sistemin vəziyyəti, son əməliyyatın jurnalı, saytı yenidən yığma |
 
 > **Rezervasiyalar bu paneldən idarə olunmur.** Masaların təsdiqi, ləğvi və
@@ -426,6 +428,7 @@ theme.config.json       rənglər, şriftlər, loqo
 src/
   partials/             təkrarlanan hissələr (header, footer, rezervasiya forması)
   pages/                səhifə şablonları
+  brand/logo.svg        restoranın loqosu (vektor)
 scripts/
   build.mjs             statik səhifələri yığır
   fetch-fonts.mjs       şriftləri Google Fonts-dan yerli yükləyir

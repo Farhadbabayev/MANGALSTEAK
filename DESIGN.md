@@ -30,7 +30,19 @@ Display: `font-stretch: 68%`, weight 800 (h1/h2) or 700 (h3, prices, numbers),
 uppercase, line-height ≥ 1 so Azerbaijani accents (İ Ü Ö Ş Ç) don't collide.
 Body: normal width, 17px / 1.65. Small tracked caps (13px, 112%) are rationed:
 hero caption, footer column heads, menu category heads, dish subtitle.
-Logo wordmark stays Grenze Gotisch.
+
+## Logo
+
+The owner's own lockup (bull skull on a skewer, blackletter "Mangal",
+tracked "STEAKHOUSE"), traced to vector in `src/brand/logo.svg`
+(`currentColor`). Inlined once per page as a `<symbol>`; header and footer
+`<use>` it. Shown the way the owner uploaded it: cream on a plain bordeaux
+field (`logo.banner`). No pattern on or around the logo: the owner rejected a
+carpet-banner version (2026-09). In the header the field runs the full header
+height, top edge to bottom edge; the logo is `--logo-h` (admin → Dizayn,
+default 64px, never taller than the header minus 12px). The footer shows the
+same bordeaux tile, larger. The desktop nav collapses into the menu at
+≤1180px so the logo keeps its size.
 
 ## Carpet system (`/assets/ornament/`, all CSS masks, pixel-stepped like knots)
 

@@ -19,8 +19,8 @@
   --logo: 'Grenze Gotisch', Georgia, serif;
 
   --space: 120px;
+  --logo-h: 64px;
 }
 
 .logo-title { font-size: 31px; }
 .logo-mark { width: 26px; }
-.logo-img { max-height: 50px; width: auto; }
