@@ -18,7 +18,7 @@ Replaced the earlier "Şəbəkə" direction at the owner's request (2026-09).
 | `cream` | `#F3EEE6` | Text |
 | `creamDim` | `#ADA398` | Secondary text |
 | `gold` | `#D9A441` | The only UI accent: primary buttons, prices, active nav, carpet motifs |
-| `brand` | `#4E0007` | Madder bordeaux: kilim bands, carpet borders, whole-region fields |
+| `brand` | `#4E0007` | Madder bordeaux: header bar and logo field, kilim bands, carpet borders, whole-region fields |
 | `brand2` | `#6B0A12` | Reserve |
 
 Derived tones use `color-mix`, so they follow admin colour changes. Dark only.
@@ -36,13 +36,15 @@ hero caption, footer column heads, menu category heads, dish subtitle.
 The owner's own lockup (bull skull on a skewer, blackletter "Mangal",
 tracked "STEAKHOUSE"), traced to vector in `src/brand/logo.svg`
 (`currentColor`). Inlined once per page as a `<symbol>`; header and footer
-`<use>` it. Shown the way the owner uploaded it: cream on a plain bordeaux
-field (`logo.banner`). No pattern on or around the logo: the owner rejected a
-carpet-banner version (2026-09). In the header the field runs the full header
-height, top edge to bottom edge; the logo is `--logo-h` (admin → Dizayn,
-default 64px, never taller than the header minus 12px). The footer shows the
-same bordeaux tile, larger. The desktop nav collapses into the menu at
-≤1180px so the logo keeps its size.
+`<use>` it. Shown the way the owner uploaded it: cream on plain bordeaux
+(`logo.background`). No pattern on or around the logo: the owner rejected a
+carpet-banner version (2026-09). The owner chose `bar`: the whole header bar
+is bordeaux, left to right, at the top and while scrolling, and the logo sits
+on it aligned with the content column. `block` keeps bordeaux only behind the
+logo (full header height); `none` is the transparent header. The logo is
+`--logo-h` (admin → Dizayn, default 64px, never taller than the header minus
+12px). The footer shows the logo on a bordeaux tile, larger. The desktop nav
+collapses into the menu at ≤1180px so the logo keeps its size.
 
 ## Carpet system (`/assets/ornament/`, all CSS masks, pixel-stepped like knots)
 

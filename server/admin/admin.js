@@ -578,7 +578,14 @@
             { v: 'leaf', t: 'Yarpaq' },
           ],
         }),
-        f('logo.banner', 'Loqonu bordo fonda göstər', 'checkbox', { help: 'Yüklənmiş loqo kimi: bordo sahədə krem loqo. Başlıqda bordo sahə başlığın bütün hündürlüyü boyunca uzanır' }),
+        f('logo.background', 'Bordo fon', 'select', {
+          options: [
+            { v: 'bar', t: 'Bütün başlıq bordo' },
+            { v: 'block', t: 'Yalnız loqonun sahəsi bordo' },
+            { v: 'none', t: 'Yoxdur (şəffaf başlıq)' },
+          ],
+          help: 'Yüklənmiş loqo kimi: bordo fonda krem loqo. Rəng «Brend rəngi»-dən gəlir',
+        }),
         f('logo.image', 'Loqo şəkli', 'image', { full: true, help: 'Yalnız «Yüklənmiş şəkil» rejimində istifadə olunur' }),
       ],
     },
