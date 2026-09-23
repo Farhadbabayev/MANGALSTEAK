@@ -190,7 +190,7 @@ const content = {
     text: 'Zallar haqqında qısa giriş.',
     items: [
       {
-        id: 'salon', name: 'Əsas zal', tagline: 'Kiçik etiket', text: 'Zalın qısa təsviri.', capacity: '',
+        id: 'salon', name: 'Əsas zal', tagline: 'Kiçik etiket', text: 'Zalın qısa təsviri.', phones: [], capacity: '',
         images: [{ src: 'event-1.jpg', alt: 'Zalın şəkli' }],
       },
     ],

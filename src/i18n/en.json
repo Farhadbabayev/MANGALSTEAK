@@ -78,6 +78,7 @@
     "photos": "Hall photos",
     "openPhoto": "Enlarge photo",
     "capacity": "Capacity",
+    "phone": "Phone",
     "reserveHere": "Book in this hall",
     "menuTitle": "Hall menus",
     "menuLead": "Every hall has its own menu. Open it in your browser or download it as a PDF.",
@@ -122,7 +123,8 @@
     "email": "E-mail",
     "emailNote": "For event and banquet requests",
     "write": "Write to us",
-    "hours": "Opening hours"
+    "hours": "Opening hours",
+    "hallPhones": "Hall phone numbers"
   },
   "notFound": {
     "title": "Page not found",
