@@ -23,7 +23,7 @@
   },
   "logo": {
     "mode": "brand",
-    "banner": true,
+    "background": "bar",
     "mark": "bull",
     "image": "logo-mangal.jpg"
   }

@@ -259,7 +259,7 @@ const theme = {
   },
   fonts: { display: 'Cormorant Garamond', body: 'Inter', logo: 'Cormorant Garamond' },
   layout: { sectionSpace: 130, logoSize: 26, markSize: 24 },
-  logo: { mode: 'text', mark: 'fork', image: '' },
+  logo: { mode: 'text', background: 'none', mark: 'fork', image: '' },
 };
 
 const write = (file, data) =>

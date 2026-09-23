@@ -374,6 +374,23 @@ body.nav-open .header::before {
 :is(.header, .footer) .logo.is-banner:has(> .logo-img) { padding: 0; background-color: transparent; }
 .header .logo.is-banner .logo-img { max-height: var(--header-h); }
 
+/* Bütün başlıq bordo (logo.background: bar): loqonun bordo sahəsi başlıq boyu
+   soldan sağa uzanır, səhifə sürüşəndə də. Loqo məzmun sütunu ilə düz başlayır;
+   kiçik daxili boşluq yalnız fokus çərçivəsi loqoya dəyməsin deyədir. */
+.header--brand::before,
+body.is-scrolled .header--brand::before,
+body.nav-open .header--brand::before {
+  background-color: var(--brand);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+body.is-scrolled .header--brand,
+body.nav-open .header--brand { border-bottom-color: transparent; }
+
+.header.header--brand .logo.is-banner { padding-inline: 8px; margin-left: -8px; }
+.header.header--brand .logo.is-banner:focus-visible { outline-offset: -4px; }
+
 .navbar { margin-left: auto; }
 
 .navbar-list { display: flex; align-items: center; gap: clamp(18px, 2vw, 32px); }

@@ -160,8 +160,22 @@ blocks.logoSprite = useBrandLogo
   ? `<svg class="sprite" width="0" height="0" aria-hidden="true" focusable="false"><symbol id="brand-logo" viewBox="${brandLogo.viewBox}">${brandLogo.inner}</symbol></svg>`
   : '';
 
-/* Loqo bordo fonda, yüklənmiş loqo kimi; başlıqda fon başlığın boyu boyunca (admin → Dizayn → Loqo) */
-blocks.logoClass = theme.logo?.banner ? ' is-banner' : '';
+/**
+ * Loqonun bordo fonu (admin → Dizayn → Loqo → «Bordo fon»):
+ *   bar   — bütün başlıq zolağı bordo, loqo ona qarışır
+ *   block — yalnız loqonun sahəsi bordo, başlığın boyu boyunca
+ *   none  — şəffaf
+ * Köhnə «banner: true» ayarı «block» sayılır.
+ */
+const logoBackground = ['bar', 'block', 'none'].includes(theme.logo?.background)
+  ? theme.logo.background
+  : (theme.logo?.banner ? 'block' : 'none');
+
+blocks.logoClass = logoBackground === 'none' ? '' : ' is-banner';
+blocks.headerClass = logoBackground === 'bar' ? ' header--brand' : '';
+
+/* Telefon brauzerinin üst zolağı bordo başlıqla eyni rəngdə olsun */
+blocks.themeColor = logoBackground === 'bar' ? esc(theme.colors?.brand || '#4E0007') : '#121212';
 
 
 /* ------------------------------------------------------------------ *

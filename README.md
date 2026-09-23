@@ -10,10 +10,11 @@ məxsusdur; xarici CSS çərçivəsi və ya ikon kitabxanası istifadə olunmur.
 
 Loqo — restoranın öz loqosu (buğa kəlləsi və şiş, gotik «Mangal» yazısı,
 «STEAKHOUSE») vektora çevrilib: `src/brand/logo.svg`. Hər ölçüdə iti görünür,
-rəngi CSS-dən gəlir. Yüklənmiş loqo kimi bordo fonda göstərilir: başlıqda
-bordo sahə başlığın bütün hündürlüyü boyunca uzanır, footer-də eyni bordo
-lövhə daha böyükdür. Loqonun orijinal vektor faylı (SVG/PDF/AI) tapılsa,
-`src/brand/logo.svg`-ni onunla əvəz etmək kifayətdir.
+rəngi CSS-dən gəlir. Yüklənmiş loqo kimi bordo fonda göstərilir: bütün başlıq
+zolağı soldan sağa bordodur, footer-də loqo bordo lövhədədir (admin → Dizayn →
+Loqo → «Bordo fon»: bütün başlıq / yalnız loqonun sahəsi / yoxdur). Loqonun
+orijinal vektor faylı (SVG/PDF/AI) tapılsa, `src/brand/logo.svg`-ni onunla
+əvəz etmək kifayətdir.
 
 ---
 
